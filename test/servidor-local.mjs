@@ -9,7 +9,7 @@ import { manejar, acceso, sync, admin } from '../api/_lib/core.js';
 const db = new PGlite();
 globalThis.__aycQuery = async (t, p = []) => (await db.query(t, p)).rows;
 const raiz = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const tipos = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.png': 'image/png', '.json': 'application/json' };
+const tipos = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.png': 'image/png', '.json': 'application/json', '.mp3': 'audio/mpeg' };
 const api = { '/api/acceso': acceso, '/api/sync': sync, '/api/admin': admin };
 const puerto = Number(process.argv[2] || 8790);
 

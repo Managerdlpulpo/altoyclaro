@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liga de Habla Soto Alto - Programa Visual | Andel</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -275,6 +276,17 @@
                 </select>
                 <button onclick="overrideLevel()" class="bg-amber-500 text-stadium-950 font-bold px-4 py-2 rounded-xl text-xs">Cambiar nivel</button>
                 <button onclick="toggleTeacherModal(); switchTab('progreso')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs"><i class="fa-solid fa-chart-line mr-1"></i> Ver progreso al hablar</button>
+                <!-- Voz de la app -->
+                <div class="bg-stadium-800 p-3 rounded-xl space-y-2">
+                    <h4 class="font-game text-white">🔊 Voz</h4>
+                    <label class="flex items-start gap-2 text-xs text-slate-200"><input id="voz-grabada" type="checkbox" checked onchange="cambiarVozGrabada(this.checked)" class="mt-0.5"> Usar la voz grabada natural para palabras y frases del juego (recomendado)</label>
+                    <label class="block text-xs text-slate-400" for="voz-select">Voz del dispositivo para el resto de textos:</label>
+                    <div class="flex gap-2">
+                        <select id="voz-select" onchange="cambiarVoz(this.value)" class="flex-1 min-w-0 bg-stadium-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white"><option value="">Automática</option></select>
+                        <button onclick="probarVoz()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i> Probar</button>
+                    </div>
+                    <p id="voz-info" class="text-[11px] text-slate-400"></p>
+                </div>
                 <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs mt-2">Reiniciar</button>
 
                 <!-- Claves de la clase (necesita la clave del profe; se comprueba en el servidor) -->
@@ -416,8 +428,8 @@
         }
         function answerTest(isCorrect) {
             const fb = document.getElementById('test-feedback');
-            if (isCorrect) { testScore++; fb.innerHTML = '<span class="text-emerald-400">¡Correcto!</span>'; }
-            else fb.innerHTML = '<span class="text-rose-400">Casi...</span>';
+            if (isCorrect) { testScore++; fb.innerHTML = '<span class="text-emerald-400">¡Correcto!</span>'; decir(FRASES_VOZ.correcto); }
+            else { fb.innerHTML = '<span class="text-rose-400">Casi...</span>'; decir(FRASES_VOZ.casi); }
             fb.classList.remove('hidden');
             setTimeout(() => { currentTestIndex++; showTestQuestion(); }, 700);
         }
@@ -481,10 +493,11 @@
                 }
                 document.getElementById('ident-feedback').innerHTML = '<span class="text-emerald-400 font-bold">¡Correcto! +15 XP</span>';
                 addXP(15);
-                speakSpanish(item.es);
+                decir([FRASES_VOZ.correcto, item.es]);
             } else {
                 btn.classList.add('wrong');
                 document.getElementById('ident-feedback').innerHTML = '<span class="text-rose-400">Casi... la correcta es: <strong>'+item.es+'</strong></span>';
+                decir([FRASES_VOZ.laCorrectaEs, item.es]);
             }
             document.getElementById('ident-feedback').classList.remove('hidden');
             setTimeout(() => { currentIdentIndex++; renderIdentificar(); }, 1800);
@@ -548,6 +561,7 @@
                     if (item.isCorrect) {
                         document.getElementById('goal-result-box').classList.remove('hidden');
                         addXP(20);
+                        decir(FRASES_VOZ.gol);
                     } else {
                         b.classList.add('wrong');
                         setTimeout(() => b.classList.remove('wrong'), 800);
@@ -583,14 +597,7 @@
             if (typeof renderHablar === 'function') renderHablar();
         }
 
-        function speakSpanish(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'es-ES'; u.rate = 0.85;
-                window.speechSynthesis.speak(u);
-            }
-        }
+        // speakSpanish() y decir() están en voz.js (audios grabados + mejor voz del navegador)
 
         function switchTab(id) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -600,7 +607,11 @@
             if (id !== 'hablar' && typeof cancelarSesionHabla === 'function') cancelarSesionHabla();
             if (id === 'progreso' && typeof renderProgresoHabla === 'function') renderProgresoHabla();
         }
-        function toggleTeacherModal() { document.getElementById('teacher-modal').classList.toggle('hidden'); }
+        function toggleTeacherModal() {
+            const m = document.getElementById('teacher-modal');
+            m.classList.toggle('hidden');
+            if (!m.classList.contains('hidden') && typeof renderSelectorVoz === 'function') renderSelectorVoz();
+        }
         function overrideLevel() {
             gameState.level = +document.getElementById('override-level').value;
             saveState(); updateHUD(); renderAll();
@@ -616,6 +627,7 @@
 
         window.onload = loadState;
     </script>
+    <script src="voz.js"></script>
     <script src="hablar.js"></script>
     <script src="sync.js"></script>
 </body>

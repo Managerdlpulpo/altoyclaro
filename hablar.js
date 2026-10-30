@@ -5,7 +5,7 @@
    - Historial de intentos en localStorage ('ligaHablaVoz').
    - Grabaciones de voz SOLO en este dispositivo (IndexedDB 'ligaHablaAudio').
    - No se sube nada a ningún servidor de Andel.
-   Depende de index.html: visualVocab, gameState, shuffle, addXP, speakSpanish.
+   Depende de index.html (visualVocab, gameState, shuffle, addXP) y de voz.js (decir, speakSpanish, pararVoz, FRASES_VOZ).
    ===================================================================== */
 
 const HABLA_KEY = 'ligaHablaVoz';
@@ -315,7 +315,7 @@ function elegirMime() {
 async function hablaMic() {
     if (hablaSesion) { detenerSesionHabla(); return; }
     if (!hablaItem) return;
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (typeof pararVoz === 'function') pararVoz(); else if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.getElementById('habla-resultado').classList.add('hidden');
     document.getElementById('habla-manual').classList.add('hidden');
     hablaPendiente = null;
@@ -470,17 +470,19 @@ function mostrarResultado(ev, s) {
         if (s.item === hablaItem && !hablaXPDado) { xp = s.modo === 'frase' ? XP_FRASE : XP_PALABRA; hablaXPDado = true; addXP(xp); }
         html = `<div class="bg-emerald-950/80 border-2 border-emerald-400 rounded-2xl p-4">
             <div class="text-2xl font-game text-emerald-300">🌟 ¡Perfecto!${xp ? ` <span class="text-amber-400 text-lg">+${xp} XP</span>` : ''}</div>${oido}</div>`;
-        speakSpanish(s.modo === 'frase' ? '¡Muy bien! ¡Qué buena frase!' : '¡Muy bien! ' + s.item.es);
+        decir(s.modo === 'frase' ? [FRASES_VOZ.muyBien, FRASES_VOZ.buenaFrase] : [FRASES_VOZ.perfecto, s.item.es]);
     } else if (ev.resultado === 'casi') {
         let pista = 'Escucha cómo se dice y prueba otra vez.';
         if (ev.motivo === 'corta') pista = 'Muy bien la palabra. Ahora di una frase más larga (3 palabras o más).';
         if (ev.motivo === 'palabra') pista = `Buena frase, pero tiene que salir la palabra «${esc(s.item.es)}».`;
+        decir(FRASES_VOZ.casi);
         html = `<div class="bg-amber-950/60 border-2 border-amber-400 rounded-2xl p-4">
             <div class="text-2xl font-game text-amber-300">👏 ¡Casi!</div>${oido}
             <div class="text-sm text-amber-100 mt-2">${pista}</div>
             <button onclick="${s.modo === 'frase' ? 'hablaEjemplo()' : 'hablaPista()'}" class="mt-3 bg-pitch-600 hover:bg-pitch-500 text-white text-sm font-bold px-4 py-2 rounded-xl"><i class="fa-solid fa-volume-high mr-1"></i> Escuchar</button></div>`;
     } else {
         const pista = ev.motivo === 'palabra' ? `Recuerda usar la palabra «${esc(s.item.es)}».` : 'Escucha la palabra y vuelve a pulsar el micrófono.';
+        decir(FRASES_VOZ.otraVez);
         html = `<div class="bg-rose-950/50 border-2 border-rose-400 rounded-2xl p-4">
             <div class="text-2xl font-game text-rose-300">💪 Inténtalo otra vez</div>${oido}
             <div class="text-sm text-rose-100 mt-2">${pista}</div>
@@ -517,12 +519,13 @@ function hablaValorar(bien) {
     if (bien) {
         let xp = 0;
         if (p.item === hablaItem && !hablaXPDado) { xp = XP_ADULTO; hablaXPDado = true; addXP(xp); }
+        decir(FRASES_VOZ.muyBien);
         box.innerHTML = `<div class="bg-emerald-950/80 border-2 border-emerald-400 rounded-2xl p-4"><div class="text-2xl font-game text-emerald-300">🌟 ¡Muy bien!${xp ? ` <span class="text-amber-400 text-lg">+${xp} XP</span>` : ''}</div></div>`;
         setEstadoHabla('Pulsa «Siguiente» para otra foto');
     } else {
         box.innerHTML = `<div class="bg-amber-950/60 border-2 border-amber-400 rounded-2xl p-4"><div class="text-2xl font-game text-amber-300">💪 ¡A practicar!</div><div class="text-sm text-amber-100 mt-1">Escucha y prueba otra vez.</div></div>`;
         setEstadoHabla('Pulsa el micrófono para intentarlo de nuevo');
-        speakSpanish(p.item.es);
+        decir([FRASES_VOZ.aPracticar, p.item.es]);
     }
     box.classList.remove('hidden');
     registrarIntento({ item: p.item, modo: p.modo, metodo: 'adulto', oido: '', alternativas: [], score: bien ? 100 : 0, resultado: bien ? 'bien' : 'practicar', blob: p.blob });
