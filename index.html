@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liga de Habla Soto Alto - Programa Visual | Andel</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -30,6 +31,14 @@
         .img-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(34,197,94,0.25); }
         .correct { border-color: #22c55e !important; background-color: rgba(34,197,94,0.15) !important; }
         .wrong { border-color: #ef4444 !important; background-color: rgba(239,68,68,0.15) !important; }
+        /* Modo Hablar */
+        .mic-btn { transition: transform 0.15s, background-color 0.2s; touch-action: manipulation; }
+        .mic-btn:active { transform: scale(0.95); }
+        .mic-btn.listening { background-color: #dc2626; animation: micPulse 1.2s infinite; }
+        @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(244,63,94,0.6); } 70% { box-shadow: 0 0 0 24px rgba(244,63,94,0); } 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); } }
+        .modo-btn.active { background-color: #e11d48; color: white; border-color: #fb7185; }
+        .chip-btn.active { background-color: #16a34a; color: white; border-color: #4ade80; }
+        .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1 1 0; min-width: 22px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased pb-12">
@@ -39,31 +48,16 @@
         <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div id="setup-step-profile">
                 <h2 class="text-2xl font-game font-bold text-white mb-2">¡Bienvenido a la Liga de Habla Visual!</h2>
-                <p class="text-sm text-slate-300 mb-6">Crea tu perfil. Verás fotos reales y practicarás identificándolas.</p>
+                <p class="text-sm text-slate-300 mb-6">Escribe tu nombre o apodo. Verás fotos reales y practicarás identificándolas.</p>
                 <div class="space-y-4">
-                    <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre">
-                    <div class="grid grid-cols-2 gap-4">
-                        <select id="input-age" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
-                            <option value="6">6 años</option><option value="7">7</option><option value="8">8</option>
-                            <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-                        </select>
-                        <select id="input-country" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
-                            <option value="Ucrania">Ucrania</option>
-                            <option value="Marruecos">Marruecos / Árabe</option>
-                            <option value="China">China</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-                    <select id="input-hobby" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
-                        <option value="futbol">⚽ Fútbol</option>
-                        <option value="animales">🐾 Animales</option>
-                        <option value="arte">🎨 Arte</option>
-                    </select>
+                    <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre o apodo" maxlength="40" autocomplete="off">
                     <button onclick="startPlacementTest()" class="w-full bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Empezar</button>
+                    <button onclick="if (typeof abrirLogin === 'function') abrirLogin()" class="w-full bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm">🔑 Ya tengo una clave</button>
+                    <p class="text-[11px] text-slate-400 text-center">Sin clave, todo se guarda solo en este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
                 </div>
             </div>
             <div id="setup-step-test" class="hidden">
-                <div class="flex justify-between mb-4"><h3 class="font-game text-xl">Test de Nivel</h3><span id="test-progress" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">1/5</span></div>
+                <div class="flex justify-between mb-4"><h3 class="font-game text-xl">Test de Nivel</h3><span id="test-progress" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">Test</span></div>
                 <div id="test-question-area"></div>
                 <div id="test-options" class="space-y-2 mt-4"></div>
                 <div id="test-feedback" class="mt-4 text-sm hidden"></div>
@@ -88,12 +82,13 @@
                     <div class="text-xs text-slate-400" id="header-info">Andel</div>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-2 sm:gap-4">
                 <div class="text-right">
                     <div class="text-xs text-slate-300">XP</div>
                     <div id="xp-text-display" class="text-amber-400 font-game font-bold">0</div>
                 </div>
-                <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs"><i class="fa-solid fa-user-gear text-amber-400"></i></button>
+                <button id="cuenta-btn" onclick="abrirCuenta()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 text-xs text-slate-200 font-bold flex items-center gap-1" title="Entrar con mi clave" aria-label="Entrar con mi clave"><span aria-hidden="true">🔑</span><span class="hidden sm:inline">Entrar</span></button>
+                <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs" title="Panel del profe"><i class="fa-solid fa-user-gear text-amber-400"></i></button>
             </div>
         </div>
     </header>
@@ -106,9 +101,11 @@
 
         <div class="flex space-x-2 overflow-x-auto pb-2 mb-6">
             <button onclick="switchTab('identificar')" id="tab-btn-identificar" class="tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-image text-emerald-400 mr-1"></i> Identificar Fotos</button>
+            <button onclick="switchTab('hablar')" id="tab-btn-hablar" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-microphone text-rose-400 mr-1"></i> Hablar</button>
             <button onclick="switchTab('pictionary')" id="tab-btn-pictionary" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-images text-blue-400 mr-1"></i> Diccionario Visual</button>
             <button onclick="switchTab('penalty')" id="tab-btn-penalty" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-bullseye text-amber-400 mr-1"></i> Penalty</button>
             <button onclick="switchTab('cuentos')" id="tab-btn-cuentos" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-book text-purple-400 mr-1"></i> Cuentos</button>
+            <button onclick="switchTab('progreso')" id="tab-btn-progreso" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-chart-line text-sky-400 mr-1"></i> Mi progreso al hablar</button>
         </div>
 
         <!-- IDENTIFICAR FOTOS -->
@@ -124,6 +121,101 @@
                 <p class="text-sm text-slate-300 mb-4">¿Qué es esto? Elige la palabra correcta:</p>
                 <div id="ident-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto"></div>
                 <div id="ident-feedback" class="mt-4 hidden"></div>
+            </div>
+        </section>
+
+        <!-- HABLAR (expresión oral) -->
+        <section id="tab-hablar" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-5 sm:p-6 card-glow text-center">
+                <div class="flex justify-center gap-2 mb-4">
+                    <button id="habla-modo-palabra" onclick="setModoHabla('palabra')" class="modo-btn active px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-200">🗣️ Di la palabra</button>
+                    <button id="habla-modo-frase" onclick="setModoHabla('frase')" class="modo-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-200">💬 Dime una frase</button>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mb-4" id="habla-categorias"></div>
+                <div class="text-xs text-amber-400 mb-2 uppercase tracking-wider" id="habla-category">Categoría</div>
+                <div class="relative inline-block mb-3">
+                    <img id="habla-image" src="" alt="Imagen" class="w-56 h-56 sm:w-72 sm:h-72 object-cover rounded-2xl border-4 border-slate-700 shadow-xl mx-auto">
+                    <button onclick="hablaEscuchar()" title="Escuchar la palabra" class="absolute bottom-3 right-3 bg-pitch-600 text-white w-12 h-12 rounded-full shadow-lg"><i class="fa-solid fa-volume-high"></i></button>
+                </div>
+                <div id="habla-consigna" class="text-lg font-game text-white mb-1">¿Qué es esto? ¡Dilo en voz alta!</div>
+                <div id="habla-palabra" class="text-2xl font-game font-bold text-amber-300 mb-1 hidden"></div>
+                <div class="flex justify-center flex-wrap gap-2 mb-5 mt-2">
+                    <button id="habla-btn-pista" onclick="hablaPista()" class="bg-stadium-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700"><i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> Pista</button>
+                    <button id="habla-btn-ejemplo" onclick="hablaEjemplo()" class="hidden bg-stadium-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700"><i class="fa-solid fa-volume-high text-emerald-400 mr-1"></i> Escuchar un ejemplo</button>
+                </div>
+                <button id="habla-mic" onclick="hablaMic()" aria-label="Pulsa y habla" class="mic-btn w-28 h-28 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-4xl shadow-xl mx-auto flex items-center justify-center"><i class="fa-solid fa-microphone"></i></button>
+                <div id="habla-estado" class="text-sm text-slate-300 mt-3 min-h-[1.5rem]">Pulsa el micrófono y habla</div>
+                <div id="habla-resultado" class="mt-4 hidden max-w-md mx-auto"></div>
+                <div id="habla-manual" class="mt-4 hidden max-w-md mx-auto bg-stadium-800 border border-slate-700 rounded-2xl p-4">
+                    <p class="text-sm text-slate-200 mb-3">👩‍🏫 Adulto: escuchad la grabación y valorad.</p>
+                    <button id="habla-manual-play" onclick="hablaReproducirPendiente()" class="hidden mb-3 bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold px-4 py-2 rounded-xl"><i class="fa-solid fa-play mr-1"></i> Escuchar grabación</button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button onclick="hablaValorar(true)" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">👍 Lo ha dicho bien</button>
+                        <button onclick="hablaValorar(false)" class="bg-amber-500 hover:bg-amber-400 text-stadium-950 font-bold py-3 rounded-xl">🔁 Hay que practicar</button>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <button onclick="hablaSiguiente()" class="bg-amber-500 hover:bg-amber-400 text-stadium-950 font-bold px-6 py-2.5 rounded-xl">Siguiente <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                </div>
+                <div id="habla-aviso-soporte" class="hidden mt-5 text-xs text-left bg-amber-500/10 border border-amber-500/40 text-amber-200 rounded-xl p-3 max-w-md mx-auto"></div>
+                <p class="text-[11px] text-slate-400 mt-4"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones de voz se guardan solo en este dispositivo y no se suben a ningún sitio.</p>
+            </div>
+        </section>
+
+        <!-- MI PROGRESO AL HABLAR -->
+        <section id="tab-progreso" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-5 sm:p-6 card-glow">
+                <h3 class="font-game text-lg mb-1 flex items-center gap-2"><i class="fa-solid fa-chart-line text-sky-400"></i> Mi progreso al hablar</h3>
+                <p class="text-xs text-slate-400 mb-4" id="prog-nombre"></p>
+                <div id="prog-resumen" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"></div>
+                <div id="prog-tendencia" class="text-sm mb-4"></div>
+                <div id="prog-test-card" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
+                    <h4 class="font-bold text-sm text-white mb-2"><i class="fa-solid fa-compass text-amber-400 mr-1"></i> Test de nivel (escuchar, palabras y conversación)</h4>
+                    <div id="prog-test"></div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-sm text-white">% de aciertos</h4>
+                        <div class="flex gap-1">
+                            <button id="prog-btn-dia" onclick="setAgrupacionProgreso('dia')" class="chip-btn active text-xs px-2.5 py-1 rounded-lg border border-slate-700 bg-stadium-800 text-slate-300">Por días</button>
+                            <button id="prog-btn-semana" onclick="setAgrupacionProgreso('semana')" class="chip-btn text-xs px-2.5 py-1 rounded-lg border border-slate-700 bg-stadium-800 text-slate-300">Por semanas</button>
+                        </div>
+                    </div>
+                    <div id="prog-grafico"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4">
+                        <h4 class="font-bold text-sm text-emerald-400 mb-2"><i class="fa-solid fa-star mr-1"></i> Palabras dominadas</h4>
+                        <div id="prog-dominadas" class="flex flex-wrap gap-2 text-sm"></div>
+                    </div>
+                    <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4">
+                        <h4 class="font-bold text-sm text-amber-400 mb-2"><i class="fa-solid fa-dumbbell mr-1"></i> Palabras que todavía cuestan</h4>
+                        <div id="prog-cuestan" class="flex flex-wrap gap-2 text-sm"></div>
+                    </div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
+                    <h4 class="font-bold text-sm text-white mb-1"><i class="fa-solid fa-headphones text-sky-400 mr-1"></i> Escucha cómo ha mejorado</h4>
+                    <p class="text-xs text-slate-400 mb-3">Compara la primera grabación con la última de cada palabra.</p>
+                    <div id="prog-grabaciones" class="space-y-2 text-sm"></div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4 overflow-x-auto">
+                    <h4 class="font-bold text-sm text-white mb-2">Últimos intentos</h4>
+                    <div id="prog-ultimos" class="text-xs"></div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 space-y-3">
+                    <h4 class="font-bold text-sm text-white"><i class="fa-solid fa-user-gear text-amber-400 mr-1"></i> Para el profesor o la familia</h4>
+                    <label class="flex items-start gap-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="prog-solo-manual" onchange="setSoloManual(this.checked)" class="mt-0.5">
+                        <span>Valoración solo por un adulto (sin reconocimiento automático de voz). Se graba la voz y el adulto decide si lo ha dicho bien.</span>
+                    </label>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="exportarProgreso('json')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-download mr-1"></i> Exportar JSON</button>
+                        <button onclick="exportarProgreso('csv')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-file-csv mr-1"></i> Exportar CSV (Excel)</button>
+                        <button onclick="borrarGrabaciones()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash mr-1"></i> Borrar grabaciones</button>
+                        <button onclick="borrarHistorialHabla()" class="bg-red-800 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash-can mr-1"></i> Borrar todo el progreso al hablar</button>
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones se guardan solo en este dispositivo (en este navegador) y no se suben nunca a ningún sitio. Sin clave, el historial también se queda solo aquí; si el niño entra con su clave, el historial en texto (fecha, palabra, lo que se oyó y la puntuación) y su perfil se guardan también en el servidor de la clase para verlos en otro dispositivo (<a href="privacidad.html" target="_blank" class="underline text-sky-300">más información</a>). Se guardan como máximo 50 grabaciones (la primera y las 3 últimas de cada palabra). Para entender lo que dice el niño, el reconocimiento automático usa el servicio de voz del propio navegador (en Chrome, el de Google; en Safari, el de Apple), igual que el dictado del móvil. Si preferís evitarlo, marcad la casilla de valoración solo por un adulto.</p>
+                </div>
             </div>
         </section>
 
@@ -159,7 +251,7 @@
 
     <!-- Teacher modal (simplified) -->
     <div id="teacher-modal" class="modal hidden">
-        <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full mx-4">
+        <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-game">Panel del Profesor</h3>
                 <button onclick="toggleTeacherModal()" class="text-slate-400">✕</button>
@@ -170,13 +262,60 @@
                     <option value="0">Nivel 0</option><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option>
                 </select>
                 <button onclick="overrideLevel()" class="bg-amber-500 text-stadium-950 font-bold px-4 py-2 rounded-xl text-xs">Cambiar nivel</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-repetir-test" onclick="repetirTestNivel()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 rounded-xl text-xs">🧭 Repetir test de nivel</button>
+                    <button id="btn-ver-test" onclick="verUltimoTest()" class="bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-white font-bold py-2 rounded-xl text-xs">📋 Resultados del test</button>
+                </div>
+                <button onclick="toggleTeacherModal(); switchTab('progreso')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs"><i class="fa-solid fa-chart-line mr-1"></i> Ver progreso al hablar</button>
+                <!-- Voz de la app -->
+                <div class="bg-stadium-800 p-3 rounded-xl space-y-2">
+                    <h4 class="font-game text-white">🔊 Voz</h4>
+                    <label class="flex items-start gap-2 text-xs text-slate-200"><input id="voz-grabada" type="checkbox" checked onchange="cambiarVozGrabada(this.checked)" class="mt-0.5"> Usar la voz grabada natural para palabras y frases del juego (recomendado)</label>
+                    <label class="block text-xs text-slate-400" for="voz-select">Voz del dispositivo para el resto de textos:</label>
+                    <div class="flex gap-2">
+                        <select id="voz-select" onchange="cambiarVoz(this.value)" class="flex-1 min-w-0 bg-stadium-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white"><option value="">Automática</option></select>
+                        <button onclick="probarVoz()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i> Probar</button>
+                    </div>
+                    <p id="voz-info" class="text-[11px] text-slate-400"></p>
+                </div>
                 <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs mt-2">Reiniciar</button>
+
+                <!-- Claves de la clase (necesita la clave del profe; se comprueba en el servidor) -->
+                <div class="border-t border-slate-700 pt-4 mt-2">
+                    <h4 class="font-game text-white mb-1">🔑 Claves de la clase</h4>
+                    <p class="text-[11px] text-slate-400 mb-2">Crea una clave para cada niño (solo un nombre o apodo, sin apellidos). Con ella su progreso se guarda y se puede usar en 2 dispositivos. Las grabaciones de voz nunca salen del dispositivo.</p>
+                    <div id="admin-login" class="flex gap-2">
+                        <input id="admin-clave" type="password" autocomplete="current-password" placeholder="Clave del profe" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminAbrir()">
+                        <button onclick="adminAbrir()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">Abrir</button>
+                    </div>
+                    <div id="admin-panel" class="hidden space-y-3">
+                        <div class="flex gap-2">
+                            <input id="admin-alias" type="text" maxlength="40" placeholder="Nombre o apodo del niño" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminCrear()">
+                            <button onclick="adminCrear()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs">Crear clave</button>
+                        </div>
+                        <div id="admin-codigo-nuevo" class="hidden bg-amber-500/10 border border-amber-500 rounded-xl p-3 text-center"></div>
+                        <div id="admin-lista" class="space-y-2"></div>
+                        <div class="flex justify-between">
+                            <button onclick="adminRefrescar()" class="text-xs text-sky-300 underline">Actualizar lista</button>
+                            <button onclick="adminCerrarPanel()" class="text-xs text-slate-400 underline">Cerrar panel de claves</button>
+                        </div>
+                    </div>
+                    <p id="admin-mensaje" class="text-xs mt-2 text-slate-300" role="status"></p>
+                    <p class="text-[11px] text-slate-500 mt-1"><a href="privacidad.html" target="_blank" class="underline">Qué datos se guardan (privacidad)</a></p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let gameState = { name: '', age: 8, country: 'Ucrania', hobby: 'futbol', level: 1, xp: 0 };
+        let gameState = { name: '', level: 1, xp: 0 };
+        // El perfil solo guarda nombre/apodo, nivel, XP y resultados del test. Los perfiles antiguos
+        // traían edad, país y afición: se descartan al cargar (y no se sincronizan).
+        function limpiarPerfilLocal(p) {
+            if (!p || typeof p !== 'object') return { name: '', level: 1, xp: 0 };
+            const { age, country, hobby, ...resto } = p;
+            return resto;
+        }
 
         const LEVELS = { 0: {name:'Super Principiante', nextXP:100}, 1:{name:'Nivel 1', nextXP:250}, 2:{name:'Nivel 2', nextXP:500}, 3:{name:'Nivel 3', nextXP:1000} };
 
@@ -195,15 +334,6 @@
             { es: 'el balón', img: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=500&fit=crop', cat: 'Fútbol', uk: 'м\'яч', ar: 'كرة القدم' },
             { es: 'la camiseta', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop', cat: 'Ropa', uk: 'футболка', ar: 'قميص' }
         ];
-
-        const placementQuestions = [
-            { type:'listen', es:'¡Hola!', options:['¡Hola!','Adiós','Gracias'], correct:0 },
-            { type:'mcq', question:'¿Cómo te llamas?', options:['Me llamo...','Tengo 8 años','Hasta luego'], correct:0 },
-            { type:'listen', es:'¿Puedo ir al baño?', options:['¿Puedo ir al baño?','¿Qué hora es?','Gracias'], correct:0 },
-            { type:'mcq', question:'Elige la pelota', options:['¡Pasa la pelota!','Abre el libro','Adiós'], correct:0 },
-            { type:'listen', es:'Tengo siete años.', options:['Tengo 7 años','Me llamo siete','Soy del colegio'], correct:0 }
-        ];
-        let currentTestIndex=0, testScore=0;
 
         const contentByLevel = {
             1: { penalty: [
@@ -229,75 +359,36 @@
         function loadState() {
             const saved = localStorage.getItem('ligaHablaVisual');
             if (saved) {
-                gameState = JSON.parse(saved);
+                gameState = limpiarPerfilLocal(JSON.parse(saved));
+                saveState();
                 document.getElementById('setup-modal').classList.add('hidden');
                 updateHUD();
                 renderAll();
             }
         }
-        function saveState() { localStorage.setItem('ligaHablaVisual', JSON.stringify(gameState)); }
+        function saveState() { gameState = limpiarPerfilLocal(gameState); localStorage.setItem('ligaHablaVisual', JSON.stringify(gameState)); }
 
         function updateHUD() {
             const lvl = LEVELS[gameState.level] || LEVELS[1];
             document.getElementById('header-name').innerText = gameState.name || 'Alumno';
             document.getElementById('header-initials').innerText = (gameState.name||'A').charAt(0).toUpperCase();
-            document.getElementById('header-info').innerText = `${gameState.country} • ${lvl.name}`;
+            document.getElementById('header-info').innerText = lvl.name;
             document.getElementById('welcome-title').innerText = `¡Hola ${gameState.name || 'campeón'}!`;
             document.getElementById('xp-text-display').innerText = gameState.xp;
-            document.getElementById('teacher-info').innerHTML = `<strong>${gameState.name}</strong><br>${gameState.country} · Nivel ${gameState.level}`;
+            const ultTest = (gameState.pruebas || []).slice(-1)[0];
+            document.getElementById('teacher-info').innerHTML = `<strong>${esc(gameState.name)}</strong><br>Nivel ${gameState.level}` +
+                (ultTest ? `<br><span class="text-xs text-slate-300">Último test (${new Date(ultTest.t).toLocaleDateString('es-ES')}): 👂 ${ultTest.comp}% · 🗣️ ${ultTest.voc}% · 💬 ${ultTest.conv}%</span>` : '<br><span class="text-xs text-slate-400">Sin test de nivel nuevo todavía.</span>');
             document.getElementById('override-level').value = gameState.level;
         }
 
         function addXP(n) { gameState.xp += n; saveState(); updateHUD(); }
 
-        // Test functions (shortened)
+        // Test de nivel (adaptativo, con conversación): ver test-nivel.js
         function startPlacementTest() {
             const name = document.getElementById('input-name').value.trim();
             if (!name) { alert('Escribe tu nombre'); return; }
             gameState.name = name;
-            gameState.age = +document.getElementById('input-age').value;
-            gameState.country = document.getElementById('input-country').value;
-            gameState.hobby = document.getElementById('input-hobby').value;
-            currentTestIndex = 0; testScore = 0;
-            document.getElementById('setup-step-profile').classList.add('hidden');
-            document.getElementById('setup-step-test').classList.remove('hidden');
-            showTestQuestion();
-        }
-        function showTestQuestion() {
-            if (currentTestIndex >= placementQuestions.length) { finishTest(); return; }
-            const q = placementQuestions[currentTestIndex];
-            document.getElementById('test-progress').innerText = `${currentTestIndex+1}/${placementQuestions.length}`;
-            const area = document.getElementById('test-question-area');
-            const opts = document.getElementById('test-options');
-            opts.innerHTML = '';
-            document.getElementById('test-feedback').classList.add('hidden');
-            if (q.type === 'listen') {
-                area.innerHTML = `<div class="text-center"><button onclick="speakSpanish('${q.es}')" class="bg-pitch-600 text-white px-6 py-3 rounded-xl mb-3"><i class="fa-solid fa-volume-high mr-2"></i>Escuchar</button></div>`;
-            } else area.innerHTML = `<p class="text-lg font-bold text-white text-center">${q.question}</p>`;
-
-            const indexed = q.options.map((opt, i) => ({ opt, isCorrect: i === q.correct }));
-            const shuffled = shuffle(indexed);
-            shuffled.forEach(item => {
-                const b = document.createElement('button');
-                b.className = 'w-full bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3 rounded-xl border border-slate-700';
-                b.innerText = item.opt;
-                b.onclick = () => answerTest(item.isCorrect);
-                opts.appendChild(b);
-            });
-        }
-        function answerTest(isCorrect) {
-            const fb = document.getElementById('test-feedback');
-            if (isCorrect) { testScore++; fb.innerHTML = '<span class="text-emerald-400">¡Correcto!</span>'; }
-            else fb.innerHTML = '<span class="text-rose-400">Casi...</span>';
-            fb.classList.remove('hidden');
-            setTimeout(() => { currentTestIndex++; showTestQuestion(); }, 700);
-        }
-        function finishTest() {
-            const p = (testScore / placementQuestions.length)*100;
-            gameState.level = p>=80?3 : p>=50?2 : p>=25?1 : 0;
-            document.getElementById('setup-step-test').classList.add('hidden');
-            document.getElementById('setup-step-result').classList.remove('hidden');
-            document.getElementById('result-level-text').innerHTML = `Nivel: <strong class="text-amber-400">${LEVELS[gameState.level].name}</strong><br>${testScore}/${placementQuestions.length}`;
+            iniciarTestNivel({ repeticion: false });
         }
         function finishSetup() {
             document.getElementById('setup-modal').classList.add('hidden');
@@ -345,17 +436,13 @@
                 btn.classList.add('correct');
                 document.getElementById('ident-word').innerText = item.es;
                 document.getElementById('ident-word').classList.remove('hidden');
-                const native = gameState.country==='Ucrania' ? item.uk : gameState.country==='Marruecos' ? item.ar : '';
-                if (native) {
-                    document.getElementById('ident-native').innerText = native;
-                    document.getElementById('ident-native').classList.remove('hidden');
-                }
                 document.getElementById('ident-feedback').innerHTML = '<span class="text-emerald-400 font-bold">¡Correcto! +15 XP</span>';
                 addXP(15);
-                speakSpanish(item.es);
+                decir([FRASES_VOZ.correcto, item.es]);
             } else {
                 btn.classList.add('wrong');
                 document.getElementById('ident-feedback').innerHTML = '<span class="text-rose-400">Casi... la correcta es: <strong>'+item.es+'</strong></span>';
+                decir([FRASES_VOZ.laCorrectaEs, item.es]);
             }
             document.getElementById('ident-feedback').classList.remove('hidden');
             setTimeout(() => { currentIdentIndex++; renderIdentificar(); }, 1800);
@@ -383,14 +470,12 @@
             const grid = document.getElementById('pictionary-grid');
             grid.innerHTML = '';
             visualVocab.filter(v => v.cat === cat).forEach(item => {
-                const native = gameState.country==='Ucrania' ? item.uk : gameState.country==='Marruecos' ? item.ar : '';
                 const card = document.createElement('div');
                 card.className = 'img-card bg-stadium-950 border border-slate-800 rounded-2xl overflow-hidden';
                 card.innerHTML = `
                     <img src="${item.img}" class="w-full h-36 object-cover" alt="${item.es}">
                     <div class="p-3 text-center">
                         <div class="font-bold text-white text-sm">${item.es}</div>
-                        ${native ? `<div class="text-xs text-amber-300">${native}</div>` : ''}
                         <button onclick="speakSpanish('${item.es}')" class="mt-2 bg-pitch-600 text-white text-xs px-3 py-1 rounded-lg"><i class="fa-solid fa-volume-high"></i></button>
                     </div>`;
                 grid.appendChild(card);
@@ -419,6 +504,7 @@
                     if (item.isCorrect) {
                         document.getElementById('goal-result-box').classList.remove('hidden');
                         addXP(20);
+                        decir(FRASES_VOZ.gol);
                     } else {
                         b.classList.add('wrong');
                         setTimeout(() => b.classList.remove('wrong'), 800);
@@ -451,33 +537,43 @@
             renderPictionaryCategories();
             renderPenalty();
             renderCuentos();
+            if (typeof renderHablar === 'function') renderHablar();
         }
 
-        function speakSpanish(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'es-ES'; u.rate = 0.85;
-                window.speechSynthesis.speak(u);
-            }
-        }
+        // speakSpanish() y decir() están en voz.js (audios grabados + mejor voz del navegador)
 
         function switchTab(id) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-'+id).classList.remove('hidden');
             document.getElementById('tab-btn-'+id).classList.add('active');
+            if (id !== 'hablar' && typeof cancelarSesionHabla === 'function') cancelarSesionHabla();
+            if (id === 'progreso' && typeof renderProgresoHabla === 'function') renderProgresoHabla();
         }
-        function toggleTeacherModal() { document.getElementById('teacher-modal').classList.toggle('hidden'); }
+        function toggleTeacherModal() {
+            const m = document.getElementById('teacher-modal');
+            m.classList.toggle('hidden');
+            if (!m.classList.contains('hidden') && typeof renderSelectorVoz === 'function') renderSelectorVoz();
+        }
         function overrideLevel() {
             gameState.level = +document.getElementById('override-level').value;
             saveState(); updateHUD(); renderAll();
         }
         function resetAll() {
-            if (confirm('¿Reiniciar?')) { localStorage.removeItem('ligaHablaVisual'); location.reload(); }
+            if (confirm('¿Reiniciar? Se borrará el perfil y también el progreso y las grabaciones de voz de este dispositivo.')) {
+                localStorage.removeItem('ligaHablaVisual');
+                localStorage.removeItem('ligaHablaVoz');
+                localStorage.removeItem('ligaHablaTestTextos');
+                const limpiar = (typeof audioClear === 'function') ? audioClear() : Promise.resolve();
+                limpiar.catch(() => {}).finally(() => location.reload());
+            }
         }
 
         window.onload = loadState;
     </script>
+    <script src="voz.js"></script>
+    <script src="hablar.js"></script>
+    <script src="test-nivel.js"></script>
+    <script src="sync.js"></script>
 </body>
 </html>

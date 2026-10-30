@@ -1,0 +1,356 @@
+{
+ "voz": "es_ES-sharvard-medium (F)",
+ "licencia": "Voz Piper \"es_ES-sharvard-medium\" (hablante F), entrenada con el Sharvard Corpus (Aubanel, García Lecumberri y Cooke, 2014; Universidad de Edimburgo), licencia CC BY 3.0. Audio generado con Piper (https://github.com/OHF-Voice/piper1-gpl).",
+ "archivos": {
+  "la cama": {
+   "f": "la-cama.mp3",
+   "v": "d3302d2c",
+   "h": "eadad99b6d84"
+  },
+  "la mesa": {
+   "f": "la-mesa.mp3",
+   "v": "799b6c5c",
+   "h": "24f6bb95d037"
+  },
+  "la silla": {
+   "f": "la-silla.mp3",
+   "v": "6cf20854",
+   "h": "befaf9e00903"
+  },
+  "el plato": {
+   "f": "el-plato.mp3",
+   "v": "c290533d",
+   "h": "21f45aae6dfc"
+  },
+  "el vaso": {
+   "f": "el-vaso.mp3",
+   "v": "1a5b11e2",
+   "h": "633fc58cc7de"
+  },
+  "el cepillo de dientes": {
+   "f": "el-cepillo-de-dientes.mp3",
+   "v": "ef8f9869",
+   "h": "cf64a6761934"
+  },
+  "la pelota": {
+   "f": "la-pelota.mp3",
+   "v": "4e60b1d5",
+   "h": "6f87dfba7cbb"
+  },
+  "el perro": {
+   "f": "el-perro.mp3",
+   "v": "124f9da5",
+   "h": "ff2b2239284d"
+  },
+  "el gato": {
+   "f": "el-gato.mp3",
+   "v": "100c08a5",
+   "h": "c10003f2a519"
+  },
+  "la manzana": {
+   "f": "la-manzana.mp3",
+   "v": "08efaeda",
+   "h": "b75a09e52578"
+  },
+  "el balón": {
+   "f": "el-balon.mp3",
+   "v": "c6cd45da",
+   "h": "365f6db15a9d"
+  },
+  "la camiseta": {
+   "f": "la-camiseta.mp3",
+   "v": "9b85c41c",
+   "h": "e8a855bd6ff6"
+  },
+  "¡Pasa la pelota!": {
+   "f": "pasa-la-pelota.mp3",
+   "v": "17d8b6f0",
+   "h": "e1c533aa8a64"
+  },
+  "¿Puedo ir al baño?": {
+   "f": "puedo-ir-al-bano.mp3",
+   "v": "6ba51a59",
+   "h": "a086be204fac"
+  },
+  "Me gusta el fútbol.": {
+   "f": "me-gusta-el-futbol.mp3",
+   "v": "386b5671",
+   "h": "b0f015192683"
+  },
+  "¡Buen partido!": {
+   "f": "buen-partido.mp3",
+   "v": "8606a438",
+   "h": "ed698aa1ecf5"
+  },
+  "¿Cuándo es tu cumpleaños?": {
+   "f": "cuando-es-tu-cumpleanos.mp3",
+   "v": "a4fde552",
+   "h": "4068ef3f50c1"
+  },
+  "¿Dónde vives?": {
+   "f": "donde-vives.mp3",
+   "v": "f67f9285",
+   "h": "4021e0a66fee"
+  },
+  "Yo duermo en la cama.": {
+   "f": "yo-duermo-en-la-cama.mp3",
+   "v": "b7e1663c",
+   "h": "e6031f4c33bc"
+  },
+  "La comida está en la mesa.": {
+   "f": "la-comida-esta-en-la-mesa.mp3",
+   "v": "d9c186b3",
+   "h": "5d80b8520f2e"
+  },
+  "Me siento en la silla.": {
+   "f": "me-siento-en-la-silla.mp3",
+   "v": "4b820930",
+   "h": "03698de4afb2"
+  },
+  "Pongo la comida en el plato.": {
+   "f": "pongo-la-comida-en-el-plato.mp3",
+   "v": "f8464cab",
+   "h": "d4aaedfae302"
+  },
+  "Bebo agua en el vaso.": {
+   "f": "bebo-agua-en-el-vaso.mp3",
+   "v": "fb3e3664",
+   "h": "f6bfe01070e6"
+  },
+  "Me lavo con el cepillo de dientes.": {
+   "f": "me-lavo-con-el-cepillo-de-dientes.mp3",
+   "v": "a20665e1",
+   "h": "330a0f8d8028"
+  },
+  "Juego con la pelota en el parque.": {
+   "f": "juego-con-la-pelota-en-el-parque.mp3",
+   "v": "b3556a11",
+   "h": "8afc698740ab"
+  },
+  "El perro corre mucho.": {
+   "f": "el-perro-corre-mucho.mp3",
+   "v": "b53c6be7",
+   "h": "4b658935db94"
+  },
+  "El gato duerme en casa.": {
+   "f": "el-gato-duerme-en-casa.mp3",
+   "v": "4c234f0c",
+   "h": "b9d2eb4737ab"
+  },
+  "Me gusta comer la manzana.": {
+   "f": "me-gusta-comer-la-manzana.mp3",
+   "v": "ae99005c",
+   "h": "4260efc8f0a9"
+  },
+  "Chuto el balón a la portería.": {
+   "f": "chuto-el-balon-a-la-porteria.mp3",
+   "v": "0b6c1685",
+   "h": "fdb6095679dc"
+  },
+  "Mi camiseta es de color azul.": {
+   "f": "mi-camiseta-es-de-color-azul.mp3",
+   "v": "4adedab9",
+   "h": "11ece6f7a7c9"
+  },
+  "¡Perfecto!": {
+   "f": "perfecto.mp3",
+   "v": "f5302dc5",
+   "h": "8f0e2dfb12fb"
+  },
+  "¡Muy bien!": {
+   "f": "muy-bien.mp3",
+   "v": "9a07ae50",
+   "h": "4cfd026cb859"
+  },
+  "¡Qué buena frase!": {
+   "f": "que-buena-frase.mp3",
+   "v": "93910b4b",
+   "h": "78af1b65e076"
+  },
+  "¡Casi!": {
+   "f": "casi.mp3",
+   "v": "7fe20745",
+   "h": "ea3235eeefec"
+  },
+  "Inténtalo otra vez.": {
+   "f": "intentalo-otra-vez.mp3",
+   "v": "e83286fd",
+   "h": "091ad3440050"
+  },
+  "¡Correcto!": {
+   "f": "correcto.mp3",
+   "v": "fd05a42d",
+   "h": "8a88189b8438"
+  },
+  "La correcta es:": {
+   "f": "la-correcta-es.mp3",
+   "v": "79459909",
+   "h": "01918e8ff4e7"
+  },
+  "¡A practicar!": {
+   "f": "a-practicar.mp3",
+   "v": "70c580b1",
+   "h": "eba17df8c888"
+  },
+  "¡Gol! ¡Muy bien!": {
+   "f": "gol-muy-bien.mp3",
+   "v": "ea35ff59",
+   "h": "e7429924f971"
+  },
+  "¡Vamos a jugar un ratito! Escucha y responde. Si no sabes algo, no pasa nada.": {
+   "f": "vamos-a-jugar-un-ratito-escucha-y-responde-si-no-sabes-algo.mp3",
+   "v": "49f0f4d3",
+   "h": "039a72c21cac"
+  },
+  "Escucha y toca la foto correcta.": {
+   "f": "escucha-y-toca-la-foto-correcta.mp3",
+   "v": "def2aab7",
+   "h": "37777623df34"
+  },
+  "Toca el perro.": {
+   "f": "toca-el-perro.mp3",
+   "v": "2e200323",
+   "h": "0f39a4a41456"
+  },
+  "Toca la manzana.": {
+   "f": "toca-la-manzana.mp3",
+   "v": "87558481",
+   "h": "8a0f5f6b71f0"
+  },
+  "¿Dónde duermes por la noche?": {
+   "f": "donde-duermes-por-la-noche.mp3",
+   "v": "99a7e643",
+   "h": "7e88d83ea573"
+  },
+  "¿Con qué te lavas los dientes?": {
+   "f": "con-que-te-lavas-los-dientes.mp3",
+   "v": "511ca971",
+   "h": "789bbeaa2e76"
+  },
+  "Toca lo que usamos para beber agua.": {
+   "f": "toca-lo-que-usamos-para-beber-agua.mp3",
+   "v": "fde0f30b",
+   "h": "d015ffc1da20"
+  },
+  "Ahora dime qué es cada cosa.": {
+   "f": "ahora-dime-que-es-cada-cosa.mp3",
+   "v": "1c4b43a5",
+   "h": "7446fdc277cb"
+  },
+  "¿Qué es esto?": {
+   "f": "que-es-esto.mp3",
+   "v": "2d4669d5",
+   "h": "7379da8c39c5"
+  },
+  "¡Ahora vamos a hablar un poquito!": {
+   "f": "ahora-vamos-a-hablar-un-poquito.mp3",
+   "v": "b57c5cae",
+   "h": "0e31967f4f2a"
+  },
+  "¡Hola! ¿Qué tal estás?": {
+   "f": "hola-que-tal-estas.mp3",
+   "v": "66361c35",
+   "h": "a81be66fc886"
+  },
+  "Mira esta camiseta. ¿De qué color es?": {
+   "f": "mira-esta-camiseta-de-que-color-es.mp3",
+   "v": "a8210a57",
+   "h": "e37b74b9991d"
+  },
+  "¿Qué haces tú con una pelota?": {
+   "f": "que-haces-tu-con-una-pelota.mp3",
+   "v": "2277a531",
+   "h": "76139c0681c3"
+  },
+  "¿Qué te gusta comer?": {
+   "f": "que-te-gusta-comer.mp3",
+   "v": "efb8157d",
+   "h": "d6d117c939b8"
+  },
+  "Mira esta foto. Cuéntame qué ves.": {
+   "f": "mira-esta-foto-cuentame-que-ves.mp3",
+   "v": "04afcc82",
+   "h": "35ff86502eee"
+  },
+  "¿Qué hiciste ayer?": {
+   "f": "que-hiciste-ayer.mp3",
+   "v": "9e1370ef",
+   "h": "d9ad6cac17a7"
+  },
+  "¿Qué vas a hacer el fin de semana?": {
+   "f": "que-vas-a-hacer-el-fin-de-semana.mp3",
+   "v": "e227f25c",
+   "h": "6d989ae62d70"
+  },
+  "Ahora jugamos a la tienda. Yo soy la frutera.": {
+   "f": "ahora-jugamos-a-la-tienda-yo-soy-la-frutera.mp3",
+   "v": "c6acb257",
+   "h": "a77b03e88bf4"
+  },
+  "¡Hola! Bienvenidos a la frutería. ¿Qué quieres comprar?": {
+   "f": "hola-bienvenidos-a-la-fruteria-que-quieres-comprar.mp3",
+   "v": "e09c853b",
+   "h": "bf730000589a"
+  },
+  "¡Claro! ¿Cuántas quieres?": {
+   "f": "claro-cuantas-quieres.mp3",
+   "v": "bdf31ab5",
+   "h": "c233ac8555f0"
+  },
+  "Tengo unas manzanas muy ricas. ¿Cuántas quieres?": {
+   "f": "tengo-unas-manzanas-muy-ricas-cuantas-quieres.mp3",
+   "v": "73ccb69c",
+   "h": "5a6492b28154"
+  },
+  "¡Perfecto! Son dos euros. ¿Quieres algo más?": {
+   "f": "perfecto-son-dos-euros-quieres-algo-mas.mp3",
+   "v": "bd44f920",
+   "h": "81c2189b698c"
+  },
+  "Te pongo tres, ¿vale? Son dos euros. ¿Quieres algo más?": {
+   "f": "te-pongo-tres-vale-son-dos-euros-quieres-algo-mas.mp3",
+   "v": "0301f999",
+   "h": "d4fc09214941"
+  },
+  "¡Gracias a ti! ¡Hasta luego!": {
+   "f": "gracias-a-ti-hasta-luego.mp3",
+   "v": "46519333",
+   "h": "3a6dd0b5ee14"
+  },
+  "¡Vale! Gracias por venir. ¡Hasta luego!": {
+   "f": "vale-gracias-por-venir-hasta-luego.mp3",
+   "v": "c66a874c",
+   "h": "d30fc80023b9"
+  },
+  "¡Gracias!": {
+   "f": "gracias.mp3",
+   "v": "cb1c39dc",
+   "h": "b16caa0bcbd6"
+  },
+  "¡Seguimos!": {
+   "f": "seguimos.mp3",
+   "v": "b5c3751f",
+   "h": "c2db3cc1b6fb"
+  },
+  "No te he oído. ¿Lo dices otra vez?": {
+   "f": "no-te-he-oido-lo-dices-otra-vez.mp3",
+   "v": "e532b8f3",
+   "h": "39f7610e18af"
+  },
+  "¡Test terminado! ¡Lo has hecho genial!": {
+   "f": "test-terminado-lo-has-hecho-genial.mp3",
+   "v": "b1f4901c",
+   "h": "0cafbf9c9b2f"
+  },
+  "¡Has mejorado mucho!": {
+   "f": "has-mejorado-mucho.mp3",
+   "v": "59a8eec7",
+   "h": "e4b0a337123d"
+  },
+  "¡Vamos a jugar!": {
+   "f": "vamos-a-jugar.mp3",
+   "v": "43f0c5ab",
+   "h": "c02041aa2764"
+  }
+ }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "altoyclaro",
+  "private": true,
+  "type": "module",
+  "description": "Liga de Habla Soto Alto: web estática + funciones /api (claves de acceso y sincronización)",
+  "scripts": {
+    "test": "node test/api.test.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.0"
+  }
+}
