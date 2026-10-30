@@ -1,6 +1,9 @@
 /* Liga de Habla Soto Alto · Claves de acceso y sincronización
-   - Sin clave: todo funciona como siempre, solo en este dispositivo.
-   - Con clave (la da el profe): el perfil (nombre, nivel, XP, puntuaciones del test de nivel) y la lista
+   - ACCESO OBLIGATORIO: sin una sesión válida (clave de niño o sesión de profe, comprobadas en el servidor)
+     solo se ve la pantalla de acceso. Si el servidor o la base de datos no responden, no se entra.
+   - Profe: entra con la clave del profe (cookie HttpOnly firmada que caduca a las 8 h); puede probar la app
+     (lo que haga se queda solo en este dispositivo) y gestionar las claves.
+   - Niño, con su clave: el perfil (nombre, nivel, XP, puntuaciones del test de nivel) y la lista
      de intentos al hablar (fecha, palabra, lo que se oyó, puntuación) se sincronizan en hasta 2 dispositivos.
    - Las respuestas libres del test de nivel (texto) se quedan solo en este dispositivo (ligaHablaTestTextos).
    - Las GRABACIONES DE VOZ NUNCA SALEN DEL DISPOSITIVO: se quedan en IndexedDB y no se envían.
@@ -44,7 +47,7 @@ async function llamarApi(ruta, cuerpo, extra = {}) {
         });
         let datos = null;
         try { datos = await r.json(); } catch (e) { }
-        if (!datos) datos = { ok: false, mensaje: 'El servidor de claves no está disponible todavía (falta desplegarlo o configurarlo). Puedes seguir usando la app sin clave.' };
+        if (!datos) datos = { ok: false, mensaje: 'El servidor de claves no responde ahora mismo. Inténtalo dentro de un rato o avisa al profe.' };
         return { status: r.status, datos };
     } catch (e) {
         return { status: 0, datos: { ok: false, mensaje: 'No hay conexión. Lo que hagas se guarda en este dispositivo y se enviará cuando vuelva internet.' } };
@@ -59,11 +62,107 @@ saveState = function () {
     if (syncMeta.conectado && !aplicandoRemoto) { syncMeta.perfilT = Date.now(); guardarSyncMeta(); programarSync(); }
 };
 const _resetAllOriginal = resetAll;
-resetAll = function () { if (syncMeta.conectado) return cerrarSesion(); return _resetAllOriginal(); };
+resetAll = function () { if (rolActual === 'nino') return cerrarSesion(); return _resetAllOriginal(); };
+
+/* ---------- Acceso obligatorio ---------- */
+let rolActual = null; // 'nino' | 'profe' | null (sin acceso: solo pantalla de acceso)
+function mostrarAcceso(modo, texto) {
+    rolActual = modo === 'juego' ? rolActual : null;
+    clearTimeout(_syncTimer);
+    const html = document.documentElement;
+    if (modo === 'juego') { html.classList.remove('sin-acceso'); return; }
+    html.classList.add('sin-acceso');
+    ['cargando', 'error', 'formulario'].forEach(m => document.getElementById('acceso-' + m).classList.toggle('hidden', m !== modo));
+    if (modo === 'error') document.getElementById('acceso-error-texto').textContent = texto || 'No se puede comprobar tu clave ahora mismo.';
+    if (modo === 'formulario') {
+        const m = document.getElementById('acceso-motivo');
+        m.textContent = texto || ''; m.classList.toggle('hidden', !texto);
+        const hayLocal = !!localStorage.getItem('ligaHablaVisual') || !!localStorage.getItem('ligaHablaVoz');
+        document.getElementById('acceso-borrar-local').classList.toggle('hidden', !hayLocal);
+        document.getElementById('login-boton').disabled = false;
+        setTimeout(() => { const i = document.getElementById('login-codigo'); if (i && !document.getElementById('acceso-formulario').classList.contains('hidden')) i.focus(); }, 50);
+    }
+}
+let _comprobando = null;
+function comprobarAcceso(opciones = {}) {
+    if (_comprobando) return _comprobando;
+    _comprobando = _comprobarAcceso(opciones).finally(() => { _comprobando = null; });
+    return _comprobando;
+}
+async function _comprobarAcceso({ enSegundoPlano = false } = {}) {
+    if (!enSegundoPlano) mostrarAcceso('cargando');
+    const r = await llamarApi('acceso', { accion: 'sesion' });
+    if (r.status !== 200 || !r.datos.ok) {
+        // Servidor o base de datos caídos: no se deja entrar (si ya estaba dentro, se sigue y se vuelve a comprobar luego)
+        if (enSegundoPlano) return;
+        const texto = r.status === 0
+            ? 'No hay conexión con el servidor. Para usar la Liga de Habla hace falta internet para comprobar tu clave. Revisa la conexión y pulsa Reintentar.'
+            : (r.datos.mensaje || 'El servidor de claves no responde ahora mismo.') + ' Mientras tanto no se puede entrar.';
+        return mostrarAcceso('error', texto);
+    }
+    const d = r.datos;
+    if (d.nino) {
+        if (syncMeta.ninoId && syncMeta.ninoId !== d.nino.id) {
+            // Este dispositivo tenía datos de otro niño: se borran antes de entrar
+            await borrarDatosLocales(); location.reload(); return;
+        }
+        if (!syncMeta.conectado || syncMeta.ninoId !== d.nino.id || syncMeta.bloqueado) {
+            if (!syncMeta.ninoId) await prepararDatosLocales(d.nino.alias); // progreso sin clave: añadirlo o borrarlo
+            const juntar = !!syncMeta._juntar;
+            syncMeta = Object.assign(syncMetaVacia(), syncMeta.ninoId === d.nino.id ? syncMeta : {}, { conectado: true, ninoId: d.nino.id, alias: d.nino.alias, bloqueado: false, motivo: '' });
+            if (!syncMeta.perfilT && juntar) syncMeta.perfilT = 1;
+            delete syncMeta._juntar;
+            guardarSyncMeta();
+            if (!enSegundoPlano) { location.reload(); return; } // recarga con los datos ya preparados
+        }
+        syncMeta.alias = d.nino.alias; guardarSyncMeta();
+        rolActual = 'nino';
+        actualizarCuentaUI();
+        mostrarAcceso('juego');
+        if (!enSegundoPlano) sincronizar();
+        return;
+    }
+    if (d.profe) {
+        rolActual = 'profe';
+        actualizarCuentaUI(); prepararPanelProfe();
+        mostrarAcceso('juego');
+        return;
+    }
+    mostrarAcceso('formulario', d.motivo || (syncMeta.bloqueado ? syncMeta.motivo : ''));
+}
+// Al entrar por primera vez con una clave en un dispositivo que ya tenía progreso sin clave
+async function prepararDatosLocales(alias) {
+    const hayLocal = !!localStorage.getItem('ligaHablaVisual') || (typeof hablaData !== 'undefined' && hablaData.intentos.length > 0);
+    if (!hayLocal) return;
+    const juntar = confirm(`Este dispositivo ya tiene progreso guardado sin clave.\n\n¿Es de ${alias}?\nAceptar = añadirlo a ${alias}.\nCancelar = borrarlo de este dispositivo.`);
+    if (juntar) {
+        if (typeof hablaData !== 'undefined') { hablaData.intentos.forEach(i => { delete i.s; }); guardarHabla(); }
+        syncMeta._juntar = true; // perfilT = 1: si el servidor ya tiene perfil, manda el del servidor
+    } else await borrarDatosLocales();
+}
+async function entrarComoProfe() {
+    const input = document.getElementById('acceso-clave-profe');
+    const msg = document.getElementById('acceso-profe-mensaje');
+    const btn = document.getElementById('acceso-profe-boton');
+    if (!input.value) { msg.className = 'text-xs mt-2 text-red-300'; msg.textContent = 'Escribe la clave del profe.'; return; }
+    btn.disabled = true; msg.className = 'text-xs mt-2 text-slate-300'; msg.textContent = 'Comprobando…';
+    const r = await llamarApi('acceso', { accion: 'entrar_profe', clave: input.value });
+    btn.disabled = false;
+    if (r.status !== 200 || !r.datos.ok) { msg.className = 'text-xs mt-2 text-red-300'; msg.textContent = r.datos.mensaje || 'No se pudo entrar.'; return; }
+    input.value = '';
+    location.reload();
+}
+function prepararPanelProfe() {
+    if (rolActual !== 'profe') return;
+    const l = document.getElementById('admin-login'), p = document.getElementById('admin-panel'), s = document.getElementById('admin-sesion-profe');
+    if (l) l.classList.add('hidden');
+    if (p) p.classList.remove('hidden');
+    if (s) s.classList.remove('hidden');
+}
 
 let _syncTimer = null;
 function programarSync(ms = 2500) {
-    if (!syncMeta.conectado || aplicandoRemoto) return;
+    if (!syncMeta.conectado || aplicandoRemoto || rolActual !== 'nino') return;
     clearTimeout(_syncTimer);
     _syncTimer = setTimeout(() => sincronizar(), ms);
 }
@@ -76,7 +175,7 @@ function syncHistorialBorrado() {
 /* ---------- Sincronización ---------- */
 let _syncEnCurso = null, _syncOtraVez = false;
 function sincronizar(opciones = {}) {
-    if (!syncMeta.conectado || syncMeta.bloqueado) return Promise.resolve(false);
+    if (!syncMeta.conectado || syncMeta.bloqueado || rolActual !== 'nino') return Promise.resolve(false);
     if (_syncEnCurso) { _syncOtraVez = true; return _syncEnCurso; }
     _syncEnCurso = (async () => {
         let vueltas = 0, ok = false;
@@ -164,28 +263,31 @@ async function entrarConClave() {
     btn.disabled = false;
     if (r.status !== 200 || !r.datos.ok) { msg.className = 'text-xs mt-3 text-red-300'; msg.textContent = r.datos.mensaje || 'No se pudo entrar.'; return; }
     const { id, alias } = r.datos;
-    const hayLocal = !!(gameState && gameState.name) || (typeof hablaData !== 'undefined' && hablaData.intentos.length > 0);
     let perfilT = 0;
     if (syncMeta.ninoId && syncMeta.ninoId !== id) {
         await borrarDatosLocales(); // eran datos de otro niño
     } else if (syncMeta.ninoId === id) {
         perfilT = syncMeta.perfilT || 0;
-    } else if (hayLocal) {
-        const juntar = confirm(`Este dispositivo ya tiene progreso guardado sin clave.\n\n¿Es de ${alias}?\nAceptar = añadirlo a ${alias}.\nCancelar = borrarlo de este dispositivo.`);
-        if (juntar) {
-            hablaData.intentos.forEach(i => { delete i.s; }); guardarHabla();
-            perfilT = 1; // si el servidor ya tiene perfil, manda el del servidor
-        } else await borrarDatosLocales();
+    } else {
+        await prepararDatosLocales(alias);
+        if (syncMeta._juntar) perfilT = 1;
     }
     syncMeta = Object.assign(syncMetaVacia(), { conectado: true, ninoId: id, alias, perfilT });
     guardarSyncMeta();
     if (typeof hablaData !== 'undefined') hablaData = cargarHabla();
     try { gameState = limpiarPerfilLocal(JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState); } catch (e) { }
     msg.textContent = 'Sincronizando…';
+    rolActual = 'nino';
     await sincronizar();
     location.reload();
 }
 async function cerrarSesion() {
+    if (rolActual === 'profe') {
+        if (!confirm('¿Salir de la sesión del profe en este dispositivo?')) return;
+        await llamarApi('acceso', { accion: 'salir_profe' });
+        if (!syncMeta.ninoId && localStorage.getItem('ligaHablaVisual') && confirm('¿Borrar también lo que has probado en este dispositivo (perfil, progreso y grabaciones)?')) await borrarDatosLocales();
+        location.reload(); return;
+    }
     if (!confirm('¿Cerrar sesión en este dispositivo?\n\nSe borrarán de ESTE dispositivo el perfil, el progreso y las grabaciones de voz. El progreso guardado con tu clave sigue en el servidor y podrás volver a entrar con tu clave.')) return;
     if (navigator.onLine) { try { await sincronizar(); } catch (e) { } await llamarApi('acceso', { accion: 'salir' }); }
     await borrarDatosLocales();
@@ -196,29 +298,16 @@ async function borrarDispositivoBloqueado() {
     await borrarDatosLocales();
     location.reload();
 }
+// Clave cambiada, anulada o dispositivo liberado: vuelta a la pantalla de acceso (el progreso local se conserva)
 function bloquearDispositivo(mensaje) {
     syncMeta.bloqueado = true; syncMeta.motivo = mensaje || ''; guardarSyncMeta();
-    mostrarBloqueo();
+    if (typeof cancelarSesionHabla === 'function') { try { cancelarSesionHabla(); } catch (e) { } }
+    mostrarAcceso('formulario', (mensaje || 'Tu clave ha cambiado o este dispositivo ya no está autorizado.') + ' Si no tienes tu clave, pídesela al profe. Tu progreso de este dispositivo sigue guardado aquí.');
 }
 
 /* ---------- Interfaz ---------- */
 function crearModalesSync() {
     const html = `
-    <div id="login-modal" class="modal hidden" style="z-index:120">
-      <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-md w-full mx-4">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="font-game text-xl text-white">🔑 Entrar con mi clave</h3>
-          <button onclick="cerrarLogin()" class="text-slate-400" aria-label="Cerrar">✕</button>
-        </div>
-        <p class="text-sm text-slate-300 mb-4">Escribe la clave que te ha dado tu profe. Así tu progreso se guarda y lo puedes ver en otro dispositivo.</p>
-        <input id="login-codigo" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="XXXX-XXXX"
-          class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-center text-2xl tracking-widest font-game uppercase"
-          onkeydown="if(event.key==='Enter') entrarConClave()">
-        <button id="login-boton" onclick="entrarConClave()" class="w-full mt-3 bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Entrar</button>
-        <p id="login-mensaje" class="text-xs mt-3 text-slate-300" role="status"></p>
-        <p class="text-[11px] text-slate-400 mt-3">Una clave sirve como mucho en 2 dispositivos. Tus grabaciones de voz no salen nunca de este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
-      </div>
-    </div>
     <div id="cuenta-modal" class="modal hidden" style="z-index:110">
       <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full mx-4">
         <div class="flex justify-between items-center mb-3">
@@ -232,49 +321,27 @@ function crearModalesSync() {
         </div>
         <p class="text-[11px] text-slate-400 mt-3">Al cerrar sesión se borra todo de este dispositivo (también las grabaciones). <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
       </div>
-    </div>
-    <div id="bloqueo-modal" class="modal hidden" style="z-index:115;background:rgba(2,6,23,0.97)">
-      <div class="bg-stadium-900 border border-amber-500 rounded-3xl p-6 max-w-md w-full mx-4 text-center">
-        <div class="text-5xl mb-3">🔒</div>
-        <h3 class="font-game text-xl text-white mb-2">Este perfil está cerrado</h3>
-        <p id="bloqueo-texto" class="text-sm text-slate-300 mb-4"></p>
-        <div class="grid gap-2">
-          <button onclick="abrirLogin()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">🔑 Entrar con mi clave</button>
-          <button onclick="borrarDispositivoBloqueado()" class="bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-2 rounded-xl text-sm">Borrar los datos de este dispositivo</button>
-        </div>
-      </div>
     </div>`;
     document.body.insertAdjacentHTML('beforeend', html);
 }
-function abrirLogin() {
-    const m = document.getElementById('login-modal');
-    document.getElementById('login-mensaje').textContent = '';
-    document.getElementById('login-codigo').value = '';
-    m.classList.remove('hidden');
-    setTimeout(() => document.getElementById('login-codigo').focus(), 50);
-}
-function cerrarLogin() { document.getElementById('login-modal').classList.add('hidden'); }
-function mostrarBloqueo() {
-    const t = document.getElementById('bloqueo-texto');
-    if (!t) return;
-    t.textContent = (syncMeta.motivo || 'Tu clave ha cambiado o este dispositivo ya no está autorizado.') + ' Si no tienes tu clave, pídesela al profe. Tu progreso de este dispositivo sigue guardado aquí.';
-    document.getElementById('bloqueo-modal').classList.remove('hidden');
-}
 function abrirCuenta() {
-    if (!syncMeta.conectado) return abrirLogin();
     actualizarCuentaUI();
     document.getElementById('cuenta-modal').classList.remove('hidden');
 }
 function actualizarCuentaUI() {
     const b = document.getElementById('cuenta-btn');
     if (b) {
-        b.innerHTML = syncMeta.conectado
-            ? `<span aria-hidden="true">☁️</span><span class="hidden sm:inline max-w-[7rem] truncate">${escS(syncMeta.alias || 'Mi clave')}</span>`
-            : `<span aria-hidden="true">🔑</span><span class="hidden sm:inline">Entrar</span>`;
-        b.setAttribute('aria-label', b.title = syncMeta.conectado ? `Mi clave (${syncMeta.alias || ''})` : 'Entrar con mi clave');
+        b.innerHTML = rolActual === 'profe'
+            ? `<span aria-hidden="true">🧑‍🏫</span><span class="hidden sm:inline">Profe</span>`
+            : `<span aria-hidden="true">☁️</span><span class="hidden sm:inline max-w-[7rem] truncate">${escS(syncMeta.alias || 'Mi clave')}</span>`;
+        b.setAttribute('aria-label', b.title = rolActual === 'profe' ? 'Sesión del profe' : `Mi clave (${syncMeta.alias || ''})`);
     }
     const info = document.getElementById('cuenta-info');
-    if (info && syncMeta.conectado) {
+    if (info && rolActual === 'profe') {
+        info.innerHTML = `<div>Has entrado como <strong class="text-white">profe</strong>. La sesión dura 8 horas.</div>
+          <div class="text-xs text-slate-400">Lo que pruebes en la app como profe se queda solo en este dispositivo (no se sincroniza). Las claves de los niños se gestionan en el Panel del profe.</div>`;
+        const s = document.querySelector('#cuenta-modal button[onclick^="sincronizar"]'); if (s) s.classList.add('hidden');
+    } else if (info && syncMeta.conectado) {
         const pend = (typeof hablaData !== 'undefined') ? hablaData.intentos.filter(i => !i.s).length : 0;
         info.innerHTML = `<div>Has entrado como <strong class="text-white">${escS(syncMeta.alias)}</strong>.</div>
           <div>Última sincronización: ${syncMeta.ultima ? new Date(syncMeta.ultima).toLocaleString('es-ES') : 'todavía no'}</div>
@@ -288,7 +355,10 @@ function actualizarCuentaUI() {
 let _claveProfe = ''; // solo en memoria: se olvida al recargar
 async function llamarAdmin(accion, extra = {}) {
     const r = await llamarApi('admin', Object.assign({ accion }, extra), { headers: { 'X-Clave-Profe': _claveProfe } });
-    if (r.status === 401) { _claveProfe = ''; }
+    if (r.status === 401) {
+        _claveProfe = '';
+        if (rolActual === 'profe') { comprobarAcceso(); } // la sesión del profe caducó: vuelta a la pantalla de acceso
+    }
     return r;
 }
 function adminMensaje(txt, tipo = 'info') {
@@ -311,6 +381,7 @@ async function adminAbrir() {
 }
 function adminCerrarPanel() {
     _claveProfe = '';
+    if (rolActual === 'profe') { document.getElementById('admin-codigo-nuevo').classList.add('hidden'); return; }
     document.getElementById('admin-panel').classList.add('hidden');
     document.getElementById('admin-login').classList.remove('hidden');
     document.getElementById('admin-codigo-nuevo').classList.add('hidden');
@@ -392,19 +463,22 @@ async function adminBorrar(id) {
 }
 
 /* ---------- Arranque ---------- */
-function iniciarSync() {
+async function iniciarSync() {
     crearModalesSync();
-    actualizarCuentaUI();
+    await comprobarAcceso();
     // Si se entró con clave pero aún no hay perfil, proponemos el alias como nombre
     const nombre = document.getElementById('input-name');
-    if (syncMeta.conectado && nombre && !nombre.value && !(gameState && gameState.name)) nombre.value = syncMeta.alias || '';
-    if (syncMeta.bloqueado) { mostrarBloqueo(); return; }
-    if (syncMeta.conectado) sincronizar();
+    if (rolActual === 'nino' && nombre && !nombre.value && !(gameState && gameState.name)) nombre.value = syncMeta.alias || '';
 }
 window.addEventListener('load', iniciarSync);
-window.addEventListener('online', () => sincronizar());
+window.addEventListener('online', () => {
+    if (!document.getElementById('acceso-error').classList.contains('hidden')) return comprobarAcceso();
+    sincronizar();
+});
+// La sesión se vuelve a comprobar de vez en cuando (caducada o anulada → pantalla de acceso)
+setInterval(() => { if (rolActual && document.visibilityState === 'visible') comprobarAcceso({ enSegundoPlano: true }); }, 5 * 60 * 1000);
 document.addEventListener('visibilitychange', () => {
-    if (!syncMeta.conectado) return;
+    if (!rolActual) return;
     if (document.visibilityState === 'hidden') { clearTimeout(_syncTimer); sincronizar({ keepalive: true }); }
-    else sincronizar();
+    else { comprobarAcceso({ enSegundoPlano: true }); sincronizar(); }
 });

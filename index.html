@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="sin-acceso">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,6 +25,10 @@
         body { background-color: #0f172a; color: #f8fafc; }
         .card-glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.12); }
         .tab-btn.active { background-color: #16a34a; color: white; border-color: #4ade80; }
+        /* Acceso obligatorio: hasta comprobar la clave solo se ve la pantalla de acceso */
+        html.sin-acceso body > *:not(#acceso-pantalla) { display: none !important; }
+        html:not(.sin-acceso) #acceso-pantalla { display: none !important; }
+        #acceso-pantalla { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: #020617; overflow-y: auto; }
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 100; }
         .modal.hidden { display: none; }
         .img-card { transition: transform 0.2s, box-shadow 0.2s; }
@@ -43,6 +47,44 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased pb-12">
 
+    <!-- ACCESO OBLIGATORIO: sin clave válida solo se ve esto (la sesión la comprueba el servidor) -->
+    <div id="acceso-pantalla" role="dialog" aria-labelledby="acceso-titulo">
+        <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-md w-full mx-4 my-6 text-center">
+            <div class="text-5xl mb-2" aria-hidden="true">⚽</div>
+            <h1 id="acceso-titulo" class="font-game text-2xl text-white mb-1">Liga de Habla Soto Alto</h1>
+            <div id="acceso-cargando" class="text-sm text-slate-300 py-6" role="status">Comprobando tu clave…</div>
+            <div id="acceso-error" class="hidden py-2">
+                <div class="text-3xl mb-2" aria-hidden="true">📡</div>
+                <p id="acceso-error-texto" class="text-sm text-amber-200 mb-4" role="alert"></p>
+                <button id="acceso-reintentar" onclick="comprobarAcceso()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-xl">Reintentar</button>
+            </div>
+            <div id="acceso-formulario" class="hidden text-left">
+                <p id="acceso-motivo" class="hidden text-sm text-amber-200 bg-amber-500/10 border border-amber-500/40 rounded-xl p-3 mb-3" role="alert"></p>
+                <h2 class="font-game text-lg text-white mb-1 text-center">🔑 Entrar con mi clave</h2>
+                <p class="text-sm text-slate-300 mb-3 text-center">Escribe la clave que te ha dado tu profe.</p>
+                <input id="login-codigo" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="XXXX-XXXX" aria-label="Tu clave"
+                    class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-center text-2xl tracking-widest font-game uppercase"
+                    onkeydown="if(event.key==='Enter') entrarConClave()">
+                <button id="login-boton" onclick="entrarConClave()" class="w-full mt-3 bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Entrar</button>
+                <p id="login-mensaje" class="text-xs mt-3 text-slate-300 text-center" role="status"></p>
+                <p class="text-[11px] text-slate-400 mt-3 text-center">Si no tienes clave, pídesela a tu profe. Una clave sirve en 2 dispositivos. Tus grabaciones de voz no salen nunca de este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
+                <div class="border-t border-slate-800 mt-4 pt-3 text-center">
+                    <button id="acceso-soy-profe" onclick="document.getElementById('acceso-profe').classList.toggle('hidden'); document.getElementById('acceso-clave-profe').focus()" class="text-xs text-slate-400 underline">Soy el profe</button>
+                    <div id="acceso-profe" class="hidden mt-2">
+                        <div class="flex gap-2">
+                            <input id="acceso-clave-profe" type="password" autocomplete="current-password" placeholder="Clave del profe" aria-label="Clave del profe"
+                                class="flex-1 min-w-0 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-sm" onkeydown="if(event.key==='Enter') entrarComoProfe()">
+                            <button id="acceso-profe-boton" onclick="entrarComoProfe()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">Entrar</button>
+                        </div>
+                        <p id="acceso-profe-mensaje" class="text-xs mt-2 text-slate-300" role="status"></p>
+                    </div>
+                    <button id="acceso-borrar-local" onclick="borrarDispositivoBloqueado()" class="hidden mt-3 text-[11px] text-slate-500 underline">Borrar los datos guardados en este dispositivo</button>
+                </div>
+            </div>
+            <noscript><p class="text-sm text-amber-200">Para usar la Liga de Habla hay que activar JavaScript.</p></noscript>
+        </div>
+    </div>
+
     <!-- SETUP MODAL (simplified for brevity, same logic as before) -->
     <div id="setup-modal" class="modal">
         <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
@@ -52,8 +94,7 @@
                 <div class="space-y-4">
                     <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre o apodo" maxlength="40" autocomplete="off">
                     <button onclick="startPlacementTest()" class="w-full bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Empezar</button>
-                    <button onclick="if (typeof abrirLogin === 'function') abrirLogin()" class="w-full bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm">🔑 Ya tengo una clave</button>
-                    <p class="text-[11px] text-slate-400 text-center">Sin clave, todo se guarda solo en este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
+                    <p class="text-[11px] text-slate-400 text-center">Tu progreso se guarda con tu clave. Las grabaciones de voz no salen de este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
                 </div>
             </div>
             <div id="setup-step-test" class="hidden">
@@ -214,7 +255,7 @@
                         <button onclick="borrarGrabaciones()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash mr-1"></i> Borrar grabaciones</button>
                         <button onclick="borrarHistorialHabla()" class="bg-red-800 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash-can mr-1"></i> Borrar todo el progreso al hablar</button>
                     </div>
-                    <p class="text-[11px] text-slate-400 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones se guardan solo en este dispositivo (en este navegador) y no se suben nunca a ningún sitio. Sin clave, el historial también se queda solo aquí; si el niño entra con su clave, el historial en texto (fecha, palabra, lo que se oyó y la puntuación) y su perfil se guardan también en el servidor de la clase para verlos en otro dispositivo (<a href="privacidad.html" target="_blank" class="underline text-sky-300">más información</a>). Se guardan como máximo 50 grabaciones (la primera y las 3 últimas de cada palabra). Para entender lo que dice el niño, el reconocimiento automático usa el servicio de voz del propio navegador (en Chrome, el de Google; en Safari, el de Apple), igual que el dictado del móvil. Si preferís evitarlo, marcad la casilla de valoración solo por un adulto.</p>
+                    <p class="text-[11px] text-slate-400 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones se guardan solo en este dispositivo (en este navegador) y no se suben nunca a ningún sitio. Con la clave del niño, el historial en texto (fecha, palabra, lo que se oyó y la puntuación) y su perfil se guardan también en el servidor de la clase para verlos en otro dispositivo (<a href="privacidad.html" target="_blank" class="underline text-sky-300">más información</a>). Se guardan como máximo 50 grabaciones (la primera y las 3 últimas de cada palabra). Para entender lo que dice el niño, el reconocimiento automático usa el servicio de voz del propio navegador (en Chrome, el de Google; en Safari, el de Apple), igual que el dictado del móvil. Si preferís evitarlo, marcad la casilla de valoración solo por un adulto.</p>
                 </div>
             </div>
         </section>
@@ -284,6 +325,7 @@
                 <div class="border-t border-slate-700 pt-4 mt-2">
                     <h4 class="font-game text-white mb-1">🔑 Claves de la clase</h4>
                     <p class="text-[11px] text-slate-400 mb-2">Crea una clave para cada niño (solo un nombre o apodo, sin apellidos). Con ella su progreso se guarda y se puede usar en 2 dispositivos. Las grabaciones de voz nunca salen del dispositivo.</p>
+                    <p id="admin-sesion-profe" class="hidden text-[11px] text-emerald-300 mb-2">Has entrado como profe (la sesión dura 8 horas).</p>
                     <div id="admin-login" class="flex gap-2">
                         <input id="admin-clave" type="password" autocomplete="current-password" placeholder="Clave del profe" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminAbrir()">
                         <button onclick="adminAbrir()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">Abrir</button>

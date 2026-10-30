@@ -5,6 +5,37 @@ Juego web para que los niños practiquen vocabulario y expresión oral en españ
 (`index.html`, `hablar.js`, `voz.js`, `test-nivel.js`, `sync.js`) con funciones `/api` en Vercel
 para las claves de acceso y la sincronización.
 
+## Acceso obligatorio con clave
+
+La app **no se puede usar sin clave** (ya no existe el modo «solo en este dispositivo»).
+Al abrirla, `sync.js` pregunta al servidor (`POST /api/acceso {accion:"sesion"}`) y,
+mientras no haya sesión válida, solo se muestra `#acceso-pantalla` (el resto de la
+página está oculto con `html.sin-acceso`):
+
+- **«Entrar con mi clave»** — clave personal del niño (`XXXX-XXXX`, máx. 2 dispositivos).
+  Cookie `ayc_sesion` HttpOnly firmada con la subclave `firma-sesion` (180 días).
+  La primera vez, si el dispositivo tiene progreso de antes, se pregunta si añadirlo
+  a la clave o borrarlo.
+- **«Soy el profe»** — la clave `ALTOYCLARO_CLAVE`. Crea la cookie `ayc_profe`
+  (HttpOnly, Secure, SameSite=Lax, **8 h**) firmada con otra subclave distinta
+  (`firma-sesion-profe`); lleva una huella HMAC de la clave del profe, así que al
+  cambiar `ALTOYCLARO_CLAVE` se cierran todas las sesiones de profe. Con ella el profe
+  usa el juego (sin sincronizar nada suyo) y gestiona las claves sin volver a escribirla.
+- Si la clave se anula o cambia, el dispositivo se libera o caduca la sesión, se vuelve a
+  la pantalla de acceso con el motivo (se comprueba al abrir, cada 5 min, al volver a la
+  pestaña y en cada sincronización).
+- Si el servidor o la base de datos no responden (`503 {codigo:"bd"}`), se muestra un
+  mensaje claro con «Reintentar» y **no se deja entrar**.
+
+Variables de entorno (Vercel), sin valores por defecto: `ALTOYCLARO_CLAVE`,
+`ALTOYCLARO_SECRETO` (de él se derivan subclaves distintas para cada firma) y
+`DATABASE_URL`/`POSTGRES_URL`.
+
+> **Ojo:** el repositorio es público y la web es estática, así que los archivos
+> (`index.html`, `*.js`, `audio/`, `img/`) se pueden descargar sin clave. La clave
+> protege el uso de la app y los datos del servidor (progreso, claves), no el código
+> ni los recursos fijos del juego.
+
 ## Cómo suena la voz
 
 1. **Voz grabada natural (por defecto).** Todo el texto fijo del juego (palabras,
@@ -119,8 +150,10 @@ dijo el niño se queda en el dispositivo. No se graba audio en el test.
 ```bash
 npm test                                            # API (claves y sincronización) y sorteo del test
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-voz.cjs        # voz
-NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # juego
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # acceso con clave (niño, profe, anular, servidor caído)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
 ```
 
-Los tests de navegador levantan `test/servidor-local.mjs` y usan Chrome headless.
+Los tests de navegador usan `test/servidor-local.mjs` (arrancarlo antes, con
+`ALTOYCLARO_CLAVE=profe-local-prueba` y un `ALTOYCLARO_SECRETO` cualquiera) y Chrome headless.
+`e2e-voz` y `e2e-test-nivel` simulan la sesión (`/api/acceso`) para probar solo el juego.

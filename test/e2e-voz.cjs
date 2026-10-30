@@ -41,6 +41,8 @@ function vocesFalsas() {
     page.on('pageerror', e => errores.push(nombre + ' pageerror: ' + e.message));
     page.__audios = [];
     page.on('response', r => { if (r.url().includes('/audio/')) page.__audios.push({ url: r.url(), status: r.status(), tipo: r.headers()['content-type'] }); });
+    // El acceso es obligatorio: simulamos una sesión de profe (aquí solo se prueba la voz)
+    await page.route('**/api/acceso', r => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"nino":null,"profe":true}' }));
     if (bloquear) await page.route(bloquear, r => r.fulfill({ status: 404, body: '' }));
     await page.addInitScript(s => localStorage.setItem('ligaHablaVisual', s), ESTADO);
     if (falsas) await page.addInitScript(vocesFalsas);
