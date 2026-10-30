@@ -154,6 +154,7 @@ function limpiarPerfil(p) {
 }
 // Resultados del test de nivel: solo puntuaciones y resultado por pregunta. Nunca lo que dijo el niño.
 const RESULTADOS_ITEM = ['ok', 'mal', 'perfecto', 'casi', 'otra', 'respuesta', 'nr', 'salto', 'sueltas', 'frases'];
+const ID_ITEM = /^[a-z][0-9]{1,3}$/; // k1…, c07, d12: solo identificadores de pregunta (nunca texto)
 function limpiarPrueba(x) {
     if (!x || typeof x !== 'object') return null;
     const id = texto(x.id, 20).replace(/[^a-z0-9]/gi, '');
@@ -166,7 +167,10 @@ function limpiarPrueba(x) {
         total: pct(x.total), comp: pct(x.comp), voc: pct(x.voc), conv: pct(x.conv),
         modo: ['auto', 'adulto', 'mixto'].includes(x.modo) ? x.modo : 'auto', completo: x.completo !== false,
         dur: Math.round(numero(x.dur, 0, 3600, 0)),
-        items: Array.isArray(x.items) ? x.items.slice(0, 30).filter(i => i && typeof i === 'object' && /^[a-z][0-9]$/.test(i.id)).map(i => {
+        // Semilla del sorteo de preguntas y lista de preguntas elegidas (para no repetirlas en los siguientes tests)
+        ...(x.sem != null && Number.isFinite(Number(x.sem)) ? { sem: Math.round(numero(x.sem, 0, 4294967295, 0)) } : {}),
+        ...(Array.isArray(x.ids) ? { ids: x.ids.filter(v => typeof v === 'string' && ID_ITEM.test(v)).slice(0, 40) } : {}),
+        items: Array.isArray(x.items) ? x.items.slice(0, 30).filter(i => i && typeof i === 'object' && ID_ITEM.test(i.id)).map(i => {
             const o = {
                 id: i.id, b: ['comp', 'voc', 'conv'].includes(i.b) ? i.b : 'conv',
                 r: RESULTADOS_ITEM.includes(i.r) ? i.r : 'nr',

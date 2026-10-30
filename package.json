@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Liga de Habla Soto Alto: web estática + funciones /api (claves de acceso y sincronización)",
   "scripts": {
-    "test": "node test/api.test.mjs"
+    "test": "node test/api.test.mjs && node test/plan.test.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2"

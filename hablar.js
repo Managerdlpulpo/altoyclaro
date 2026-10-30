@@ -21,21 +21,42 @@ const XP_PALABRA = 15, XP_FRASE = 25, XP_ADULTO = 10;
 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 const puedeGrabar = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
 
-// Frases de ejemplo para el modo "Dime una frase"
+// Frases de ejemplo para el modo "Dime una frase" (varias por palabra: cada vez sale una distinta).
+// scripts/generar-audios.py graba todas: una palabra por línea.
 const ejemplosFrase = {
-    'la cama': 'Yo duermo en la cama.',
-    'la mesa': 'La comida está en la mesa.',
-    'la silla': 'Me siento en la silla.',
-    'el plato': 'Pongo la comida en el plato.',
-    'el vaso': 'Bebo agua en el vaso.',
-    'el cepillo de dientes': 'Me lavo con el cepillo de dientes.',
-    'la pelota': 'Juego con la pelota en el parque.',
-    'el perro': 'El perro corre mucho.',
-    'el gato': 'El gato duerme en casa.',
-    'la manzana': 'Me gusta comer la manzana.',
-    'el balón': 'Chuto el balón a la portería.',
-    'la camiseta': 'Mi camiseta es de color azul.'
+    'la cama': ['Yo duermo en la cama.', 'Mi cama es muy grande.', 'Por la noche me voy a la cama.'],
+    'la mesa': ['La comida está en la mesa.', 'Pongo el plato en la mesa.', 'Hago los deberes en la mesa.'],
+    'la silla': ['Me siento en la silla.', 'La silla es de madera.', 'Mi gato duerme en la silla.'],
+    'el plato': ['Pongo la comida en el plato.', 'El plato está lleno de sopa.', 'Lavo el plato después de comer.'],
+    'el vaso': ['Bebo agua en el vaso.', 'El vaso está lleno de leche.', 'Pongo zumo en el vaso.'],
+    'el cepillo de dientes': ['Me lavo con el cepillo de dientes.', 'Mi cepillo de dientes es azul.', 'Uso el cepillo de dientes por la noche.'],
+    'la pelota': ['Juego con la pelota en el parque.', 'La pelota es redonda.', 'Mi amigo me pasa la pelota.'],
+    'el perro': ['El perro corre mucho.', 'Mi perro es muy bueno.', 'El perro juega en el parque.'],
+    'el gato': ['El gato duerme en casa.', 'El gato bebe leche.', 'Mi gato tiene el pelo blanco.'],
+    'la manzana': ['Me gusta comer la manzana.', 'La manzana es roja.', 'Como una manzana en el recreo.'],
+    'el balón': ['Chuto el balón a la portería.', 'El balón es de fútbol.', 'Juego con el balón en el patio.'],
+    'la camiseta': ['Mi camiseta es de color azul.', 'Me pongo la camiseta.', 'La camiseta está limpia.'],
+    'el plátano': ['El plátano es amarillo.', 'Me como un plátano.', 'Me gusta mucho el plátano.'],
+    'la naranja': ['La naranja es muy dulce.', 'Bebo zumo de naranja.', 'Mi mamá compra naranjas.'],
+    'la fresa': ['La fresa es roja.', 'Me gusta el helado de fresa.', 'Como fresas en verano.'],
+    'el pan': ['Compro pan en la panadería.', 'Como pan con queso.', 'El pan está muy rico.'],
+    'los huevos': ['Los huevos son blancos.', 'Mi papá hace tortilla con huevos.', 'Las gallinas ponen huevos.'],
+    'el pájaro': ['El pájaro vuela muy alto.', 'El pájaro canta en el árbol.', 'Veo un pájaro pequeño.'],
+    'el caballo': ['El caballo corre en el campo.', 'Monto a caballo.', 'El caballo es muy grande.'],
+    'el pez': ['El pez nada en el agua.', 'Mi pez es naranja.', 'El pez vive en el mar.'],
+    'la vaca': ['La vaca come hierba.', 'La vaca nos da leche.', 'La vaca está en el campo.'],
+    'la flor': ['La flor es muy bonita.', 'La flor huele bien.', 'Regalo una flor a mi mamá.'],
+    'el árbol': ['El árbol es muy alto.', 'Me subo al árbol.', 'El pájaro está en el árbol.'],
+    'el coche': ['El coche es rojo.', 'Voy al cole en coche.', 'Mi papá lava el coche.'],
+    'la bicicleta': ['Monto en bicicleta.', 'Mi bicicleta es nueva.', 'Voy al parque en bicicleta.'],
+    'el tren': ['El tren va muy rápido.', 'Viajo en tren con mi familia.', 'El tren lleva a mucha gente.'],
+    'los lápices': ['Pinto con los lápices.', 'Tengo lápices de colores.', 'Guardo los lápices en la mochila.'],
+    'la mochila': ['Llevo los libros en la mochila.', 'Mi mochila es azul.', 'Pongo el bocadillo en la mochila.'],
+    'la toalla': ['Me seco con la toalla.', 'Llevo la toalla a la piscina.', 'La toalla está mojada.'],
+    'las gafas': ['Mi abuelo lleva gafas.', 'Con las gafas veo mejor.', 'Mis gafas son negras.']
 };
+const CONSIGNAS_FRASE = ['Di una frase con la palabra:', 'Inventa una frase con:', 'Cuéntame algo con la palabra:', 'Dime una frase que tenga:'];
+let hablaEjemploActual = '';
 
 /* ---------- Datos guardados ---------- */
 function hablaDatosVacios() { return { version: 1, intentos: [], soloManual: false, sinGrabarConReconocimiento: false }; }
@@ -259,7 +280,10 @@ function mostrarItemHabla() {
     const btnPista = document.getElementById('habla-btn-pista');
     const btnEj = document.getElementById('habla-btn-ejemplo');
     if (hablaModo === 'frase') {
-        consigna.innerHTML = 'Di una frase con la palabra:';
+        consigna.innerHTML = CONSIGNAS_FRASE[Math.floor(Math.random() * CONSIGNAS_FRASE.length)];
+        const ejemplos = [].concat(ejemplosFrase[item.es] || ('Yo veo ' + item.es + '.'));
+        const otros = ejemplos.filter(e => e !== hablaEjemploActual);
+        hablaEjemploActual = (otros.length ? otros : ejemplos)[Math.floor(Math.random() * (otros.length || ejemplos.length))];
         pal.innerText = '«' + item.es + '»';
         pal.classList.remove('hidden');
         btnPista.classList.add('hidden');
@@ -295,7 +319,7 @@ function hablaPista() {
 }
 function hablaEjemplo() {
     if (!hablaItem) return;
-    speakSpanish(ejemplosFrase[hablaItem.es] || ('Yo veo ' + hablaItem.es + '.'));
+    speakSpanish(hablaEjemploActual || [].concat(ejemplosFrase[hablaItem.es] || ('Yo veo ' + hablaItem.es + '.'))[0]);
 }
 function setEstadoHabla(txt) { const e = document.getElementById('habla-estado'); if (e) e.innerHTML = txt; }
 function setMicUI(activo) {

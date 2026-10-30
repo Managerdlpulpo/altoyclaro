@@ -62,6 +62,96 @@
    "v": "9b85c41c",
    "h": "e8a855bd6ff6"
   },
+  "el plátano": {
+   "f": "el-platano.mp3",
+   "v": "b0f57edb",
+   "h": "b6e245f87090"
+  },
+  "la naranja": {
+   "f": "la-naranja.mp3",
+   "v": "aa37006e",
+   "h": "7e2369b32d5d"
+  },
+  "la fresa": {
+   "f": "la-fresa.mp3",
+   "v": "640ce6ec",
+   "h": "55b8658c3498"
+  },
+  "el pan": {
+   "f": "el-pan.mp3",
+   "v": "266e2b48",
+   "h": "34dfcabb5bff"
+  },
+  "los huevos": {
+   "f": "los-huevos.mp3",
+   "v": "9ce8675c",
+   "h": "1d14aaa051cc"
+  },
+  "el pájaro": {
+   "f": "el-pajaro.mp3",
+   "v": "d184a939",
+   "h": "1afe74a476fe"
+  },
+  "el caballo": {
+   "f": "el-caballo.mp3",
+   "v": "62956689",
+   "h": "e686a7288d97"
+  },
+  "el pez": {
+   "f": "el-pez.mp3",
+   "v": "d4ce8996",
+   "h": "bcb753cda5d9"
+  },
+  "la vaca": {
+   "f": "la-vaca.mp3",
+   "v": "5a7a43ac",
+   "h": "f4899a83fb2a"
+  },
+  "la flor": {
+   "f": "la-flor.mp3",
+   "v": "50cfeda0",
+   "h": "92f01acdc304"
+  },
+  "el árbol": {
+   "f": "el-arbol.mp3",
+   "v": "247dc29d",
+   "h": "069dbf711313"
+  },
+  "el coche": {
+   "f": "el-coche.mp3",
+   "v": "1a9ab623",
+   "h": "ba977c74feea"
+  },
+  "la bicicleta": {
+   "f": "la-bicicleta.mp3",
+   "v": "ceb0a645",
+   "h": "919f020a7f4d"
+  },
+  "el tren": {
+   "f": "el-tren.mp3",
+   "v": "e85addc9",
+   "h": "6da100c00479"
+  },
+  "los lápices": {
+   "f": "los-lapices.mp3",
+   "v": "d365610b",
+   "h": "518487678b9b"
+  },
+  "la mochila": {
+   "f": "la-mochila.mp3",
+   "v": "f242bfbc",
+   "h": "a832f934f07d"
+  },
+  "la toalla": {
+   "f": "la-toalla.mp3",
+   "v": "45571b73",
+   "h": "9162f8a7a76a"
+  },
+  "las gafas": {
+   "f": "las-gafas.mp3",
+   "v": "bbba051a",
+   "h": "7cd927757988"
+  },
   "¡Pasa la pelota!": {
    "f": "pasa-la-pelota.mp3",
    "v": "17d8b6f0",
@@ -97,60 +187,450 @@
    "v": "b7e1663c",
    "h": "e6031f4c33bc"
   },
+  "Mi cama es muy grande.": {
+   "f": "mi-cama-es-muy-grande.mp3",
+   "v": "f2ab79d6",
+   "h": "8218b843971b"
+  },
+  "Por la noche me voy a la cama.": {
+   "f": "por-la-noche-me-voy-a-la-cama.mp3",
+   "v": "dcbe8236",
+   "h": "cb7b24088419"
+  },
   "La comida está en la mesa.": {
    "f": "la-comida-esta-en-la-mesa.mp3",
    "v": "d9c186b3",
    "h": "5d80b8520f2e"
+  },
+  "Pongo el plato en la mesa.": {
+   "f": "pongo-el-plato-en-la-mesa.mp3",
+   "v": "05f77d98",
+   "h": "6f4aea66e3b1"
+  },
+  "Hago los deberes en la mesa.": {
+   "f": "hago-los-deberes-en-la-mesa.mp3",
+   "v": "e62e2701",
+   "h": "666aff5493af"
   },
   "Me siento en la silla.": {
    "f": "me-siento-en-la-silla.mp3",
    "v": "4b820930",
    "h": "03698de4afb2"
   },
+  "La silla es de madera.": {
+   "f": "la-silla-es-de-madera.mp3",
+   "v": "024df1a4",
+   "h": "58c406d7bc9d"
+  },
+  "Mi gato duerme en la silla.": {
+   "f": "mi-gato-duerme-en-la-silla.mp3",
+   "v": "26db038b",
+   "h": "69b6f04cd31a"
+  },
   "Pongo la comida en el plato.": {
    "f": "pongo-la-comida-en-el-plato.mp3",
    "v": "f8464cab",
    "h": "d4aaedfae302"
+  },
+  "El plato está lleno de sopa.": {
+   "f": "el-plato-esta-lleno-de-sopa.mp3",
+   "v": "ceaae9e7",
+   "h": "27e24c4da689"
+  },
+  "Lavo el plato después de comer.": {
+   "f": "lavo-el-plato-despues-de-comer.mp3",
+   "v": "084726dd",
+   "h": "2a091003696d"
   },
   "Bebo agua en el vaso.": {
    "f": "bebo-agua-en-el-vaso.mp3",
    "v": "fb3e3664",
    "h": "f6bfe01070e6"
   },
+  "El vaso está lleno de leche.": {
+   "f": "el-vaso-esta-lleno-de-leche.mp3",
+   "v": "3e38409a",
+   "h": "c7dacfef6d9c"
+  },
+  "Pongo zumo en el vaso.": {
+   "f": "pongo-zumo-en-el-vaso.mp3",
+   "v": "15652fe4",
+   "h": "ec3d5777ab3c"
+  },
   "Me lavo con el cepillo de dientes.": {
    "f": "me-lavo-con-el-cepillo-de-dientes.mp3",
    "v": "a20665e1",
    "h": "330a0f8d8028"
+  },
+  "Mi cepillo de dientes es azul.": {
+   "f": "mi-cepillo-de-dientes-es-azul.mp3",
+   "v": "a5880741",
+   "h": "203f87d631fc"
+  },
+  "Uso el cepillo de dientes por la noche.": {
+   "f": "uso-el-cepillo-de-dientes-por-la-noche.mp3",
+   "v": "ba68e164",
+   "h": "38ff642b7057"
   },
   "Juego con la pelota en el parque.": {
    "f": "juego-con-la-pelota-en-el-parque.mp3",
    "v": "b3556a11",
    "h": "8afc698740ab"
   },
+  "La pelota es redonda.": {
+   "f": "la-pelota-es-redonda.mp3",
+   "v": "afe477d4",
+   "h": "c1a4a3bfdf77"
+  },
+  "Mi amigo me pasa la pelota.": {
+   "f": "mi-amigo-me-pasa-la-pelota.mp3",
+   "v": "9bdf94cf",
+   "h": "71728794a816"
+  },
   "El perro corre mucho.": {
    "f": "el-perro-corre-mucho.mp3",
    "v": "b53c6be7",
    "h": "4b658935db94"
+  },
+  "Mi perro es muy bueno.": {
+   "f": "mi-perro-es-muy-bueno.mp3",
+   "v": "bf4b8073",
+   "h": "e78b94593bf4"
+  },
+  "El perro juega en el parque.": {
+   "f": "el-perro-juega-en-el-parque.mp3",
+   "v": "c7814315",
+   "h": "8c2fa9659bda"
   },
   "El gato duerme en casa.": {
    "f": "el-gato-duerme-en-casa.mp3",
    "v": "4c234f0c",
    "h": "b9d2eb4737ab"
   },
+  "El gato bebe leche.": {
+   "f": "el-gato-bebe-leche.mp3",
+   "v": "72441d5c",
+   "h": "dc9b0a1a839e"
+  },
+  "Mi gato tiene el pelo blanco.": {
+   "f": "mi-gato-tiene-el-pelo-blanco.mp3",
+   "v": "0d1a1ba6",
+   "h": "8b51be963ecf"
+  },
   "Me gusta comer la manzana.": {
    "f": "me-gusta-comer-la-manzana.mp3",
    "v": "ae99005c",
    "h": "4260efc8f0a9"
+  },
+  "La manzana es roja.": {
+   "f": "la-manzana-es-roja.mp3",
+   "v": "f636ef83",
+   "h": "6ab4aeffa8ba"
+  },
+  "Como una manzana en el recreo.": {
+   "f": "como-una-manzana-en-el-recreo.mp3",
+   "v": "953d7813",
+   "h": "e47668e4b313"
   },
   "Chuto el balón a la portería.": {
    "f": "chuto-el-balon-a-la-porteria.mp3",
    "v": "0b6c1685",
    "h": "fdb6095679dc"
   },
+  "El balón es de fútbol.": {
+   "f": "el-balon-es-de-futbol.mp3",
+   "v": "88173895",
+   "h": "81e5be24f05f"
+  },
+  "Juego con el balón en el patio.": {
+   "f": "juego-con-el-balon-en-el-patio.mp3",
+   "v": "d5fac4dc",
+   "h": "fcba3c9d6e87"
+  },
   "Mi camiseta es de color azul.": {
    "f": "mi-camiseta-es-de-color-azul.mp3",
    "v": "4adedab9",
    "h": "11ece6f7a7c9"
+  },
+  "Me pongo la camiseta.": {
+   "f": "me-pongo-la-camiseta.mp3",
+   "v": "9c81b154",
+   "h": "18f06197dfd5"
+  },
+  "La camiseta está limpia.": {
+   "f": "la-camiseta-esta-limpia.mp3",
+   "v": "6dc1ab76",
+   "h": "ceb4aa71199d"
+  },
+  "El plátano es amarillo.": {
+   "f": "el-platano-es-amarillo.mp3",
+   "v": "5a209a0e",
+   "h": "f6e9783057ae"
+  },
+  "Me como un plátano.": {
+   "f": "me-como-un-platano.mp3",
+   "v": "c3dd4e1f",
+   "h": "d1a9ea47f30b"
+  },
+  "Me gusta mucho el plátano.": {
+   "f": "me-gusta-mucho-el-platano.mp3",
+   "v": "7dcad183",
+   "h": "9d2a09c8cbc1"
+  },
+  "La naranja es muy dulce.": {
+   "f": "la-naranja-es-muy-dulce.mp3",
+   "v": "430950fa",
+   "h": "45d9ab50e731"
+  },
+  "Bebo zumo de naranja.": {
+   "f": "bebo-zumo-de-naranja.mp3",
+   "v": "ba42a5ab",
+   "h": "6d3861634489"
+  },
+  "Mi mamá compra naranjas.": {
+   "f": "mi-mama-compra-naranjas.mp3",
+   "v": "e15f28ed",
+   "h": "74919cf228a1"
+  },
+  "La fresa es roja.": {
+   "f": "la-fresa-es-roja.mp3",
+   "v": "b1b21d40",
+   "h": "c661f556f0ab"
+  },
+  "Me gusta el helado de fresa.": {
+   "f": "me-gusta-el-helado-de-fresa.mp3",
+   "v": "413ac2c4",
+   "h": "53310b252627"
+  },
+  "Como fresas en verano.": {
+   "f": "como-fresas-en-verano.mp3",
+   "v": "9807617d",
+   "h": "efe215e55c1b"
+  },
+  "Compro pan en la panadería.": {
+   "f": "compro-pan-en-la-panaderia.mp3",
+   "v": "edd5d4e7",
+   "h": "61a3a65e1eb7"
+  },
+  "Como pan con queso.": {
+   "f": "como-pan-con-queso.mp3",
+   "v": "b2b4d0d2",
+   "h": "aa8fdb01e744"
+  },
+  "El pan está muy rico.": {
+   "f": "el-pan-esta-muy-rico.mp3",
+   "v": "4a5043f4",
+   "h": "4d2d18f328b6"
+  },
+  "Los huevos son blancos.": {
+   "f": "los-huevos-son-blancos.mp3",
+   "v": "ac4da1f2",
+   "h": "85c6c72638fb"
+  },
+  "Mi papá hace tortilla con huevos.": {
+   "f": "mi-papa-hace-tortilla-con-huevos.mp3",
+   "v": "4f3c92bd",
+   "h": "0d769ba1637c"
+  },
+  "Las gallinas ponen huevos.": {
+   "f": "las-gallinas-ponen-huevos.mp3",
+   "v": "016a541c",
+   "h": "dba94eda737b"
+  },
+  "El pájaro vuela muy alto.": {
+   "f": "el-pajaro-vuela-muy-alto.mp3",
+   "v": "86ba5e4a",
+   "h": "c79371e40401"
+  },
+  "El pájaro canta en el árbol.": {
+   "f": "el-pajaro-canta-en-el-arbol.mp3",
+   "v": "80c747d3",
+   "h": "bd57e092d6e0"
+  },
+  "Veo un pájaro pequeño.": {
+   "f": "veo-un-pajaro-pequeno.mp3",
+   "v": "385328d9",
+   "h": "fed67dee4498"
+  },
+  "El caballo corre en el campo.": {
+   "f": "el-caballo-corre-en-el-campo.mp3",
+   "v": "2491e02e",
+   "h": "8e50f835523c"
+  },
+  "Monto a caballo.": {
+   "f": "monto-a-caballo.mp3",
+   "v": "dca8c9b2",
+   "h": "f56444ebc0dd"
+  },
+  "El caballo es muy grande.": {
+   "f": "el-caballo-es-muy-grande.mp3",
+   "v": "cfc4dd02",
+   "h": "9f9fbe93f7fa"
+  },
+  "El pez nada en el agua.": {
+   "f": "el-pez-nada-en-el-agua.mp3",
+   "v": "aef06163",
+   "h": "e1b3982aa51b"
+  },
+  "Mi pez es naranja.": {
+   "f": "mi-pez-es-naranja.mp3",
+   "v": "942a9f8c",
+   "h": "a541e5bfd9b3"
+  },
+  "El pez vive en el mar.": {
+   "f": "el-pez-vive-en-el-mar.mp3",
+   "v": "8c861f58",
+   "h": "eff626c3d339"
+  },
+  "La vaca come hierba.": {
+   "f": "la-vaca-come-hierba.mp3",
+   "v": "fa687997",
+   "h": "e979ce819269"
+  },
+  "La vaca nos da leche.": {
+   "f": "la-vaca-nos-da-leche.mp3",
+   "v": "5dec2eb5",
+   "h": "835f25d67d06"
+  },
+  "La vaca está en el campo.": {
+   "f": "la-vaca-esta-en-el-campo.mp3",
+   "v": "18408930",
+   "h": "33d742c0b8ef"
+  },
+  "La flor es muy bonita.": {
+   "f": "la-flor-es-muy-bonita.mp3",
+   "v": "73cb389d",
+   "h": "785fe140cf81"
+  },
+  "La flor huele bien.": {
+   "f": "la-flor-huele-bien.mp3",
+   "v": "f83f2db4",
+   "h": "3d8437af43b7"
+  },
+  "Regalo una flor a mi mamá.": {
+   "f": "regalo-una-flor-a-mi-mama.mp3",
+   "v": "220c57bc",
+   "h": "7fa66c1dba82"
+  },
+  "El árbol es muy alto.": {
+   "f": "el-arbol-es-muy-alto.mp3",
+   "v": "86cb3ba7",
+   "h": "72c96b3c521a"
+  },
+  "Me subo al árbol.": {
+   "f": "me-subo-al-arbol.mp3",
+   "v": "c090c034",
+   "h": "4fb78df0eafd"
+  },
+  "El pájaro está en el árbol.": {
+   "f": "el-pajaro-esta-en-el-arbol.mp3",
+   "v": "770b4ca3",
+   "h": "1985a1c78999"
+  },
+  "El coche es rojo.": {
+   "f": "el-coche-es-rojo.mp3",
+   "v": "ce22f5cb",
+   "h": "a84efd05a323"
+  },
+  "Voy al cole en coche.": {
+   "f": "voy-al-cole-en-coche.mp3",
+   "v": "8a302cf0",
+   "h": "52b6076daadc"
+  },
+  "Mi papá lava el coche.": {
+   "f": "mi-papa-lava-el-coche.mp3",
+   "v": "620b483d",
+   "h": "a9eeb2963f11"
+  },
+  "Monto en bicicleta.": {
+   "f": "monto-en-bicicleta.mp3",
+   "v": "08b1c8b7",
+   "h": "7c0c20fb1894"
+  },
+  "Mi bicicleta es nueva.": {
+   "f": "mi-bicicleta-es-nueva.mp3",
+   "v": "01f18138",
+   "h": "f570d5b221c6"
+  },
+  "Voy al parque en bicicleta.": {
+   "f": "voy-al-parque-en-bicicleta.mp3",
+   "v": "8837459b",
+   "h": "8c3a31fa54be"
+  },
+  "El tren va muy rápido.": {
+   "f": "el-tren-va-muy-rapido.mp3",
+   "v": "0a0408be",
+   "h": "c4f0bb27c2b8"
+  },
+  "Viajo en tren con mi familia.": {
+   "f": "viajo-en-tren-con-mi-familia.mp3",
+   "v": "d4d6d1e7",
+   "h": "4613bc0be956"
+  },
+  "El tren lleva a mucha gente.": {
+   "f": "el-tren-lleva-a-mucha-gente.mp3",
+   "v": "022bdb56",
+   "h": "100dde40ffae"
+  },
+  "Pinto con los lápices.": {
+   "f": "pinto-con-los-lapices.mp3",
+   "v": "8a099942",
+   "h": "494c9dff7db3"
+  },
+  "Tengo lápices de colores.": {
+   "f": "tengo-lapices-de-colores.mp3",
+   "v": "b77d1a59",
+   "h": "bf433834e2d3"
+  },
+  "Guardo los lápices en la mochila.": {
+   "f": "guardo-los-lapices-en-la-mochila.mp3",
+   "v": "5a213d80",
+   "h": "d58a02a06563"
+  },
+  "Llevo los libros en la mochila.": {
+   "f": "llevo-los-libros-en-la-mochila.mp3",
+   "v": "62a2fa8b",
+   "h": "da64c3e44b20"
+  },
+  "Mi mochila es azul.": {
+   "f": "mi-mochila-es-azul.mp3",
+   "v": "f3ec831e",
+   "h": "80c98b1131e0"
+  },
+  "Pongo el bocadillo en la mochila.": {
+   "f": "pongo-el-bocadillo-en-la-mochila.mp3",
+   "v": "6368bfe6",
+   "h": "407c9582af2c"
+  },
+  "Me seco con la toalla.": {
+   "f": "me-seco-con-la-toalla.mp3",
+   "v": "0314dda5",
+   "h": "e64b54c6e0ec"
+  },
+  "Llevo la toalla a la piscina.": {
+   "f": "llevo-la-toalla-a-la-piscina.mp3",
+   "v": "2053d180",
+   "h": "b023b02fe7f4"
+  },
+  "La toalla está mojada.": {
+   "f": "la-toalla-esta-mojada.mp3",
+   "v": "bea378c1",
+   "h": "2a865efdc59b"
+  },
+  "Mi abuelo lleva gafas.": {
+   "f": "mi-abuelo-lleva-gafas.mp3",
+   "v": "f5d647ba",
+   "h": "98ced938646f"
+  },
+  "Con las gafas veo mejor.": {
+   "f": "con-las-gafas-veo-mejor.mp3",
+   "v": "5b9f0eb8",
+   "h": "50250ce615c6"
+  },
+  "Mis gafas son negras.": {
+   "f": "mis-gafas-son-negras.mp3",
+   "v": "fe464e9c",
+   "h": "28d70bf82ea5"
   },
   "¡Perfecto!": {
    "f": "perfecto.mp3",
@@ -212,10 +692,60 @@
    "v": "2e200323",
    "h": "0f39a4a41456"
   },
+  "Toca el gato.": {
+   "f": "toca-el-gato.mp3",
+   "v": "337279f4",
+   "h": "e02127946de1"
+  },
   "Toca la manzana.": {
    "f": "toca-la-manzana.mp3",
    "v": "87558481",
    "h": "8a0f5f6b71f0"
+  },
+  "Toca la pelota.": {
+   "f": "toca-la-pelota.mp3",
+   "v": "dcc7b073",
+   "h": "9b93b5cfefe1"
+  },
+  "Toca la cama.": {
+   "f": "toca-la-cama.mp3",
+   "v": "b9c676d8",
+   "h": "c0859d4c9587"
+  },
+  "Toca la mesa.": {
+   "f": "toca-la-mesa.mp3",
+   "v": "9ef11e2f",
+   "h": "51a5f5df0c64"
+  },
+  "Toca el coche.": {
+   "f": "toca-el-coche.mp3",
+   "v": "16aff934",
+   "h": "c438b06bf72d"
+  },
+  "Toca el plátano.": {
+   "f": "toca-el-platano.mp3",
+   "v": "7db228f2",
+   "h": "ef8ac3c5a09f"
+  },
+  "Toca la flor.": {
+   "f": "toca-la-flor.mp3",
+   "v": "551b41ac",
+   "h": "d1868d4875ff"
+  },
+  "Toca el pez.": {
+   "f": "toca-el-pez.mp3",
+   "v": "163541a1",
+   "h": "068aee2b9907"
+  },
+  "Toca la vaca.": {
+   "f": "toca-la-vaca.mp3",
+   "v": "9bbcf14b",
+   "h": "5586bd4fbca8"
+  },
+  "Toca el pan.": {
+   "f": "toca-el-pan.mp3",
+   "v": "ac41a960",
+   "h": "53e84532b127"
   },
   "¿Dónde duermes por la noche?": {
    "f": "donde-duermes-por-la-noche.mp3",
@@ -232,6 +762,96 @@
    "v": "fde0f30b",
    "h": "d015ffc1da20"
   },
+  "¿Dónde te sientas para comer?": {
+   "f": "donde-te-sientas-para-comer.mp3",
+   "v": "8c8bfe67",
+   "h": "3c6079db85ba"
+  },
+  "¿Con qué te secas después de la ducha?": {
+   "f": "con-que-te-secas-despues-de-la-ducha.mp3",
+   "v": "80d4697d",
+   "h": "0f1d368e18d3"
+  },
+  "¿Qué te pones para ver mejor?": {
+   "f": "que-te-pones-para-ver-mejor.mp3",
+   "v": "0c639dc3",
+   "h": "c004aca45ba1"
+  },
+  "¿Con qué pintas en el cole?": {
+   "f": "con-que-pintas-en-el-cole.mp3",
+   "v": "b0364b90",
+   "h": "329db27cfac4"
+  },
+  "¿Dónde llevas los libros al cole?": {
+   "f": "donde-llevas-los-libros-al-cole.mp3",
+   "v": "83a657a1",
+   "h": "964239176c1e"
+  },
+  "¿Qué animal vive en el agua?": {
+   "f": "que-animal-vive-en-el-agua.mp3",
+   "v": "4d676633",
+   "h": "05040fc11b71"
+  },
+  "¿Qué animal vuela?": {
+   "f": "que-animal-vuela.mp3",
+   "v": "390d7387",
+   "h": "e1048482e9fd"
+  },
+  "¿Qué animal nos da la leche?": {
+   "f": "que-animal-nos-da-la-leche.mp3",
+   "v": "64eb254e",
+   "h": "436d5438f6b1"
+  },
+  "¿Qué va por las vías y lleva a mucha gente?": {
+   "f": "que-va-por-las-vias-y-lleva-a-mucha-gente.mp3",
+   "v": "0d3616f5",
+   "h": "5b9d05844d87"
+  },
+  "¿Qué fruta es amarilla y larga?": {
+   "f": "que-fruta-es-amarilla-y-larga.mp3",
+   "v": "c27478bb",
+   "h": "78fa4fd85eb7"
+  },
+  "¿Qué compramos en la panadería?": {
+   "f": "que-compramos-en-la-panaderia.mp3",
+   "v": "1228e68c",
+   "h": "ad7691386e8a"
+  },
+  "¿Qué tiene pedales y dos ruedas?": {
+   "f": "que-tiene-pedales-y-dos-ruedas.mp3",
+   "v": "f69f2e53",
+   "h": "3b4a59775b91"
+  },
+  "¿Qué ponen las gallinas?": {
+   "f": "que-ponen-las-gallinas.mp3",
+   "v": "1a0e867c",
+   "h": "5d4a32c6f437"
+  },
+  "¿Con qué juegas al fútbol?": {
+   "f": "con-que-juegas-al-futbol.mp3",
+   "v": "d20b8f22",
+   "h": "e7df8309c2f1"
+  },
+  "¿Qué te pones para vestirte?": {
+   "f": "que-te-pones-para-vestirte.mp3",
+   "v": "c8dc1122",
+   "h": "a4df8de08452"
+  },
+  "¿Qué animal dice miau?": {
+   "f": "que-animal-dice-miau.mp3",
+   "v": "7b79a96f",
+   "h": "57a8e1ec23c4"
+  },
+  "¿Qué animal dice guau?": {
+   "f": "que-animal-dice-guau.mp3",
+   "v": "6867ae2d",
+   "h": "e1e8a83d0558"
+  },
+  "¿Qué crece en el jardín y huele bien?": {
+   "f": "que-crece-en-el-jardin-y-huele-bien.mp3",
+   "v": "83e86967",
+   "h": "b2d900542a23"
+  },
   "Ahora dime qué es cada cosa.": {
    "f": "ahora-dime-que-es-cada-cosa.mp3",
    "v": "1c4b43a5",
@@ -241,6 +861,16 @@
    "f": "que-es-esto.mp3",
    "v": "2d4669d5",
    "h": "7379da8c39c5"
+  },
+  "¿Cómo se llama esto?": {
+   "f": "como-se-llama-esto.mp3",
+   "v": "71a3e07a",
+   "h": "0a5498eed193"
+  },
+  "¿Sabes qué es esto?": {
+   "f": "sabes-que-es-esto.mp3",
+   "v": "e607bf32",
+   "h": "d92126fd439a"
   },
   "¡Ahora vamos a hablar un poquito!": {
    "f": "ahora-vamos-a-hablar-un-poquito.mp3",
@@ -252,35 +882,155 @@
    "v": "66361c35",
    "h": "a81be66fc886"
   },
+  "¡Hola! ¿Cómo estás hoy?": {
+   "f": "hola-como-estas-hoy.mp3",
+   "v": "cd4c94ce",
+   "h": "78ad32243d65"
+  },
+  "¡Buenos días! ¿Qué tal te va?": {
+   "f": "buenos-dias-que-tal-te-va.mp3",
+   "v": "9e941911",
+   "h": "b669041aec24"
+  },
+  "¡Hola! ¿Cómo te sientes hoy?": {
+   "f": "hola-como-te-sientes-hoy.mp3",
+   "v": "3db9d233",
+   "h": "e5363b18ce26"
+  },
   "Mira esta camiseta. ¿De qué color es?": {
    "f": "mira-esta-camiseta-de-que-color-es.mp3",
    "v": "a8210a57",
    "h": "e37b74b9991d"
+  },
+  "Mira este coche. ¿De qué color es?": {
+   "f": "mira-este-coche-de-que-color-es.mp3",
+   "v": "478c61f9",
+   "h": "1e1b8b37ac31"
+  },
+  "Mira esta flor. ¿De qué color es?": {
+   "f": "mira-esta-flor-de-que-color-es.mp3",
+   "v": "ce4dfd96",
+   "h": "fd37f2a36bc3"
+  },
+  "Mira esta toalla. ¿De qué color es?": {
+   "f": "mira-esta-toalla-de-que-color-es.mp3",
+   "v": "3ff44aa1",
+   "h": "94d3dc3c95b6"
+  },
+  "Mira esta mochila. ¿De qué color es?": {
+   "f": "mira-esta-mochila-de-que-color-es.mp3",
+   "v": "7ee030e6",
+   "h": "3f29ec8ed993"
   },
   "¿Qué haces tú con una pelota?": {
    "f": "que-haces-tu-con-una-pelota.mp3",
    "v": "2277a531",
    "h": "76139c0681c3"
   },
+  "¿Qué haces tú con una bicicleta?": {
+   "f": "que-haces-tu-con-una-bicicleta.mp3",
+   "v": "97a248cb",
+   "h": "38a8f4585083"
+  },
+  "¿Qué haces tú con los lápices?": {
+   "f": "que-haces-tu-con-los-lapices.mp3",
+   "v": "0d426b14",
+   "h": "94592964829a"
+  },
+  "¿Qué haces tú con una toalla?": {
+   "f": "que-haces-tu-con-una-toalla.mp3",
+   "v": "f7dbe42a",
+   "h": "c9345a94d6fa"
+  },
+  "¿Qué haces tú con un vaso?": {
+   "f": "que-haces-tu-con-un-vaso.mp3",
+   "v": "77b26860",
+   "h": "90fd1b5611fc"
+  },
+  "¿Qué haces tú con un cepillo de dientes?": {
+   "f": "que-haces-tu-con-un-cepillo-de-dientes.mp3",
+   "v": "160e86c5",
+   "h": "1e1719d57942"
+  },
   "¿Qué te gusta comer?": {
    "f": "que-te-gusta-comer.mp3",
    "v": "efb8157d",
    "h": "d6d117c939b8"
+  },
+  "¿A qué te gusta jugar?": {
+   "f": "a-que-te-gusta-jugar.mp3",
+   "v": "24c90828",
+   "h": "3d944c3aabc1"
+  },
+  "¿Qué animal te gusta más?": {
+   "f": "que-animal-te-gusta-mas.mp3",
+   "v": "32640f76",
+   "h": "d3d5623a7332"
+  },
+  "¿Qué te gusta hacer en el parque?": {
+   "f": "que-te-gusta-hacer-en-el-parque.mp3",
+   "v": "4bee2cad",
+   "h": "463567596db3"
+  },
+  "¿Qué te gusta beber?": {
+   "f": "que-te-gusta-beber.mp3",
+   "v": "085e004f",
+   "h": "b547d284b117"
   },
   "Mira esta foto. Cuéntame qué ves.": {
    "f": "mira-esta-foto-cuentame-que-ves.mp3",
    "v": "04afcc82",
    "h": "35ff86502eee"
   },
+  "¡Mira qué foto! ¿Qué ves aquí?": {
+   "f": "mira-que-foto-que-ves-aqui.mp3",
+   "v": "7cf087b8",
+   "h": "92903daab266"
+  },
+  "Mira bien la foto. Cuéntame qué hay.": {
+   "f": "mira-bien-la-foto-cuentame-que-hay.mp3",
+   "v": "9ee40733",
+   "h": "a599b6ad80a4"
+  },
   "¿Qué hiciste ayer?": {
    "f": "que-hiciste-ayer.mp3",
    "v": "9e1370ef",
    "h": "d9ad6cac17a7"
   },
+  "¿Qué hiciste ayer por la tarde?": {
+   "f": "que-hiciste-ayer-por-la-tarde.mp3",
+   "v": "10279c75",
+   "h": "13541f798bbf"
+  },
+  "¿Qué hiciste el fin de semana pasado?": {
+   "f": "que-hiciste-el-fin-de-semana-pasado.mp3",
+   "v": "aafcd74d",
+   "h": "4004af431459"
+  },
+  "¿Qué comiste ayer?": {
+   "f": "que-comiste-ayer.mp3",
+   "v": "8e41a272",
+   "h": "a62e22a4ba26"
+  },
   "¿Qué vas a hacer el fin de semana?": {
    "f": "que-vas-a-hacer-el-fin-de-semana.mp3",
    "v": "e227f25c",
    "h": "6d989ae62d70"
+  },
+  "¿Qué vas a hacer mañana?": {
+   "f": "que-vas-a-hacer-manana.mp3",
+   "v": "099e6d90",
+   "h": "0bd30392ebf0"
+  },
+  "¿Qué vas a hacer esta tarde?": {
+   "f": "que-vas-a-hacer-esta-tarde.mp3",
+   "v": "b2901ef0",
+   "h": "bbd1f8c9e526"
+  },
+  "¿Qué vas a hacer en vacaciones?": {
+   "f": "que-vas-a-hacer-en-vacaciones.mp3",
+   "v": "681ac7f6",
+   "h": "05cee74e37c8"
   },
   "Ahora jugamos a la tienda. Yo soy la frutera.": {
    "f": "ahora-jugamos-a-la-tienda-yo-soy-la-frutera.mp3",
@@ -321,6 +1071,126 @@
    "f": "vale-gracias-por-venir-hasta-luego.mp3",
    "v": "c66a874c",
    "h": "d30fc80023b9"
+  },
+  "Ahora jugamos a la panadería. Yo soy el panadero.": {
+   "f": "ahora-jugamos-a-la-panaderia-yo-soy-el-panadero.mp3",
+   "v": "e0c4049e",
+   "h": "6c9242ab0924"
+  },
+  "¡Buenos días! Bienvenido a la panadería. ¿Qué quieres comprar?": {
+   "f": "buenos-dias-bienvenido-a-la-panaderia-que-quieres-comprar.mp3",
+   "v": "a637ec24",
+   "h": "0a187ee28778"
+  },
+  "¡Muy bien! ¿Cuántos quieres?": {
+   "f": "muy-bien-cuantos-quieres.mp3",
+   "v": "ac6e8483",
+   "h": "a60f727d9ebd"
+  },
+  "Tengo un pan muy rico. ¿Cuántos quieres?": {
+   "f": "tengo-un-pan-muy-rico-cuantos-quieres.mp3",
+   "v": "e01a9a2b",
+   "h": "c7fcd4138c69"
+  },
+  "¡Estupendo! Es un euro. ¿Quieres algo más?": {
+   "f": "estupendo-es-un-euro-quieres-algo-mas.mp3",
+   "v": "b31498dd",
+   "h": "fc7e4de87e60"
+  },
+  "Te pongo dos, ¿vale? Es un euro. ¿Quieres algo más?": {
+   "f": "te-pongo-dos-vale-es-un-euro-quieres-algo-mas.mp3",
+   "v": "3083ef31",
+   "h": "21cc31f832ce"
+  },
+  "¡Gracias! ¡Que aproveche! ¡Adiós!": {
+   "f": "gracias-que-aproveche-adios.mp3",
+   "v": "1f4be966",
+   "h": "cdb40993d51c"
+  },
+  "¡Vale! Gracias por venir. ¡Adiós!": {
+   "f": "vale-gracias-por-venir-adios.mp3",
+   "v": "ef110dc0",
+   "h": "59fa5e484ec2"
+  },
+  "Ahora jugamos en el parque. Yo soy un niño nuevo.": {
+   "f": "ahora-jugamos-en-el-parque-yo-soy-un-nino-nuevo.mp3",
+   "v": "2d1c9d2e",
+   "h": "74bb500908b0"
+  },
+  "¡Hola! ¿Quieres jugar conmigo? ¿A qué jugamos?": {
+   "f": "hola-quieres-jugar-conmigo-a-que-jugamos.mp3",
+   "v": "2f646969",
+   "h": "17933267a60d"
+  },
+  "¡Qué divertido! ¿Cuántos niños jugamos?": {
+   "f": "que-divertido-cuantos-ninos-jugamos.mp3",
+   "v": "8b8640af",
+   "h": "409404b02e94"
+  },
+  "Podemos jugar a la pelota. ¿Cuántos niños jugamos?": {
+   "f": "podemos-jugar-a-la-pelota-cuantos-ninos-jugamos.mp3",
+   "v": "2a3891ef",
+   "h": "6c4f086c98bf"
+  },
+  "¡Genial! Yo traigo la pelota. ¿Jugamos otra vez mañana?": {
+   "f": "genial-yo-traigo-la-pelota-jugamos-otra-vez-manana.mp3",
+   "v": "3d07e57e",
+   "h": "9391dbeb5615"
+  },
+  "Vale, jugamos tres. ¿Jugamos otra vez mañana?": {
+   "f": "vale-jugamos-tres-jugamos-otra-vez-manana.mp3",
+   "v": "fc4474fa",
+   "h": "8e661341e0e1"
+  },
+  "¡Qué bien! ¡Hasta mañana!": {
+   "f": "que-bien-hasta-manana.mp3",
+   "v": "c93cea89",
+   "h": "499db2e9450e"
+  },
+  "¡Vale! ¡Hasta otro día!": {
+   "f": "vale-hasta-otro-dia.mp3",
+   "v": "761704d2",
+   "h": "3a7b7f6af686"
+  },
+  "Ahora jugamos a cocinar. Yo soy el cocinero.": {
+   "f": "ahora-jugamos-a-cocinar-yo-soy-el-cocinero.mp3",
+   "v": "49bcc42a",
+   "h": "08baff28c966"
+  },
+  "¡Hola! Vamos a hacer la comida. ¿Qué cocinamos hoy?": {
+   "f": "hola-vamos-a-hacer-la-comida-que-cocinamos-hoy.mp3",
+   "v": "52cc1c93",
+   "h": "810a56ba8922"
+  },
+  "¡Qué rico! ¿Cuántos huevos ponemos?": {
+   "f": "que-rico-cuantos-huevos-ponemos.mp3",
+   "v": "a20156d2",
+   "h": "6faa97293022"
+  },
+  "Podemos hacer una tortilla. ¿Cuántos huevos ponemos?": {
+   "f": "podemos-hacer-una-tortilla-cuantos-huevos-ponemos.mp3",
+   "v": "dda3868a",
+   "h": "d3e8f8adce1f"
+  },
+  "¡Muy bien! Ya está lista. ¿Quieres probarla?": {
+   "f": "muy-bien-ya-esta-lista-quieres-probarla.mp3",
+   "v": "86f799f2",
+   "h": "0bb187e2b90f"
+  },
+  "Pongo tres, ¿vale? Ya está lista. ¿Quieres probarla?": {
+   "f": "pongo-tres-vale-ya-esta-lista-quieres-probarla.mp3",
+   "v": "72d6170d",
+   "h": "3ae33094e796"
+  },
+  "¡Qué bien! ¡Que aproveche!": {
+   "f": "que-bien-que-aproveche.mp3",
+   "v": "f31d3077",
+   "h": "0e12a9a0871a"
+  },
+  "¡Vale! La guardamos para luego.": {
+   "f": "vale-la-guardamos-para-luego.mp3",
+   "v": "e85ddc7d",
+   "h": "6f2d1c982074"
   },
   "¡Gracias!": {
    "f": "gracias.mp3",

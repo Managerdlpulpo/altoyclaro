@@ -141,9 +141,17 @@ await prueba('test de nivel: se guardan solo puntuaciones limpias (sin textos), 
     const l = await adm({ accion: 'listar' });
     const n = l.body.ninos.find(x => x.id === nino);
     assert.deepEqual(n.test, { t: prueba.t, nivel: 2, comp: 80, voc: 70, conv: 41 });
+    // Test con preguntas sorteadas: ids de 2-3 cifras, semilla y lista de ids (solo identificadores, nunca textos)
+    const sorteada = { ...prueba, id: 'tsor1', sem: 123456789, ids: ['k03', 'v17', 'c41', 'd12', 'Toca el perro', '<x>', 'c1234'],
+        items: [{ id: 'k03', b: 'comp', r: 'ok', p: 1, m: 1, c: 'K' }, { id: 'd12', b: 'conv', r: 'respuesta', p: 5, m: 5, c: 'RLVKQ' }, { id: 'c1234', b: 'conv', r: 'nr', p: 0, m: 5, c: '' }] };
+    r = await llamar('sync', { perfil: { ...cur, pruebas: [sorteada] }, perfilT: tCur + 2 }, { cookie: c1 });
+    const s0 = r.body.perfil.pruebas[0];
+    assert.equal(s0.sem, 123456789);
+    assert.deepEqual(s0.ids, ['k03', 'v17', 'c41', 'd12']);
+    assert.deepEqual(s0.items.map(i => i.id), ['k03', 'd12']);
     // 12 pruebas → se quedan las 10 últimas
     const muchas = Array.from({ length: 12 }, (_, i) => ({ ...prueba, id: 't' + i, t: prueba.t + i }));
-    r = await llamar('sync', { perfil: { ...cur, pruebas: muchas }, perfilT: tCur + 2 }, { cookie: c1 });
+    r = await llamar('sync', { perfil: { ...cur, pruebas: muchas }, perfilT: tCur + 3 }, { cookie: c1 });
     assert.equal(r.body.perfil.pruebas.length, 10); assert.equal(r.body.perfil.pruebas[0].id, 't2');
 });
 

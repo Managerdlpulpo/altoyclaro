@@ -319,7 +319,7 @@
 
         const LEVELS = { 0: {name:'Super Principiante', nextXP:100}, 1:{name:'Nivel 1', nextXP:250}, 2:{name:'Nivel 2', nextXP:500}, 3:{name:'Nivel 3', nextXP:1000} };
 
-        // Real photo vocabulary (Unsplash stable URLs)
+        // Fotos del vocabulario (Unsplash y, las nuevas, fotos libres de Wikimedia Commons guardadas en img/vocab; créditos en img/CREDITOS.md)
         const visualVocab = [
             { es: 'la cama', img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&h=500&fit=crop', cat: 'Casa', uk: 'ліжко', ar: 'السرير' },
             { es: 'la mesa', img: 'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=500&h=500&fit=crop', cat: 'Casa', uk: 'стіл', ar: 'طاولة' },
@@ -332,7 +332,25 @@
             { es: 'el gato', img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&h=500&fit=crop', cat: 'Animales', uk: 'кіт', ar: 'قطة' },
             { es: 'la manzana', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&h=500&fit=crop', cat: 'Comida', uk: 'яблуко', ar: 'تفاحة' },
             { es: 'el balón', img: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=500&fit=crop', cat: 'Fútbol', uk: 'м\'яч', ar: 'كرة القدم' },
-            { es: 'la camiseta', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop', cat: 'Ropa', uk: 'футболка', ar: 'قميص' }
+            { es: 'la camiseta', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop', cat: 'Ropa', uk: 'футболка', ar: 'قميص' },
+            { es: 'el plátano', img: 'img/vocab/platano.jpg', cat: 'Comida', uk: 'банан', ar: 'موزة' },
+            { es: 'la naranja', img: 'img/vocab/naranja.jpg', cat: 'Comida', uk: 'апельсин', ar: 'برتقالة' },
+            { es: 'la fresa', img: 'img/vocab/fresa.jpg', cat: 'Comida', uk: 'полуниця', ar: 'فراولة' },
+            { es: 'el pan', img: 'img/vocab/pan.jpg', cat: 'Comida', uk: 'хліб', ar: 'خبز' },
+            { es: 'los huevos', img: 'img/vocab/huevos.jpg', cat: 'Comida', uk: 'яйця', ar: 'بيض' },
+            { es: 'el pájaro', img: 'img/vocab/pajaro.jpg', cat: 'Animales', uk: 'птах', ar: 'طائر' },
+            { es: 'el caballo', img: 'img/vocab/caballo.jpg', cat: 'Animales', uk: 'кінь', ar: 'حصان' },
+            { es: 'el pez', img: 'img/vocab/pez.jpg', cat: 'Animales', uk: 'риба', ar: 'سمكة' },
+            { es: 'la vaca', img: 'img/vocab/vaca.jpg', cat: 'Animales', uk: 'корова', ar: 'بقرة' },
+            { es: 'la flor', img: 'img/vocab/flor.jpg', cat: 'Naturaleza', uk: 'квітка', ar: 'زهرة' },
+            { es: 'el árbol', img: 'img/vocab/arbol.jpg', cat: 'Naturaleza', uk: 'дерево', ar: 'شجرة' },
+            { es: 'el coche', img: 'img/vocab/coche.jpg', cat: 'Transporte', uk: 'машина', ar: 'سيارة' },
+            { es: 'la bicicleta', img: 'img/vocab/bicicleta.jpg', cat: 'Transporte', uk: 'велосипед', ar: 'دراجة' },
+            { es: 'el tren', img: 'img/vocab/tren.jpg', cat: 'Transporte', uk: 'поїзд', ar: 'قطار' },
+            { es: 'los lápices', img: 'img/vocab/lapices.jpg', cat: 'Colegio', uk: 'олівці', ar: 'أقلام ملونة' },
+            { es: 'la mochila', img: 'img/vocab/mochila.jpg', cat: 'Colegio', uk: 'рюкзак', ar: 'حقيبة مدرسية' },
+            { es: 'la toalla', img: 'img/vocab/toalla.jpg', cat: 'Higiene', uk: 'рушник', ar: 'منشفة' },
+            { es: 'las gafas', img: 'img/vocab/gafas.jpg', cat: 'Ropa', uk: 'окуляри', ar: 'نظارات' }
         ];
 
         const contentByLevel = {
