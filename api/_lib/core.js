@@ -147,8 +147,8 @@ const numero = (v, min, max, def = 0) => { const n = Number(v); return Number.is
 function limpiarPerfil(p) {
     if (!p || typeof p !== 'object') return null;
     return {
-        name: texto(p.name, 40), age: numero(p.age, 3, 18, 8), country: texto(p.country, 40),
-        hobby: texto(p.hobby, 30), level: Math.round(numero(p.level, 0, 3, 1)), xp: Math.round(numero(p.xp, 0, 1e7, 0)),
+        // Solo nombre/apodo, nivel, XP y test (edad, país y afición ya no se guardan; se descartan)
+        name: texto(p.name, 40), level: Math.round(numero(p.level, 0, 3, 1)), xp: Math.round(numero(p.xp, 0, 1e7, 0)),
         pruebas: Array.isArray(p.pruebas) ? p.pruebas.slice(-10).map(limpiarPrueba).filter(Boolean) : []
     };
 }
@@ -293,7 +293,7 @@ export async function sync({ q, env, req, body }) {
     const filas = await q(`SELECT id, t, recibido, datos FROM ayc_intentos WHERE nino_id = $1 AND recibido > $2 ORDER BY recibido ASC LIMIT ${MAX_INTENTOS_NINO}`, [id, cursor]);
     return {
         status: 200, body: {
-            ok: true, alias: nino.alias, perfil: perfil || null, perfilT, borradoT, cursor: ahora,
+            ok: true, alias: nino.alias, perfil: perfil ? limpiarPerfil(typeof perfil === 'string' ? JSON.parse(perfil) : perfil) : null, perfilT, borradoT, cursor: ahora,
             recibidos: lote.map(i => i.id),
             intentos: filas.map(f => Object.assign({ id: f.id, t: Number(f.t) }, typeof f.datos === 'string' ? JSON.parse(f.datos) : f.datos))
         }

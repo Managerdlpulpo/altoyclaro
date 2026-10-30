@@ -48,26 +48,9 @@
         <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div id="setup-step-profile">
                 <h2 class="text-2xl font-game font-bold text-white mb-2">¡Bienvenido a la Liga de Habla Visual!</h2>
-                <p class="text-sm text-slate-300 mb-6">Crea tu perfil. Verás fotos reales y practicarás identificándolas.</p>
+                <p class="text-sm text-slate-300 mb-6">Escribe tu nombre o apodo. Verás fotos reales y practicarás identificándolas.</p>
                 <div class="space-y-4">
-                    <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre">
-                    <div class="grid grid-cols-2 gap-4">
-                        <select id="input-age" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
-                            <option value="6">6 años</option><option value="7">7</option><option value="8">8</option>
-                            <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-                        </select>
-                        <select id="input-country" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
-                            <option value="Ucrania">Ucrania</option>
-                            <option value="Marruecos">Marruecos / Árabe</option>
-                            <option value="China">China</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-                    <select id="input-hobby" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
-                        <option value="futbol">⚽ Fútbol</option>
-                        <option value="animales">🐾 Animales</option>
-                        <option value="arte">🎨 Arte</option>
-                    </select>
+                    <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre o apodo" maxlength="40" autocomplete="off">
                     <button onclick="startPlacementTest()" class="w-full bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Empezar</button>
                     <button onclick="if (typeof abrirLogin === 'function') abrirLogin()" class="w-full bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm">🔑 Ya tengo una clave</button>
                     <p class="text-[11px] text-slate-400 text-center">Sin clave, todo se guarda solo en este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
@@ -325,7 +308,14 @@
     </div>
 
     <script>
-        let gameState = { name: '', age: 8, country: 'Ucrania', hobby: 'futbol', level: 1, xp: 0 };
+        let gameState = { name: '', level: 1, xp: 0 };
+        // El perfil solo guarda nombre/apodo, nivel, XP y resultados del test. Los perfiles antiguos
+        // traían edad, país y afición: se descartan al cargar (y no se sincronizan).
+        function limpiarPerfilLocal(p) {
+            if (!p || typeof p !== 'object') return { name: '', level: 1, xp: 0 };
+            const { age, country, hobby, ...resto } = p;
+            return resto;
+        }
 
         const LEVELS = { 0: {name:'Super Principiante', nextXP:100}, 1:{name:'Nivel 1', nextXP:250}, 2:{name:'Nivel 2', nextXP:500}, 3:{name:'Nivel 3', nextXP:1000} };
 
@@ -369,23 +359,24 @@
         function loadState() {
             const saved = localStorage.getItem('ligaHablaVisual');
             if (saved) {
-                gameState = JSON.parse(saved);
+                gameState = limpiarPerfilLocal(JSON.parse(saved));
+                saveState();
                 document.getElementById('setup-modal').classList.add('hidden');
                 updateHUD();
                 renderAll();
             }
         }
-        function saveState() { localStorage.setItem('ligaHablaVisual', JSON.stringify(gameState)); }
+        function saveState() { gameState = limpiarPerfilLocal(gameState); localStorage.setItem('ligaHablaVisual', JSON.stringify(gameState)); }
 
         function updateHUD() {
             const lvl = LEVELS[gameState.level] || LEVELS[1];
             document.getElementById('header-name').innerText = gameState.name || 'Alumno';
             document.getElementById('header-initials').innerText = (gameState.name||'A').charAt(0).toUpperCase();
-            document.getElementById('header-info').innerText = `${gameState.country} • ${lvl.name}`;
+            document.getElementById('header-info').innerText = lvl.name;
             document.getElementById('welcome-title').innerText = `¡Hola ${gameState.name || 'campeón'}!`;
             document.getElementById('xp-text-display').innerText = gameState.xp;
             const ultTest = (gameState.pruebas || []).slice(-1)[0];
-            document.getElementById('teacher-info').innerHTML = `<strong>${esc(gameState.name)}</strong><br>${esc(gameState.country)} · Nivel ${gameState.level}` +
+            document.getElementById('teacher-info').innerHTML = `<strong>${esc(gameState.name)}</strong><br>Nivel ${gameState.level}` +
                 (ultTest ? `<br><span class="text-xs text-slate-300">Último test (${new Date(ultTest.t).toLocaleDateString('es-ES')}): 👂 ${ultTest.comp}% · 🗣️ ${ultTest.voc}% · 💬 ${ultTest.conv}%</span>` : '<br><span class="text-xs text-slate-400">Sin test de nivel nuevo todavía.</span>');
             document.getElementById('override-level').value = gameState.level;
         }
@@ -397,9 +388,6 @@
             const name = document.getElementById('input-name').value.trim();
             if (!name) { alert('Escribe tu nombre'); return; }
             gameState.name = name;
-            gameState.age = +document.getElementById('input-age').value;
-            gameState.country = document.getElementById('input-country').value;
-            gameState.hobby = document.getElementById('input-hobby').value;
             iniciarTestNivel({ repeticion: false });
         }
         function finishSetup() {
@@ -448,11 +436,6 @@
                 btn.classList.add('correct');
                 document.getElementById('ident-word').innerText = item.es;
                 document.getElementById('ident-word').classList.remove('hidden');
-                const native = gameState.country==='Ucrania' ? item.uk : gameState.country==='Marruecos' ? item.ar : '';
-                if (native) {
-                    document.getElementById('ident-native').innerText = native;
-                    document.getElementById('ident-native').classList.remove('hidden');
-                }
                 document.getElementById('ident-feedback').innerHTML = '<span class="text-emerald-400 font-bold">¡Correcto! +15 XP</span>';
                 addXP(15);
                 decir([FRASES_VOZ.correcto, item.es]);
@@ -487,14 +470,12 @@
             const grid = document.getElementById('pictionary-grid');
             grid.innerHTML = '';
             visualVocab.filter(v => v.cat === cat).forEach(item => {
-                const native = gameState.country==='Ucrania' ? item.uk : gameState.country==='Marruecos' ? item.ar : '';
                 const card = document.createElement('div');
                 card.className = 'img-card bg-stadium-950 border border-slate-800 rounded-2xl overflow-hidden';
                 card.innerHTML = `
                     <img src="${item.img}" class="w-full h-36 object-cover" alt="${item.es}">
                     <div class="p-3 text-center">
                         <div class="font-bold text-white text-sm">${item.es}</div>
-                        ${native ? `<div class="text-xs text-amber-300">${native}</div>` : ''}
                         <button onclick="speakSpanish('${item.es}')" class="mt-2 bg-pitch-600 text-white text-xs px-3 py-1 rounded-lg"><i class="fa-solid fa-volume-high"></i></button>
                     </div>`;
                 grid.appendChild(card);

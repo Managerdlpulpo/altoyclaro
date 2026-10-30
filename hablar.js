@@ -714,7 +714,7 @@ function exportarProgreso(formato) {
         const stats = estadisticasPorPalabra();
         const datos = {
             exportado: new Date().toISOString(),
-            alumno: gameState ? { nombre: gameState.name, edad: gameState.age, pais: gameState.country, nivel: gameState.level, xp: gameState.xp, testsDeNivel: gameState.pruebas || [] } : null,
+            alumno: gameState ? { nombre: gameState.name, nivel: gameState.level, xp: gameState.xp, testsDeNivel: gameState.pruebas || [] } : null,
             resumen: Object.fromEntries(Object.entries(stats).map(([w, s]) => [w, { intentos: s.total, aciertos: s.aciertos, dominada: s.dominada, cuesta: s.cuesta }])),
             intentos: hablaData.intentos.map(i => ({ fecha: new Date(i.t).toISOString(), palabra: i.palabra, categoria: i.categoria, modo: i.modo, metodo: i.metodo, oido: i.oido, alternativas: i.alternativas, puntuacion: i.score, resultado: i.resultado, grabacion: !!i.audioId }))
         };

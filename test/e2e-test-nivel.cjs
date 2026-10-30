@@ -129,6 +129,7 @@ const FLOJO = {
       const faltan = Object.values(FRASES_TEST).filter(t => !claves.has(t.normalize('NFC').trim().replace(/\s+/g, ' ').toLowerCase()));
       return { total: Object.keys(FRASES_TEST).length, faltan };
     });
+    ok(!(await page.$('#input-age')) && !(await page.$('#input-country')) && !(await page.$('#input-hobby')), 'el perfil solo pide nombre o apodo (sin edad, país ni afición)');
     ok(r.faltan.length === 0, `las ${r.total} frases del test tienen MP3 grabado${r.faltan.length ? ' (faltan: ' + r.faltan.join(' | ') + ')' : ''}`);
     const personales = await page.evaluate(() => Object.values(FRASES_TEST).filter(t => /llamas|años|vives|dirección|colegio|cole\b|apellido/i.test(t)));
     ok(personales.length === 0, 'ninguna pregunta pide datos personales (nombre, edad, dirección, colegio)');
@@ -242,6 +243,9 @@ const FLOJO = {
     ok(await page.isHidden('#setup-modal'), 'perfil guardado sin test nuevo: entra directamente (no obliga a repetir el test)');
     const gs = await page.evaluate(() => ({ level: gameState.level, xp: gameState.xp, pruebas: gameState.pruebas }));
     ok(gs.level === 1 && gs.xp === 700 && gs.pruebas === undefined, 'el perfil antiguo no cambia');
+    const limpio = await page.evaluate(() => ({ g: JSON.parse(localStorage.getItem('ligaHablaVisual')), cab: document.getElementById('header-info').innerText, profe: document.getElementById('teacher-info').innerText }));
+    ok(!('age' in limpio.g) && !('country' in limpio.g) && !('hobby' in limpio.g) && limpio.g.name === 'Iryna', 'edad, país y afición del perfil antiguo se descartan (el nombre se queda)');
+    ok(!/Ucrania/.test(limpio.cab + limpio.profe), `la cabecera muestra solo el nivel («${limpio.cab}»)`);
     await page.evaluate(() => toggleTeacherModal());
     await page.click('#btn-repetir-test');
     ok(await page.isVisible('#setup-step-test') && await page.isHidden('#setup-step-profile'), 'repetir test desde el panel del profe (sin pedir el perfil otra vez)');

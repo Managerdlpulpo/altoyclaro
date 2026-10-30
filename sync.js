@@ -125,7 +125,7 @@ async function _sincronizarUnaVez(opciones) {
         guardarHabla();
         // Perfil: gana el cambio más reciente
         if (d.perfil && d.perfilT > (syncMeta.perfilT || 0)) {
-            gameState = Object.assign({}, gameState, d.perfil);
+            gameState = limpiarPerfilLocal(Object.assign({}, gameState, d.perfil));
             _saveStateOriginal();
             syncMeta.perfilT = d.perfilT;
             updateHUD();
@@ -180,7 +180,7 @@ async function entrarConClave() {
     syncMeta = Object.assign(syncMetaVacia(), { conectado: true, ninoId: id, alias, perfilT });
     guardarSyncMeta();
     if (typeof hablaData !== 'undefined') hablaData = cargarHabla();
-    try { gameState = JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState; } catch (e) { }
+    try { gameState = limpiarPerfilLocal(JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState); } catch (e) { }
     msg.textContent = 'Sincronizando…';
     await sincronizar();
     location.reload();

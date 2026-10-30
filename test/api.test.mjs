@@ -117,9 +117,10 @@ await prueba('sincronización: perfil (gana el más reciente) e intentos fusiona
     r = await llamar('sync', { cursor: 0 }, { cookie: c1 });
     assert.equal(r.body.perfil.xp, 120); assert.equal(r.body.perfilT, t0 + 10); assert.equal(r.body.intentos.length, 3);
     // datos maliciosos se limpian
-    r = await llamar('sync', { perfil: { name: '<script>x</script>' + 'a'.repeat(100), xp: -5, level: 99, extra: 'nope' }, perfilT: t0 + 20 }, { cookie: c1 });
+    r = await llamar('sync', { perfil: { name: '<script>x</script>' + 'a'.repeat(100), xp: -5, level: 99, extra: 'nope', age: 9, country: 'Ucrania', hobby: 'futbol' }, perfilT: t0 + 20 }, { cookie: c1 });
     assert.ok(!r.body.perfil.name.includes('<')); assert.ok(r.body.perfil.name.length <= 40);
     assert.equal(r.body.perfil.xp, 0); assert.equal(r.body.perfil.level, 3); assert.ok(!('extra' in r.body.perfil));
+    for (const k of ['age', 'country', 'hobby']) assert.ok(!(k in r.body.perfil), 'no se guarda ' + k);
 });
 
 await prueba('test de nivel: se guardan solo puntuaciones limpias (sin textos), perfiles antiguos siguen valiendo', async () => {
