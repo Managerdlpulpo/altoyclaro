@@ -68,6 +68,8 @@
                         <option value="arte">🎨 Arte</option>
                     </select>
                     <button onclick="startPlacementTest()" class="w-full bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Empezar</button>
+                    <button onclick="if (typeof abrirLogin === 'function') abrirLogin()" class="w-full bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm">🔑 Ya tengo una clave</button>
+                    <p class="text-[11px] text-slate-400 text-center">Sin clave, todo se guarda solo en este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
                 </div>
             </div>
             <div id="setup-step-test" class="hidden">
@@ -96,12 +98,13 @@
                     <div class="text-xs text-slate-400" id="header-info">Andel</div>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-2 sm:gap-4">
                 <div class="text-right">
                     <div class="text-xs text-slate-300">XP</div>
                     <div id="xp-text-display" class="text-amber-400 font-game font-bold">0</div>
                 </div>
-                <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs"><i class="fa-solid fa-user-gear text-amber-400"></i></button>
+                <button id="cuenta-btn" onclick="abrirCuenta()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 text-xs text-slate-200 font-bold flex items-center gap-1" title="Entrar con mi clave" aria-label="Entrar con mi clave"><span aria-hidden="true">🔑</span><span class="hidden sm:inline">Entrar</span></button>
+                <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs" title="Panel del profe"><i class="fa-solid fa-user-gear text-amber-400"></i></button>
             </div>
         </div>
     </header>
@@ -223,7 +226,7 @@
                         <button onclick="borrarGrabaciones()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash mr-1"></i> Borrar grabaciones</button>
                         <button onclick="borrarHistorialHabla()" class="bg-red-800 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash-can mr-1"></i> Borrar todo el progreso al hablar</button>
                     </div>
-                    <p class="text-[11px] text-slate-400 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones y el historial se guardan solo en este dispositivo (en este navegador) y no se suben a ningún sitio. Se guardan como máximo 50 grabaciones (la primera y las 3 últimas de cada palabra). Para entender lo que dice el niño, el reconocimiento automático usa el servicio de voz del propio navegador (en Chrome, el de Google; en Safari, el de Apple), igual que el dictado del móvil. Si preferís evitarlo, marcad la casilla de valoración solo por un adulto.</p>
+                    <p class="text-[11px] text-slate-400 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones se guardan solo en este dispositivo (en este navegador) y no se suben nunca a ningún sitio. Sin clave, el historial también se queda solo aquí; si el niño entra con su clave, el historial en texto (fecha, palabra, lo que se oyó y la puntuación) y su perfil se guardan también en el servidor de la clase para verlos en otro dispositivo (<a href="privacidad.html" target="_blank" class="underline text-sky-300">más información</a>). Se guardan como máximo 50 grabaciones (la primera y las 3 últimas de cada palabra). Para entender lo que dice el niño, el reconocimiento automático usa el servicio de voz del propio navegador (en Chrome, el de Google; en Safari, el de Apple), igual que el dictado del móvil. Si preferís evitarlo, marcad la casilla de valoración solo por un adulto.</p>
                 </div>
             </div>
         </section>
@@ -260,7 +263,7 @@
 
     <!-- Teacher modal (simplified) -->
     <div id="teacher-modal" class="modal hidden">
-        <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full mx-4">
+        <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-game">Panel del Profesor</h3>
                 <button onclick="toggleTeacherModal()" class="text-slate-400">✕</button>
@@ -273,6 +276,30 @@
                 <button onclick="overrideLevel()" class="bg-amber-500 text-stadium-950 font-bold px-4 py-2 rounded-xl text-xs">Cambiar nivel</button>
                 <button onclick="toggleTeacherModal(); switchTab('progreso')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs"><i class="fa-solid fa-chart-line mr-1"></i> Ver progreso al hablar</button>
                 <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs mt-2">Reiniciar</button>
+
+                <!-- Claves de la clase (necesita la clave del profe; se comprueba en el servidor) -->
+                <div class="border-t border-slate-700 pt-4 mt-2">
+                    <h4 class="font-game text-white mb-1">🔑 Claves de la clase</h4>
+                    <p class="text-[11px] text-slate-400 mb-2">Crea una clave para cada niño (solo un nombre o apodo, sin apellidos). Con ella su progreso se guarda y se puede usar en 2 dispositivos. Las grabaciones de voz nunca salen del dispositivo.</p>
+                    <div id="admin-login" class="flex gap-2">
+                        <input id="admin-clave" type="password" autocomplete="current-password" placeholder="Clave del profe" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminAbrir()">
+                        <button onclick="adminAbrir()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">Abrir</button>
+                    </div>
+                    <div id="admin-panel" class="hidden space-y-3">
+                        <div class="flex gap-2">
+                            <input id="admin-alias" type="text" maxlength="40" placeholder="Nombre o apodo del niño" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminCrear()">
+                            <button onclick="adminCrear()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs">Crear clave</button>
+                        </div>
+                        <div id="admin-codigo-nuevo" class="hidden bg-amber-500/10 border border-amber-500 rounded-xl p-3 text-center"></div>
+                        <div id="admin-lista" class="space-y-2"></div>
+                        <div class="flex justify-between">
+                            <button onclick="adminRefrescar()" class="text-xs text-sky-300 underline">Actualizar lista</button>
+                            <button onclick="adminCerrarPanel()" class="text-xs text-slate-400 underline">Cerrar panel de claves</button>
+                        </div>
+                    </div>
+                    <p id="admin-mensaje" class="text-xs mt-2 text-slate-300" role="status"></p>
+                    <p class="text-[11px] text-slate-500 mt-1"><a href="privacidad.html" target="_blank" class="underline">Qué datos se guardan (privacidad)</a></p>
+                </div>
             </div>
         </div>
     </div>
@@ -590,5 +617,6 @@
         window.onload = loadState;
     </script>
     <script src="hablar.js"></script>
+    <script src="sync.js"></script>
 </body>
 </html>

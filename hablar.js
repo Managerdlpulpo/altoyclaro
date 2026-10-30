@@ -51,6 +51,7 @@ function guardarHabla() {
     if (hablaData.intentos.length > HABLA_MAX_INTENTOS) hablaData.intentos = hablaData.intentos.slice(-HABLA_MAX_INTENTOS);
     try { localStorage.setItem(HABLA_KEY, JSON.stringify(hablaData)); }
     catch (e) { console.warn('No se pudo guardar el progreso al hablar', e); }
+    if (typeof programarSync === 'function') programarSync(); // solo texto; el audio nunca se envía
 }
 
 /* ---------- Utilidades ---------- */
@@ -733,11 +734,16 @@ async function borrarGrabaciones() {
     renderProgresoHabla();
 }
 async function borrarHistorialHabla() {
-    if (!confirm('¿Borrar TODO el progreso al hablar (intentos y grabaciones) de este dispositivo?')) return;
+    const conClave = typeof syncMeta !== 'undefined' && syncMeta.conectado;
+    const pregunta = conClave
+        ? '¿Borrar TODO el progreso al hablar?\n\nSe borrarán los intentos guardados con tu clave (también en tu otro dispositivo) y las grabaciones de este dispositivo.'
+        : '¿Borrar TODO el progreso al hablar (intentos y grabaciones) de este dispositivo?';
+    if (!confirm(pregunta)) return;
     try { await audioClear(); } catch (e) { console.warn(e); }
     const soloManual = hablaData.soloManual;
     hablaData = hablaDatosVacios();
     hablaData.soloManual = soloManual;
     guardarHabla();
+    if (typeof syncHistorialBorrado === 'function') syncHistorialBorrado();
     renderProgresoHabla();
 }

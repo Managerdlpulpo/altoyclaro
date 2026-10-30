@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacidad · Liga de Habla Soto Alto</title>
+    <meta name="robots" content="noindex">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #020617; color: #cbd5e1; font-family: Inter, sans-serif; line-height: 1.6; }
+        main { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+        h1, h2 { font-family: Fredoka, sans-serif; color: #fff; }
+        h1 { font-size: 1.8rem; margin-bottom: 4px; }
+        h2 { font-size: 1.2rem; margin-top: 2rem; color: #fbbf24; }
+        .card { background: #0f172a; border: 1px solid #334155; border-radius: 16px; padding: 16px 20px; margin: 12px 0; }
+        .ok { border-color: #16a34a; }
+        .pendiente { background: #78350f; color: #fde68a; padding: 2px 6px; border-radius: 6px; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #1e293b; vertical-align: top; }
+        th { color: #fff; }
+        a { color: #7dd3fc; }
+        small { color: #94a3b8; }
+    </style>
+</head>
+<body>
+<main>
+    <p><a href="./">← Volver a la Liga de Habla</a></p>
+    <h1>Privacidad: qué guardamos y dónde</h1>
+    <small>Liga de Habla Soto Alto · Explicado de forma sencilla para familias y profes.</small>
+
+    <div class="card ok">
+        <strong>🎙️ Las grabaciones de voz no salen nunca del dispositivo.</strong><br>
+        Se guardan solo en el navegador del dispositivo donde se graban (tablet, ordenador o móvil) y no se envían a ningún servidor, tampoco cuando el niño entra con su clave.
+    </div>
+
+    <h2>Sin clave (modo solo en este dispositivo)</h2>
+    <p>Si no se usa ninguna clave, todo (perfil, progreso y grabaciones) se guarda únicamente en el navegador de ese dispositivo. No se envía nada a nuestro servidor.</p>
+
+    <h2>Con clave del profe</h2>
+    <p>Cada niño puede tener una clave personal que le da su profe. Con ella su progreso se puede ver en <strong>como máximo 2 dispositivos</strong>. Para eso se guarda en el servidor de la clase:</p>
+    <div class="card">
+        <table>
+            <tr><th>Dato</th><th>Para qué</th></tr>
+            <tr><td>Nombre o apodo que pone el profe (sin apellidos)</td><td>Para que el profe sepa de quién es cada clave.</td></tr>
+            <tr><td>La clave, <em>cifrada</em> (no se guarda tal cual)</td><td>Para comprobar que la clave es correcta. Ni siquiera el profe puede verla después de crearla.</td></tr>
+            <tr><td>Perfil del juego: nombre que escribe el niño, edad, país, afición, nivel y puntos (XP)</td><td>Para continuar en otro dispositivo.</td></tr>
+            <tr><td>Intentos al hablar, en texto: fecha, palabra, lo que entendió el reconocimiento de voz y la puntuación</td><td>Para ver cómo avanza su expresión oral.</td></tr>
+            <tr><td>Los dispositivos autorizados (un identificador al azar y un nombre genérico como «iPad · Safari») y la fecha de último uso</td><td>Para el límite de 2 dispositivos.</td></tr>
+            <tr><td>Registro temporal de intentos fallidos de clave (dirección IP), se borra a las 24 horas</td><td>Para evitar que alguien pruebe claves al azar.</td></tr>
+        </table>
+    </div>
+    <p>Recomendamos no escribir el nombre completo del niño: basta un nombre de pila o un apodo.</p>
+
+    <h2>Dónde se guarda</h2>
+    <p>En una base de datos Postgres (Neon) asociada a esta web, alojada en Vercel. La conexión siempre va cifrada (HTTPS). En el navegador se usa una cookie de sesión técnica (necesaria para saber que el dispositivo entró con su clave); no se usan cookies de publicidad ni de seguimiento.</p>
+
+    <h2>Reconocimiento de voz</h2>
+    <p>Para saber qué ha dicho el niño, la app usa el reconocimiento de voz que trae el propio navegador (en Chrome lo presta Google; en Safari, Apple), igual que el dictado del móvil. Si se prefiere evitarlo, en «Mi progreso al hablar» se puede marcar que la valoración la haga solo un adulto.</p>
+
+    <h2>Cómo borrar los datos</h2>
+    <ul>
+        <li><strong>En un dispositivo:</strong> botón de la clave (arriba) → «Cerrar sesión». Se borra de ese dispositivo el perfil, el progreso y las grabaciones. Sin clave: Panel del profe → «Reiniciar».</li>
+        <li><strong>Solo las grabaciones:</strong> «Mi progreso al hablar» → «Borrar grabaciones».</li>
+        <li><strong>Todo el progreso al hablar:</strong> «Mi progreso al hablar» → «Borrar todo el progreso al hablar» (con clave, se borra también del servidor).</li>
+        <li><strong>Todo lo del servidor:</strong> el profe puede borrar al niño y todos sus datos desde «Panel del profe → Claves de la clase → Borrar niño y datos». La familia puede pedírselo cuando quiera.</li>
+    </ul>
+
+    <h2>Contacto</h2>
+    <p>Para cualquier duda o para pedir que se borren los datos, habla con el profe de tu hijo o hija:</p>
+    <div class="card"><span class="pendiente">PENDIENTE</span> Nombre del profe / centro y correo de contacto: <em>[completar por el profe]</em></div>
+
+    <p><small>Última actualización: octubre de 2026.</small></p>
+</main>
+</body>
+</html>
