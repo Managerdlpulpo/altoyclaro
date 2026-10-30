@@ -30,6 +30,14 @@
         .img-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(34,197,94,0.25); }
         .correct { border-color: #22c55e !important; background-color: rgba(34,197,94,0.15) !important; }
         .wrong { border-color: #ef4444 !important; background-color: rgba(239,68,68,0.15) !important; }
+        /* Modo Hablar */
+        .mic-btn { transition: transform 0.15s, background-color 0.2s; touch-action: manipulation; }
+        .mic-btn:active { transform: scale(0.95); }
+        .mic-btn.listening { background-color: #dc2626; animation: micPulse 1.2s infinite; }
+        @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(244,63,94,0.6); } 70% { box-shadow: 0 0 0 24px rgba(244,63,94,0); } 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); } }
+        .modo-btn.active { background-color: #e11d48; color: white; border-color: #fb7185; }
+        .chip-btn.active { background-color: #16a34a; color: white; border-color: #4ade80; }
+        .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1 1 0; min-width: 22px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased pb-12">
@@ -106,9 +114,11 @@
 
         <div class="flex space-x-2 overflow-x-auto pb-2 mb-6">
             <button onclick="switchTab('identificar')" id="tab-btn-identificar" class="tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-image text-emerald-400 mr-1"></i> Identificar Fotos</button>
+            <button onclick="switchTab('hablar')" id="tab-btn-hablar" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-microphone text-rose-400 mr-1"></i> Hablar</button>
             <button onclick="switchTab('pictionary')" id="tab-btn-pictionary" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-images text-blue-400 mr-1"></i> Diccionario Visual</button>
             <button onclick="switchTab('penalty')" id="tab-btn-penalty" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-bullseye text-amber-400 mr-1"></i> Penalty</button>
             <button onclick="switchTab('cuentos')" id="tab-btn-cuentos" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-book text-purple-400 mr-1"></i> Cuentos</button>
+            <button onclick="switchTab('progreso')" id="tab-btn-progreso" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-chart-line text-sky-400 mr-1"></i> Mi progreso al hablar</button>
         </div>
 
         <!-- IDENTIFICAR FOTOS -->
@@ -124,6 +134,97 @@
                 <p class="text-sm text-slate-300 mb-4">¿Qué es esto? Elige la palabra correcta:</p>
                 <div id="ident-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto"></div>
                 <div id="ident-feedback" class="mt-4 hidden"></div>
+            </div>
+        </section>
+
+        <!-- HABLAR (expresión oral) -->
+        <section id="tab-hablar" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-5 sm:p-6 card-glow text-center">
+                <div class="flex justify-center gap-2 mb-4">
+                    <button id="habla-modo-palabra" onclick="setModoHabla('palabra')" class="modo-btn active px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-200">🗣️ Di la palabra</button>
+                    <button id="habla-modo-frase" onclick="setModoHabla('frase')" class="modo-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-200">💬 Dime una frase</button>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mb-4" id="habla-categorias"></div>
+                <div class="text-xs text-amber-400 mb-2 uppercase tracking-wider" id="habla-category">Categoría</div>
+                <div class="relative inline-block mb-3">
+                    <img id="habla-image" src="" alt="Imagen" class="w-56 h-56 sm:w-72 sm:h-72 object-cover rounded-2xl border-4 border-slate-700 shadow-xl mx-auto">
+                    <button onclick="hablaEscuchar()" title="Escuchar la palabra" class="absolute bottom-3 right-3 bg-pitch-600 text-white w-12 h-12 rounded-full shadow-lg"><i class="fa-solid fa-volume-high"></i></button>
+                </div>
+                <div id="habla-consigna" class="text-lg font-game text-white mb-1">¿Qué es esto? ¡Dilo en voz alta!</div>
+                <div id="habla-palabra" class="text-2xl font-game font-bold text-amber-300 mb-1 hidden"></div>
+                <div class="flex justify-center flex-wrap gap-2 mb-5 mt-2">
+                    <button id="habla-btn-pista" onclick="hablaPista()" class="bg-stadium-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700"><i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> Pista</button>
+                    <button id="habla-btn-ejemplo" onclick="hablaEjemplo()" class="hidden bg-stadium-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700"><i class="fa-solid fa-volume-high text-emerald-400 mr-1"></i> Escuchar un ejemplo</button>
+                </div>
+                <button id="habla-mic" onclick="hablaMic()" aria-label="Pulsa y habla" class="mic-btn w-28 h-28 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-4xl shadow-xl mx-auto flex items-center justify-center"><i class="fa-solid fa-microphone"></i></button>
+                <div id="habla-estado" class="text-sm text-slate-300 mt-3 min-h-[1.5rem]">Pulsa el micrófono y habla</div>
+                <div id="habla-resultado" class="mt-4 hidden max-w-md mx-auto"></div>
+                <div id="habla-manual" class="mt-4 hidden max-w-md mx-auto bg-stadium-800 border border-slate-700 rounded-2xl p-4">
+                    <p class="text-sm text-slate-200 mb-3">👩‍🏫 Adulto: escuchad la grabación y valorad.</p>
+                    <button id="habla-manual-play" onclick="hablaReproducirPendiente()" class="hidden mb-3 bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold px-4 py-2 rounded-xl"><i class="fa-solid fa-play mr-1"></i> Escuchar grabación</button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button onclick="hablaValorar(true)" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">👍 Lo ha dicho bien</button>
+                        <button onclick="hablaValorar(false)" class="bg-amber-500 hover:bg-amber-400 text-stadium-950 font-bold py-3 rounded-xl">🔁 Hay que practicar</button>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <button onclick="hablaSiguiente()" class="bg-amber-500 hover:bg-amber-400 text-stadium-950 font-bold px-6 py-2.5 rounded-xl">Siguiente <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                </div>
+                <div id="habla-aviso-soporte" class="hidden mt-5 text-xs text-left bg-amber-500/10 border border-amber-500/40 text-amber-200 rounded-xl p-3 max-w-md mx-auto"></div>
+                <p class="text-[11px] text-slate-400 mt-4"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones de voz se guardan solo en este dispositivo y no se suben a ningún sitio.</p>
+            </div>
+        </section>
+
+        <!-- MI PROGRESO AL HABLAR -->
+        <section id="tab-progreso" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-5 sm:p-6 card-glow">
+                <h3 class="font-game text-lg mb-1 flex items-center gap-2"><i class="fa-solid fa-chart-line text-sky-400"></i> Mi progreso al hablar</h3>
+                <p class="text-xs text-slate-400 mb-4" id="prog-nombre"></p>
+                <div id="prog-resumen" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"></div>
+                <div id="prog-tendencia" class="text-sm mb-4"></div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-sm text-white">% de aciertos</h4>
+                        <div class="flex gap-1">
+                            <button id="prog-btn-dia" onclick="setAgrupacionProgreso('dia')" class="chip-btn active text-xs px-2.5 py-1 rounded-lg border border-slate-700 bg-stadium-800 text-slate-300">Por días</button>
+                            <button id="prog-btn-semana" onclick="setAgrupacionProgreso('semana')" class="chip-btn text-xs px-2.5 py-1 rounded-lg border border-slate-700 bg-stadium-800 text-slate-300">Por semanas</button>
+                        </div>
+                    </div>
+                    <div id="prog-grafico"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4">
+                        <h4 class="font-bold text-sm text-emerald-400 mb-2"><i class="fa-solid fa-star mr-1"></i> Palabras dominadas</h4>
+                        <div id="prog-dominadas" class="flex flex-wrap gap-2 text-sm"></div>
+                    </div>
+                    <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4">
+                        <h4 class="font-bold text-sm text-amber-400 mb-2"><i class="fa-solid fa-dumbbell mr-1"></i> Palabras que todavía cuestan</h4>
+                        <div id="prog-cuestan" class="flex flex-wrap gap-2 text-sm"></div>
+                    </div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
+                    <h4 class="font-bold text-sm text-white mb-1"><i class="fa-solid fa-headphones text-sky-400 mr-1"></i> Escucha cómo ha mejorado</h4>
+                    <p class="text-xs text-slate-400 mb-3">Compara la primera grabación con la última de cada palabra.</p>
+                    <div id="prog-grabaciones" class="space-y-2 text-sm"></div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4 overflow-x-auto">
+                    <h4 class="font-bold text-sm text-white mb-2">Últimos intentos</h4>
+                    <div id="prog-ultimos" class="text-xs"></div>
+                </div>
+                <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 space-y-3">
+                    <h4 class="font-bold text-sm text-white"><i class="fa-solid fa-user-gear text-amber-400 mr-1"></i> Para el profesor o la familia</h4>
+                    <label class="flex items-start gap-2 text-xs text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="prog-solo-manual" onchange="setSoloManual(this.checked)" class="mt-0.5">
+                        <span>Valoración solo por un adulto (sin reconocimiento automático de voz). Se graba la voz y el adulto decide si lo ha dicho bien.</span>
+                    </label>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="exportarProgreso('json')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-download mr-1"></i> Exportar JSON</button>
+                        <button onclick="exportarProgreso('csv')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-file-csv mr-1"></i> Exportar CSV (Excel)</button>
+                        <button onclick="borrarGrabaciones()" class="bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash mr-1"></i> Borrar grabaciones</button>
+                        <button onclick="borrarHistorialHabla()" class="bg-red-800 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash-can mr-1"></i> Borrar todo el progreso al hablar</button>
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed"><i class="fa-solid fa-lock mr-1"></i> Las grabaciones y el historial se guardan solo en este dispositivo (en este navegador) y no se suben a ningún sitio. Se guardan como máximo 50 grabaciones (la primera y las 3 últimas de cada palabra). Para entender lo que dice el niño, el reconocimiento automático usa el servicio de voz del propio navegador (en Chrome, el de Google; en Safari, el de Apple), igual que el dictado del móvil. Si preferís evitarlo, marcad la casilla de valoración solo por un adulto.</p>
+                </div>
             </div>
         </section>
 
@@ -170,6 +271,7 @@
                     <option value="0">Nivel 0</option><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option>
                 </select>
                 <button onclick="overrideLevel()" class="bg-amber-500 text-stadium-950 font-bold px-4 py-2 rounded-xl text-xs">Cambiar nivel</button>
+                <button onclick="toggleTeacherModal(); switchTab('progreso')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs"><i class="fa-solid fa-chart-line mr-1"></i> Ver progreso al hablar</button>
                 <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs mt-2">Reiniciar</button>
             </div>
         </div>
@@ -451,6 +553,7 @@
             renderPictionaryCategories();
             renderPenalty();
             renderCuentos();
+            if (typeof renderHablar === 'function') renderHablar();
         }
 
         function speakSpanish(text) {
@@ -467,6 +570,8 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-'+id).classList.remove('hidden');
             document.getElementById('tab-btn-'+id).classList.add('active');
+            if (id !== 'hablar' && typeof cancelarSesionHabla === 'function') cancelarSesionHabla();
+            if (id === 'progreso' && typeof renderProgresoHabla === 'function') renderProgresoHabla();
         }
         function toggleTeacherModal() { document.getElementById('teacher-modal').classList.toggle('hidden'); }
         function overrideLevel() {
@@ -474,10 +579,16 @@
             saveState(); updateHUD(); renderAll();
         }
         function resetAll() {
-            if (confirm('¿Reiniciar?')) { localStorage.removeItem('ligaHablaVisual'); location.reload(); }
+            if (confirm('¿Reiniciar? Se borrará el perfil y también el progreso y las grabaciones de voz de este dispositivo.')) {
+                localStorage.removeItem('ligaHablaVisual');
+                localStorage.removeItem('ligaHablaVoz');
+                const limpiar = (typeof audioClear === 'function') ? audioClear() : Promise.resolve();
+                limpiar.catch(() => {}).finally(() => location.reload());
+            }
         }
 
         window.onload = loadState;
     </script>
+    <script src="hablar.js"></script>
 </body>
 </html>
