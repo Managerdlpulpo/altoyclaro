@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga de Habla Soto Alto - Programa Adaptativo | Andel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], game: ['Fredoka', 'sans-serif'] },
+                    colors: {
+                        pitch: { 500: '#22c55e', 600: '#16a34a', 700: '#15803d' },
+                        stadium: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .card-glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.12); }
+        .tab-btn.active { background-color: #16a34a; color: white; border-color: #4ade80; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 100; }
+        .modal.hidden { display: none; }
+        .theme-futbol { --accent: #22c55e; }
+        .theme-animales { --accent: #f59e0b; }
+        .theme-arte { --accent: #a855f7; }
+        .theme-musica { --accent: #ec4899; }
+        .theme-juegos { --accent: #3b82f6; }
+        .theme-naturaleza { --accent: #10b981; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased pb-12 theme-futbol">
+
+    <!-- SETUP MODAL -->
+    <div id="setup-modal" class="modal">
+        <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div id="setup-step-profile">
+                <h2 class="text-2xl font-game font-bold text-white mb-2">¡Bienvenido a la Liga de Habla!</h2>
+                <p class="text-sm text-slate-300 mb-6">Crea tu perfil. El programa se adaptará a tu nivel, país y aficiones.</p>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-amber-400 mb-1">Nombre</label>
+                        <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-amber-400 mb-1">Edad</label>
+                            <select id="input-age" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
+                                <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                                <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-amber-400 mb-1">País de procedencia</label>
+                            <select id="input-country" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
+                                <option value="Ucrania">Ucrania</option>
+                                <option value="Marruecos">Marruecos / Árabe</option>
+                                <option value="China">China</option>
+                                <option value="Rumanía">Rumanía</option>
+                                <option value="Polonia">Polonia</option>
+                                <option value="Inglaterra">Inglaterra</option>
+                                <option value="Portugal">Portugal</option>
+                                <option value="Senegal">Senegal</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-amber-400 mb-1">Afición principal (personaliza el tema)</label>
+                        <select id="input-hobby" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white">
+                            <option value="futbol">⚽ Fútbol</option>
+                            <option value="animales">🐾 Animales</option>
+                            <option value="arte">🎨 Arte y dibujo</option>
+                            <option value="musica">🎵 Música</option>
+                            <option value="juegos">🎮 Videojuegos</option>
+                            <option value="naturaleza">🌳 Naturaleza</option>
+                        </select>
+                    </div>
+                    <button onclick="startPlacementTest()" class="w-full bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl mt-2">Empezar Test de Nivel</button>
+                </div>
+            </div>
+
+            <div id="setup-step-test" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-game text-xl text-white">Test de Nivel</h3>
+                    <span id="test-progress" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">1 / 6</span>
+                </div>
+                <div id="test-question-area" class="min-h-[160px]"></div>
+                <div id="test-options" class="space-y-2 mt-4"></div>
+                <div id="test-feedback" class="mt-4 text-sm hidden"></div>
+            </div>
+
+            <div id="setup-step-result" class="hidden text-center">
+                <div class="text-5xl mb-3">🎉</div>
+                <h3 class="text-2xl font-game text-amber-400 mb-2">¡Listo!</h3>
+                <p id="result-level-text" class="text-slate-200 mb-4"></p>
+                <button onclick="finishSetup()" class="bg-amber-500 hover:bg-amber-400 text-stadium-950 font-bold px-8 py-3 rounded-xl">Entrar a mi Liga</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="bg-stadium-950/90 border-b border-pitch-700/50 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-pitch-600 to-emerald-400 p-0.5">
+                    <div class="w-full h-full rounded-full bg-stadium-900 flex items-center justify-center font-bold text-lg text-amber-400 font-game" id="header-initials">A</div>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold font-game text-white" id="header-name">Alumno</h1>
+                    <div class="text-xs text-slate-400" id="header-info">Andel • Nivel —</div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex-1 md:w-56">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-slate-300"><i class="fa-solid fa-bolt text-amber-400"></i> XP</span>
+                        <span id="xp-text-display" class="text-amber-400 font-game">0 / 100</span>
+                    </div>
+                    <div class="w-full bg-stadium-800 h-3 rounded-full overflow-hidden border border-slate-700 p-0.5">
+                        <div id="xp-bar-fill" class="bg-gradient-to-r from-amber-500 to-emerald-400 h-full rounded-full transition-all" style="width: 5%;"></div>
+                    </div>
+                </div>
+                <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-xl border border-slate-700 text-xs font-bold">
+                    <i class="fa-solid fa-user-gear text-amber-400"></i> Profesor
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-6 flex-1 w-full">
+        <div id="welcome-banner" class="bg-gradient-to-r from-pitch-900 via-pitch-800 to-stadium-900 border border-pitch-600/40 rounded-2xl p-4 mb-6 card-glow">
+            <div class="flex items-center space-x-3">
+                <i id="theme-icon" class="fa-solid fa-futbol text-2xl text-pitch-400"></i>
+                <div>
+                    <h2 class="font-game font-bold text-white" id="welcome-title">¡Bienvenido!</h2>
+                    <p class="text-xs text-slate-300">Practica, gana XP y mejora tu castellano. Contenido adaptado a ti.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="flex space-x-2 overflow-x-auto pb-2 mb-6">
+            <button onclick="switchTab('penalty')" id="tab-btn-penalty" class="tab-btn active px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-bullseye text-amber-400 mr-1"></i> Penalty</button>
+            <button onclick="switchTab('pictionary')" id="tab-btn-pictionary" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-images text-emerald-400 mr-1"></i> Pictionary</button>
+            <button onclick="switchTab('flashcards')" id="tab-btn-flashcards" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-volume-high text-blue-400 mr-1"></i> Tarjetas</button>
+            <button onclick="switchTab('cuentos')" id="tab-btn-cuentos" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-book text-purple-400 mr-1"></i> Cuentos</button>
+            <button onclick="switchTab('tienda')" id="tab-btn-tienda" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-gift text-pink-400 mr-1"></i> Tienda</button>
+        </div>
+
+        <section id="tab-penalty" class="tab-content space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-6 card-glow text-center">
+                <div id="penalty-category-tag" class="inline-block text-xs bg-pitch-900/50 text-pitch-300 px-3 py-1 rounded-full mb-4">—</div>
+                <button onclick="playCurrentTTS()" class="bg-pitch-600 hover:bg-pitch-500 text-white w-16 h-16 rounded-2xl text-2xl mb-4"><i class="fa-solid fa-volume-high"></i></button>
+                <div id="penalty-spanish-text" class="text-2xl font-game font-bold text-white mb-1">—</div>
+                <div id="penalty-native" class="text-xs text-amber-300 mb-6">—</div>
+                <div id="penalty-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+                <div id="goal-result-box" class="hidden mt-6 bg-emerald-950/90 border-2 border-emerald-400 rounded-2xl p-6">
+                    <div class="text-4xl">⚽🔥</div>
+                    <h3 class="text-2xl font-game text-amber-400">¡Bien!</h3>
+                    <button onclick="nextPenalty()" class="mt-3 bg-amber-500 text-stadium-950 font-bold px-6 py-2 rounded-xl">Siguiente</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-pictionary" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-6 card-glow">
+                <h3 class="font-game text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-images text-emerald-400"></i> Pictionary / Diccionario Visual</h3>
+                <p class="text-xs text-slate-400 mb-4">Elige una categoría. Escucha, mira y aprende. Traducción según tu país.</p>
+                <div class="flex flex-wrap gap-2 mb-4" id="pictionary-categories"></div>
+                <div id="pictionary-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+            </div>
+        </section>
+
+        <section id="tab-flashcards" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-6 card-glow">
+                <h3 class="font-game text-lg mb-4"><i class="fa-solid fa-volume-high text-blue-400"></i> Tarjetas parlantes</h3>
+                <div id="flashcards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </section>
+
+        <section id="tab-cuentos" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-6 card-glow">
+                <h3 class="font-game text-lg mb-4"><i class="fa-solid fa-book text-purple-400"></i> Cuentos</h3>
+                <div id="cuentos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+        </section>
+
+        <section id="tab-tienda" class="tab-content hidden space-y-6">
+            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-6 card-glow">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-game text-lg"><i class="fa-solid fa-gift text-pink-400"></i> Tienda</h3>
+                    <span class="text-amber-400 font-bold" id="shop-xp-balance">0 XP</span>
+                </div>
+                <div id="shop-container" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- TEACHER MODAL -->
+    <div id="teacher-modal" class="modal hidden">
+        <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-game text-lg">Panel del Profesor</h3>
+                <button onclick="toggleTeacherModal()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-4 text-sm">
+                <div class="grid grid-cols-2 gap-3 bg-stadium-800 p-3 rounded-xl">
+                    <div><strong>Alumno:</strong> <span id="teacher-name">—</span></div>
+                    <div><strong>País:</strong> <span id="teacher-country">—</span></div>
+                    <div><strong>Nivel:</strong> <span id="teacher-level">—</span></div>
+                    <div><strong>Afición:</strong> <span id="teacher-hobby">—</span></div>
+                </div>
+
+                <div class="border-t border-slate-700 pt-3">
+                    <label class="block text-xs font-bold mb-1">Ajustar nivel</label>
+                    <select id="override-level" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 mb-2">
+                        <option value="0">0 - Super Principiante</option>
+                        <option value="1">1 - Iniciación</option>
+                        <option value="2">2 - Básico</option>
+                        <option value="3">3 - Intermedio</option>
+                    </select>
+                    <button onclick="overrideLevel()" class="bg-amber-500 text-stadium-950 font-bold px-4 py-2 rounded-xl text-xs">Aplicar</button>
+                </div>
+
+                <div class="border-t border-slate-700 pt-3">
+                    <h4 class="font-bold text-amber-400 mb-2">Nueva observación oral</h4>
+                    <div class="space-y-2">
+                        <input id="obs-activity" type="text" placeholder="Actividad (ej: Penalty, Recreo, Cuento...)" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs">
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="obs-fluency" class="bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                <option value="1">Fluidez 1 (muy baja)</option>
+                                <option value="2">Fluidez 2</option>
+                                <option value="3">Fluidez 3</option>
+                                <option value="4">Fluidez 4</option>
+                                <option value="5">Fluidez 5 (muy buena)</option>
+                            </select>
+                            <select id="obs-comp" class="bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                <option value="1">Comprensión 1</option>
+                                <option value="2">Comprensión 2</option>
+                                <option value="3">Comprensión 3</option>
+                                <option value="4">Comprensión 4</option>
+                                <option value="5">Comprensión 5</option>
+                            </select>
+                        </div>
+                        <textarea id="obs-notes" placeholder="Notas del profesor..." class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-xs h-16"></textarea>
+                        <button onclick="addObservation()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs">Guardar observación</button>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-700 pt-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-bold text-white">Observaciones</h4>
+                        <button onclick="generateReport()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg">Generar informe</button>
+                    </div>
+                    <div id="observations-list" class="space-y-2 max-h-48 overflow-y-auto text-xs"></div>
+                </div>
+
+                <button onclick="resetAll()" class="w-full mt-2 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-xl text-xs">Reiniciar perfil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPORT MODAL -->
+    <div id="report-modal" class="modal hidden">
+        <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-game text-lg">Informe de Progreso</h3>
+                <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="text-slate-400">✕</button>
+            </div>
+            <div id="report-content" class="text-sm space-y-2 text-slate-200"></div>
+            <button onclick="window.print()" class="mt-4 w-full bg-slate-700 text-white py-2 rounded-xl text-xs">Imprimir / Guardar PDF</button>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            name: '', age: 8, country: 'Ucrania', hobby: 'futbol', level: 1, xp: 0,
+            completedMissions: [], observations: []
+        };
+
+        const LEVELS = {
+            0: { name: 'Super Principiante', nextXP: 100 },
+            1: { name: 'Nivel 1 - Iniciación', nextXP: 250 },
+            2: { name: 'Nivel 2 - Básico', nextXP: 500 },
+            3: { name: 'Nivel 3 - Intermedio', nextXP: 1000 }
+        };
+
+        const THEMES = {
+            futbol: { icon: 'fa-futbol', color: 'theme-futbol', name: 'Fútbol' },
+            animales: { icon: 'fa-paw', color: 'theme-animales', name: 'Animales' },
+            arte: { icon: 'fa-palette', color: 'theme-arte', name: 'Arte' },
+            musica: { icon: 'fa-music', color: 'theme-musica', name: 'Música' },
+            juegos: { icon: 'fa-gamepad', color: 'theme-juegos', name: 'Videojuegos' },
+            naturaleza: { icon: 'fa-tree', color: 'theme-naturaleza', name: 'Naturaleza' }
+        };
+
+        // Sample translations by country (expandable)
+        const TRANSLATIONS = {
+            'Ucrania': {
+                '¡Hola!': 'Привіт!',
+                'Me llamo...': 'Мене звати...',
+                'la cama': 'ліжко',
+                'la mesa': 'стіл',
+                'el plato': 'тарілка',
+                'los zapatos': 'взуття',
+                'el cepillo de dientes': 'зубна щітка'
+            },
+            'Marruecos': {
+                '¡Hola!': 'مرحبا',
+                'Me llamo...': 'اسمي...',
+                'la cama': 'السرير',
+                'la mesa': 'طاولة',
+                'el plato': 'صحن',
+                'los zapatos': 'الأحذية',
+                'el cepillo de dientes': 'فرشاة الأسنان'
+            },
+            'China': {
+                '¡Hola!': '你好',
+                'Me llamo...': '我叫...',
+                'la cama': '床',
+                'la mesa': '桌子',
+                'el plato': '盘子'
+            }
+        };
+
+        const placementQuestions = [
+            { type: 'listen', es: '¡Hola! Me llamo Ana.', options: ['Hola, me llamo Ana', 'Adiós', 'Gracias'], correct: 0 },
+            { type: 'mcq', question: '¿Cómo te llamas?', options: ['Me llamo...', 'Tengo 8 años', 'Hasta luego'], correct: 0 },
+            { type: 'listen', es: '¿Puedo ir al baño?', options: ['¿Puedo ir al baño?', '¿Qué hora es?', 'Gracias'], correct: 0 },
+            { type: 'mcq', question: 'Elige: pedir la pelota', options: ['¡Pasa la pelota!', 'Abre el libro', 'Adiós'], correct: 0 },
+            { type: 'listen', es: 'Tengo siete años.', options: ['Tengo 7 años', 'Me llamo siete', 'Soy del colegio'], correct: 0 },
+            { type: 'mcq', question: '¿Qué es "¡Buenos días!"?', options: ['Saludo de la mañana', 'Despedida', 'Comida'], correct: 0 }
+        ];
+
+        let currentTestIndex = 0, testScore = 0;
+
+        const contentByLevel = {
+            0: { 
+                penalty: [
+                    { es: "¡Hola!", options: ["¡Hola!", "¡Adiós!", "Gracias"], correct: 0, cat: "Saludos" },
+                    { es: "¡Adiós!", options: ["¡Hola!", "¡Adiós!", "Por favor"], correct: 1, cat: "Saludos" },
+                    { es: "Me llamo...", options: ["Me llamo...", "Tengo hambre", "¿Qué hora es?"], correct: 0, cat: "Presentación" },
+                    { es: "Gracias", options: ["De nada", "Gracias", "Perdón"], correct: 1, cat: "Cortesía" },
+                    { es: "Por favor", options: ["Por favor", "Adiós", "Hola"], correct: 0, cat: "Cortesía" }
+                ], 
+                flashcards: [
+                    { es: "¡Hola!", icon: "fa-hand" },
+                    { es: "¡Adiós!", icon: "fa-hand-wave" },
+                    { es: "Me llamo...", icon: "fa-user" },
+                    { es: "Gracias", icon: "fa-heart" }
+                ] 
+            },
+            1: { 
+                penalty: [
+                    { es: "¡Pasa la pelota!", options: ["¡Pasa la pelota!", "¡Buen gol!", "¡Tengo hambre!"], correct: 0, cat: "Recreo" },
+                    { es: "¿Puedo ir al baño?", options: ["¿Puedo ir al baño?", "No entiendo", "Gracias"], correct: 0, cat: "Peticiones" },
+                    { es: "¿Puedo jugar con vosotros?", options: ["¿Qué hora es?", "¿Puedo jugar con vosotros?", "Hasta mañana"], correct: 1, cat: "Recreo" },
+                    { es: "¡Buenos días!", options: ["¡Buenos días!", "Buenas noches", "Adiós"], correct: 0, cat: "Saludos" },
+                    { es: "¿Cómo estás?", options: ["Me llamo...", "¿Cómo estás?", "Tengo 8 años"], correct: 1, cat: "Conversación" },
+                    { es: "Hasta mañana", options: ["Hola", "Hasta mañana", "Por favor"], correct: 1, cat: "Despedida" }
+                ], 
+                flashcards: [
+                    { es: "¡Pasa la pelota!", icon: "fa-futbol" },
+                    { es: "¿Puedo ir al baño?", icon: "fa-restroom" },
+                    { es: "¿Puedo jugar?", icon: "fa-users" },
+                    { es: "¡Buenos días!", icon: "fa-sun" }
+                ] 
+            },
+            2: { 
+                penalty: [
+                    { es: "Me gusta el fútbol.", options: ["Me gusta el fútbol", "Tengo hambre", "¿Qué página?"], correct: 0, cat: "Gustos" },
+                    { es: "¡Buen partido, equipo!", options: ["Hola maestro", "¡Buen partido, equipo!", "Abre el libro"], correct: 1, cat: "Fútbol" },
+                    { es: "Necesito ayuda, por favor", options: ["Necesito ayuda", "Gracias", "Adiós"], correct: 0, cat: "Peticiones" },
+                    { es: "¿Qué página es?", options: ["¿Qué página es?", "Tengo hambre", "Me llamo"], correct: 0, cat: "Clase" },
+                    { es: "Muchas gracias", options: ["De nada", "Muchas gracias", "Perdón"], correct: 1, cat: "Cortesía" },
+                    { es: "Me gusta dibujar", options: ["Me gusta dibujar", "Tengo frío", "¿Dónde está?"], correct: 0, cat: "Gustos" }
+                ], 
+                flashcards: [
+                    { es: "Me gusta...", icon: "fa-heart" },
+                    { es: "¡Buen partido!", icon: "fa-trophy" },
+                    { es: "Necesito ayuda", icon: "fa-hand-holding-hand" },
+                    { es: "¿Qué página es?", icon: "fa-book" }
+                ] 
+            },
+            3: { 
+                penalty: [
+                    { es: "¿Cuándo es tu cumpleaños?", options: ["¿Cuándo es tu cumpleaños?", "¿Qué hora es?", "Adiós"], correct: 0, cat: "Preguntas" },
+                    { es: "¿Dónde vives?", options: ["¿Dónde vives?", "Me llamo", "Tengo hambre"], correct: 0, cat: "Preguntas" },
+                    { es: "¿Cuántos años tienes?", options: ["¿Cuántos años tienes?", "¿Cómo estás?", "Hasta luego"], correct: 0, cat: "Preguntas" },
+                    { es: "Mi cumpleaños es en mayo", options: ["Mi cumpleaños es en mayo", "Me gusta mayo", "Hoy es mayo"], correct: 0, cat: "Fechas" },
+                    { es: "Vivo en España", options: ["Vivo en España", "Soy de España", "Me gusta España"], correct: 0, cat: "Lugar" },
+                    { es: "¿Puedes ayudarme, por favor?", options: ["¿Puedes ayudarme?", "Gracias", "Adiós"], correct: 0, cat: "Peticiones" },
+                    { es: "El mes de enero", options: ["Enero", "Febrero", "Marzo"], correct: 0, cat: "Meses" },
+                    { es: "Me gusta mucho jugar al fútbol", options: ["Me gusta jugar al fútbol", "No me gusta", "Tengo un balón"], correct: 0, cat: "Gustos" }
+                ], 
+                flashcards: [
+                    { es: "¿Cuándo es tu cumpleaños?", icon: "fa-birthday-cake" },
+                    { es: "¿Dónde vives?", icon: "fa-map" },
+                    { es: "Los meses del año", icon: "fa-calendar" },
+                    { es: "¿Cuántos años tienes?", icon: "fa-cake" }
+                ] 
+            }
+        };
+
+        // Pictionary data (inspired by the PDFs)
+        const pictionaryData = {
+            'Ropa': [
+                { es: 'los guantes', uk: 'рукавички', ar: 'القفازات' },
+                { es: 'la gorra', uk: 'шапка', ar: 'القبعة' },
+                { es: 'los zapatos', uk: 'взуття', ar: 'الأحذية' },
+                { es: 'la camiseta', uk: 'футболка', ar: 'القميص' }
+            ],
+            'Casa': [
+                { es: 'la cama', uk: 'ліжко', ar: 'السرير' },
+                { es: 'la mesa', uk: 'стіл', ar: 'طاولة' },
+                { es: 'la silla', uk: 'стілець', ar: 'كرسي' },
+                { es: 'la puerta', uk: 'двері', ar: 'باب' },
+                { es: 'la ventana', uk: 'вікно', ar: 'نافذة' }
+            ],
+            'Cocina': [
+                { es: 'el plato', uk: 'тарілка', ar: 'صحن' },
+                { es: 'el vaso', uk: 'склянка', ar: 'كأس' },
+                { es: 'la cuchara', uk: 'ложка', ar: 'ملعقة' },
+                { es: 'el tenedor', uk: 'виделка', ar: 'شوكة' }
+            ],
+            'Higiene': [
+                { es: 'el cepillo de dientes', uk: 'зубна щітка', ar: 'فرشاة الأسنان' },
+                { es: 'el jabón', uk: 'мило', ar: 'الصابون' },
+                { es: 'la toalla', uk: 'рушник', ar: 'منشفة' }
+            ],
+            'Parque': [
+                { es: 'la pelota', uk: 'м\'яч', ar: 'كرة' },
+                { es: 'el columpio', uk: 'гойдалка', ar: 'أرجوحة' },
+                { es: 'la bicicleta', uk: 'велосипед', ar: 'دراجة' }
+            ]
+        };
+
+        const cuentos = [
+            { title: "La ovejita que vino a cenar", url: "https://youtu.be/ee-Wkw2SnnI" },
+            { title: "El monstruo de colores", url: "https://www.youtube.com/watch?v=S-PTa20NNrI" },
+            { title: "La pequeña oruga glotona", url: "https://www.youtube.com/watch?v=SjiGJWylfHc" },
+            { title: "Los lobos que vinieron a cenar", url: "https://youtu.be/hOZymV3lj-I" }
+        ];
+
+        const shopItems = [
+            { id: 'r1', title: 'Elegir actividad', cost: 50, icon: '⭐' },
+            { id: 'r2', title: 'Capitán del recreo', cost: 100, icon: '👑' },
+            { id: 'r3', title: 'Vídeo 5 min', cost: 150, icon: '🎵' },
+            { id: 'r4', title: 'Sello especial', cost: 30, icon: '🌟' }
+        ];
+
+        function loadState() {
+            const saved = localStorage.getItem('ligaHablaStateV2');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                document.getElementById('setup-modal').classList.add('hidden');
+                applyTheme();
+                updateHUD();
+                renderAll();
+            }
+        }
+
+        function saveState() { localStorage.setItem('ligaHablaStateV2', JSON.stringify(gameState)); }
+
+        function applyTheme() {
+            const t = THEMES[gameState.hobby] || THEMES.futbol;
+            document.body.className = `min-h-screen flex flex-col font-sans antialiased pb-12 ${t.color}`;
+            const icon = document.getElementById('theme-icon');
+            if (icon) icon.className = `fa-solid ${t.icon} text-2xl text-pitch-400`;
+        }
+
+        function updateHUD() {
+            const lvl = LEVELS[gameState.level] || LEVELS[1];
+            const theme = THEMES[gameState.hobby] || THEMES.futbol;
+            document.getElementById('header-name').innerText = gameState.name || 'Alumno';
+            document.getElementById('header-initials').innerText = (gameState.name || 'A').charAt(0).toUpperCase();
+            document.getElementById('header-info').innerText = `${gameState.country || ''} • ${lvl.name}`;
+            document.getElementById('welcome-title').innerText = `¡Hola ${gameState.name || 'campeón'}!`;
+            document.getElementById('xp-text-display').innerText = `${gameState.xp} / ${lvl.nextXP}`;
+            document.getElementById('xp-bar-fill').style.width = Math.min(100, (gameState.xp / lvl.nextXP) * 100) + '%';
+            const shopBal = document.getElementById('shop-xp-balance');
+            if (shopBal) shopBal.innerText = `${gameState.xp} XP`;
+            // Teacher
+            document.getElementById('teacher-name').innerText = gameState.name || '—';
+            document.getElementById('teacher-country').innerText = gameState.country || '—';
+            document.getElementById('teacher-level').innerText = lvl.name;
+            document.getElementById('teacher-hobby').innerText = theme.name;
+            document.getElementById('override-level').value = gameState.level;
+            renderObservations();
+        }
+
+        function addXP(amount) {
+            gameState.xp += amount;
+            saveState();
+            updateHUD();
+        }
+
+        // Test
+        function startPlacementTest() {
+            const name = document.getElementById('input-name').value.trim();
+            if (!name) { alert('Escribe tu nombre'); return; }
+            gameState.name = name;
+            gameState.age = parseInt(document.getElementById('input-age').value);
+            gameState.country = document.getElementById('input-country').value;
+            gameState.hobby = document.getElementById('input-hobby').value;
+            currentTestIndex = 0;
+            testScore = 0;
+            document.getElementById('setup-step-profile').classList.add('hidden');
+            document.getElementById('setup-step-test').classList.remove('hidden');
+            showTestQuestion();
+        }
+
+        function showTestQuestion() {
+            if (currentTestIndex >= placementQuestions.length) { finishTest(); return; }
+            const q = placementQuestions[currentTestIndex];
+            document.getElementById('test-progress').innerText = `${currentTestIndex + 1} / ${placementQuestions.length}`;
+            const area = document.getElementById('test-question-area');
+            const optionsDiv = document.getElementById('test-options');
+            optionsDiv.innerHTML = '';
+            document.getElementById('test-feedback').classList.add('hidden');
+
+            if (q.type === 'listen') {
+                area.innerHTML = `<div class="text-center"><button onclick="speakSpanish('${q.es}')" class="bg-pitch-600 text-white px-6 py-3 rounded-xl mb-3"><i class="fa-solid fa-volume-high mr-2"></i> Escuchar</button><p class="text-sm text-slate-300">Elige la opción correcta</p></div>`;
+            } else {
+                area.innerHTML = `<p class="text-lg font-bold text-white text-center">${q.question}</p>`;
+            }
+
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3 rounded-xl border border-slate-700 text-left';
+                btn.innerText = opt;
+                btn.onclick = () => answerTest(i, q.correct);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function answerTest(selected, correct) {
+            const feedback = document.getElementById('test-feedback');
+            if (selected === correct) { testScore++; feedback.innerHTML = '<span class="text-emerald-400 font-bold">¡Correcto!</span>'; }
+            else feedback.innerHTML = '<span class="text-rose-400 font-bold">Casi...</span>';
+            feedback.classList.remove('hidden');
+            setTimeout(() => { currentTestIndex++; showTestQuestion(); }, 800);
+        }
+
+        function finishTest() {
+            const percent = (testScore / placementQuestions.length) * 100;
+            let level = 0;
+            if (percent >= 80) level = 3;
+            else if (percent >= 55) level = 2;
+            else if (percent >= 30) level = 1;
+            gameState.level = level;
+            document.getElementById('setup-step-test').classList.add('hidden');
+            document.getElementById('setup-step-result').classList.remove('hidden');
+            const lvl = LEVELS[level];
+            document.getElementById('result-level-text').innerHTML = `Nivel asignado: <strong class="text-amber-400">${lvl.name}</strong><br>Puntuación: ${testScore}/${placementQuestions.length}`;
+        }
+
+        function finishSetup() {
+            document.getElementById('setup-modal').classList.add('hidden');
+            applyTheme();
+            saveState();
+            updateHUD();
+            renderAll();
+            if (gameState.xp === 0) addXP(15);
+        }
+
+        function getNative(word) {
+            const map = TRANSLATIONS[gameState.country] || {};
+            return map[word] || '';
+        }
+
+        function getCurrentContent() { return contentByLevel[gameState.level] || contentByLevel[1]; }
+
+        let currentPenaltyIndex = 0;
+
+        function renderPenalty() {
+            const content = getCurrentContent();
+            const q = content.penalty[currentPenaltyIndex % content.penalty.length];
+            document.getElementById('penalty-spanish-text').innerText = q.es;
+            document.getElementById('penalty-category-tag').innerText = q.cat;
+            document.getElementById('penalty-native').innerText = getNative(q.es) || '';
+            document.getElementById('goal-result-box').classList.add('hidden');
+            const grid = document.getElementById('penalty-options-grid');
+            grid.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3.5 rounded-xl border border-slate-700';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    if (i === q.correct) {
+                        document.getElementById('goal-result-box').classList.remove('hidden');
+                        addXP(20);
+                    }
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function nextPenalty() { currentPenaltyIndex++; renderPenalty(); }
+        function playCurrentTTS() {
+            const content = getCurrentContent();
+            const q = content.penalty[currentPenaltyIndex % content.penalty.length];
+            speakSpanish(q.es);
+        }
+
+        function renderPictionaryCategories() {
+            const container = document.getElementById('pictionary-categories');
+            container.innerHTML = '';
+            Object.keys(pictionaryData).forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-stadium-800 hover:bg-pitch-700 text-white text-xs px-3 py-1.5 rounded-lg border border-slate-700';
+                btn.innerText = cat;
+                btn.onclick = () => renderPictionary(cat);
+                container.appendChild(btn);
+            });
+            renderPictionary('Casa');
+        }
+
+        function renderPictionary(category) {
+            const grid = document.getElementById('pictionary-grid');
+            grid.innerHTML = '';
+            const items = pictionaryData[category] || [];
+            items.forEach(item => {
+                let native = '';
+                if (gameState.country === 'Ucrania') native = item.uk;
+                else if (gameState.country === 'Marruecos') native = item.ar;
+                else native = getNative(item.es);
+
+                const card = document.createElement('div');
+                card.className = 'bg-stadium-950 border border-slate-800 rounded-2xl p-3 text-center hover:border-pitch-500 transition cursor-pointer';
+                card.innerHTML = `
+                    <div class="text-3xl mb-2">🖼️</div>
+                    <div class="font-bold text-white text-sm">${item.es}</div>
+                    ${native ? `<div class="text-xs text-amber-300 mt-1">${native}</div>` : ''}
+                    <button onclick="speakSpanish('${item.es}'); event.stopPropagation();" class="mt-2 bg-pitch-600 text-white text-xs px-3 py-1 rounded-lg"><i class="fa-solid fa-volume-high"></i></button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderFlashcards() {
+            const content = getCurrentContent();
+            const grid = document.getElementById('flashcards-grid');
+            grid.innerHTML = '';
+            content.flashcards.forEach(card => {
+                const native = getNative(card.es);
+                const el = document.createElement('div');
+                el.className = 'bg-stadium-950 border border-slate-800 rounded-2xl p-4';
+                el.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <i class="fa-solid ${card.icon} text-pitch-400"></i>
+                        <button onclick="speakSpanish('${card.es}')" class="bg-pitch-600 text-white p-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+                    <h4 class="font-bold text-white">${card.es}</h4>
+                    ${native ? `<div class="text-xs text-amber-300 mt-1">${native}</div>` : ''}
+                `;
+                grid.appendChild(el);
+            });
+        }
+
+        function renderCuentos() {
+            const container = document.getElementById('cuentos-container');
+            container.innerHTML = '';
+            cuentos.forEach(c => {
+                const div = document.createElement('a');
+                div.href = c.url; div.target = '_blank';
+                div.className = 'block bg-stadium-950 border border-slate-800 rounded-2xl p-4 hover:border-purple-500';
+                div.innerHTML = `<h4 class="font-bold text-white">${c.title}</h4><p class="text-xs text-purple-300">Ver en YouTube →</p>`;
+                container.appendChild(div);
+            });
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shop-container');
+            container.innerHTML = '';
+            shopItems.forEach(item => {
+                const can = gameState.xp >= item.cost;
+                const div = document.createElement('div');
+                div.className = 'bg-stadium-950 border border-slate-800 rounded-2xl p-4 text-center';
+                div.innerHTML = `
+                    <div class="text-3xl mb-2">${item.icon}</div>
+                    <h4 class="text-xs font-bold text-white">${item.title}</h4>
+                    <div class="text-amber-400 text-xs font-bold my-1">${item.cost} XP</div>
+                    <button onclick="redeem('${item.id}')" ${!can ? 'disabled' : ''} class="w-full ${can ? 'bg-purple-600 text-white' : 'bg-slate-800 text-slate-500'} text-xs font-bold py-2 rounded-xl">${can ? 'Canjear' : 'Faltan XP'}</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function redeem(id) {
+            const item = shopItems.find(x => x.id === id);
+            if (!item || gameState.xp < item.cost) return;
+            gameState.xp -= item.cost;
+            saveState(); updateHUD(); renderShop();
+            alert(`¡Canjeado! ${item.title}\nCódigo: ANDEL-${Math.floor(1000 + Math.random()*9000)}`);
+        }
+
+        function renderAll() {
+            renderPenalty();
+            renderPictionaryCategories();
+            renderFlashcards();
+            renderCuentos();
+            renderShop();
+        }
+
+        // Observations
+        function addObservation() {
+            const activity = document.getElementById('obs-activity').value.trim();
+            if (!activity) { alert('Escribe la actividad'); return; }
+            const obs = {
+                date: new Date().toLocaleDateString('es-ES'),
+                activity,
+                fluency: document.getElementById('obs-fluency').value,
+                comprehension: document.getElementById('obs-comp').value,
+                notes: document.getElementById('obs-notes').value
+            };
+            if (!gameState.observations) gameState.observations = [];
+            gameState.observations.unshift(obs);
+            saveState();
+            renderObservations();
+            document.getElementById('obs-activity').value = '';
+            document.getElementById('obs-notes').value = '';
+            alert('Observación guardada');
+        }
+
+        function renderObservations() {
+            const list = document.getElementById('observations-list');
+            if (!list) return;
+            list.innerHTML = '';
+            const obs = gameState.observations || [];
+            if (obs.length === 0) { list.innerHTML = '<p class="text-slate-500">Sin observaciones aún.</p>'; return; }
+            obs.forEach(o => {
+                const div = document.createElement('div');
+                div.className = 'bg-stadium-800 p-2 rounded-lg';
+                div.innerHTML = `<strong>${o.date}</strong> — ${o.activity}<br>Fluidez: ${o.fluency}/5 · Comprensión: ${o.comprehension}/5<br><span class="text-slate-400">${o.notes || ''}</span>`;
+                list.appendChild(div);
+            });
+        }
+
+        function generateReport() {
+            const lvl = LEVELS[gameState.level] || LEVELS[1];
+            const obs = gameState.observations || [];
+            let html = `
+                <p><strong>Alumno:</strong> ${gameState.name}</p>
+                <p><strong>País:</strong> ${gameState.country} · <strong>Edad:</strong> ${gameState.age}</p>
+                <p><strong>Nivel actual:</strong> ${lvl.name}</p>
+                <p><strong>XP total:</strong> ${gameState.xp}</p>
+                <p><strong>Afición:</strong> ${(THEMES[gameState.hobby] || {}).name || ''}</p>
+                <hr class="my-2 border-slate-700">
+                <p><strong>Observaciones orales (${obs.length}):</strong></p>
+            `;
+            if (obs.length === 0) html += '<p class="text-slate-400">Ninguna registrada.</p>';
+            else obs.slice(0, 5).forEach(o => {
+                html += `<p class="text-xs mt-1">• ${o.date} — ${o.activity} (F:${o.fluency}/C:${o.comprehension}) ${o.notes}</p>`;
+            });
+            html += `<p class="mt-3 text-xs text-slate-400">Generado el ${new Date().toLocaleDateString('es-ES')} · Colegio Andel</p>`;
+            document.getElementById('report-content').innerHTML = html;
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function speakSpanish(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = 'es-ES';
+                utter.rate = 0.85;
+                window.speechSynthesis.speak(utter);
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-btn-' + tabId).classList.add('active');
+        }
+
+        function toggleTeacherModal() { document.getElementById('teacher-modal').classList.toggle('hidden'); }
+
+        function overrideLevel() {
+            gameState.level = parseInt(document.getElementById('override-level').value);
+            saveState(); updateHUD(); renderAll();
+            alert('Nivel actualizado');
+        }
+
+        function resetAll() {
+            if (confirm('¿Reiniciar todo?')) {
+                localStorage.removeItem('ligaHablaStateV2');
+                location.reload();
+            }
+        }
+
+        window.onload = function() { loadState(); };
+    </script>
+</body>
+</html>
