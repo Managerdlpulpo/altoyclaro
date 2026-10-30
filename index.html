@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div id="setup-step-test" class="hidden">
-                <div class="flex justify-between mb-4"><h3 class="font-game text-xl">Test de Nivel</h3><span id="test-progress" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">1/5</span></div>
+                <div class="flex justify-between mb-4"><h3 class="font-game text-xl">Test de Nivel</h3><span id="test-progress" class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full">Test</span></div>
                 <div id="test-question-area"></div>
                 <div id="test-options" class="space-y-2 mt-4"></div>
                 <div id="test-feedback" class="mt-4 text-sm hidden"></div>
@@ -186,6 +186,10 @@
                 <p class="text-xs text-slate-400 mb-4" id="prog-nombre"></p>
                 <div id="prog-resumen" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"></div>
                 <div id="prog-tendencia" class="text-sm mb-4"></div>
+                <div id="prog-test-card" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
+                    <h4 class="font-bold text-sm text-white mb-2"><i class="fa-solid fa-compass text-amber-400 mr-1"></i> Test de nivel (escuchar, palabras y conversación)</h4>
+                    <div id="prog-test"></div>
+                </div>
                 <div class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
                     <div class="flex justify-between items-center mb-3">
                         <h4 class="font-bold text-sm text-white">% de aciertos</h4>
@@ -275,6 +279,10 @@
                     <option value="0">Nivel 0</option><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option>
                 </select>
                 <button onclick="overrideLevel()" class="bg-amber-500 text-stadium-950 font-bold px-4 py-2 rounded-xl text-xs">Cambiar nivel</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-repetir-test" onclick="repetirTestNivel()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-2 rounded-xl text-xs">🧭 Repetir test de nivel</button>
+                    <button id="btn-ver-test" onclick="verUltimoTest()" class="bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-white font-bold py-2 rounded-xl text-xs">📋 Resultados del test</button>
+                </div>
                 <button onclick="toggleTeacherModal(); switchTab('progreso')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs"><i class="fa-solid fa-chart-line mr-1"></i> Ver progreso al hablar</button>
                 <!-- Voz de la app -->
                 <div class="bg-stadium-800 p-3 rounded-xl space-y-2">
@@ -337,15 +345,6 @@
             { es: 'la camiseta', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop', cat: 'Ropa', uk: 'футболка', ar: 'قميص' }
         ];
 
-        const placementQuestions = [
-            { type:'listen', es:'¡Hola!', options:['¡Hola!','Adiós','Gracias'], correct:0 },
-            { type:'mcq', question:'¿Cómo te llamas?', options:['Me llamo...','Tengo 8 años','Hasta luego'], correct:0 },
-            { type:'listen', es:'¿Puedo ir al baño?', options:['¿Puedo ir al baño?','¿Qué hora es?','Gracias'], correct:0 },
-            { type:'mcq', question:'Elige la pelota', options:['¡Pasa la pelota!','Abre el libro','Adiós'], correct:0 },
-            { type:'listen', es:'Tengo siete años.', options:['Tengo 7 años','Me llamo siete','Soy del colegio'], correct:0 }
-        ];
-        let currentTestIndex=0, testScore=0;
-
         const contentByLevel = {
             1: { penalty: [
                 {es:"¡Pasa la pelota!", options:["¡Pasa la pelota!","¡Buen gol!","¡Tengo hambre!"], correct:0},
@@ -385,13 +384,15 @@
             document.getElementById('header-info').innerText = `${gameState.country} • ${lvl.name}`;
             document.getElementById('welcome-title').innerText = `¡Hola ${gameState.name || 'campeón'}!`;
             document.getElementById('xp-text-display').innerText = gameState.xp;
-            document.getElementById('teacher-info').innerHTML = `<strong>${gameState.name}</strong><br>${gameState.country} · Nivel ${gameState.level}`;
+            const ultTest = (gameState.pruebas || []).slice(-1)[0];
+            document.getElementById('teacher-info').innerHTML = `<strong>${esc(gameState.name)}</strong><br>${esc(gameState.country)} · Nivel ${gameState.level}` +
+                (ultTest ? `<br><span class="text-xs text-slate-300">Último test (${new Date(ultTest.t).toLocaleDateString('es-ES')}): 👂 ${ultTest.comp}% · 🗣️ ${ultTest.voc}% · 💬 ${ultTest.conv}%</span>` : '<br><span class="text-xs text-slate-400">Sin test de nivel nuevo todavía.</span>');
             document.getElementById('override-level').value = gameState.level;
         }
 
         function addXP(n) { gameState.xp += n; saveState(); updateHUD(); }
 
-        // Test functions (shortened)
+        // Test de nivel (adaptativo, con conversación): ver test-nivel.js
         function startPlacementTest() {
             const name = document.getElementById('input-name').value.trim();
             if (!name) { alert('Escribe tu nombre'); return; }
@@ -399,46 +400,7 @@
             gameState.age = +document.getElementById('input-age').value;
             gameState.country = document.getElementById('input-country').value;
             gameState.hobby = document.getElementById('input-hobby').value;
-            currentTestIndex = 0; testScore = 0;
-            document.getElementById('setup-step-profile').classList.add('hidden');
-            document.getElementById('setup-step-test').classList.remove('hidden');
-            showTestQuestion();
-        }
-        function showTestQuestion() {
-            if (currentTestIndex >= placementQuestions.length) { finishTest(); return; }
-            const q = placementQuestions[currentTestIndex];
-            document.getElementById('test-progress').innerText = `${currentTestIndex+1}/${placementQuestions.length}`;
-            const area = document.getElementById('test-question-area');
-            const opts = document.getElementById('test-options');
-            opts.innerHTML = '';
-            document.getElementById('test-feedback').classList.add('hidden');
-            if (q.type === 'listen') {
-                area.innerHTML = `<div class="text-center"><button onclick="speakSpanish('${q.es}')" class="bg-pitch-600 text-white px-6 py-3 rounded-xl mb-3"><i class="fa-solid fa-volume-high mr-2"></i>Escuchar</button></div>`;
-            } else area.innerHTML = `<p class="text-lg font-bold text-white text-center">${q.question}</p>`;
-
-            const indexed = q.options.map((opt, i) => ({ opt, isCorrect: i === q.correct }));
-            const shuffled = shuffle(indexed);
-            shuffled.forEach(item => {
-                const b = document.createElement('button');
-                b.className = 'w-full bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3 rounded-xl border border-slate-700';
-                b.innerText = item.opt;
-                b.onclick = () => answerTest(item.isCorrect);
-                opts.appendChild(b);
-            });
-        }
-        function answerTest(isCorrect) {
-            const fb = document.getElementById('test-feedback');
-            if (isCorrect) { testScore++; fb.innerHTML = '<span class="text-emerald-400">¡Correcto!</span>'; decir(FRASES_VOZ.correcto); }
-            else { fb.innerHTML = '<span class="text-rose-400">Casi...</span>'; decir(FRASES_VOZ.casi); }
-            fb.classList.remove('hidden');
-            setTimeout(() => { currentTestIndex++; showTestQuestion(); }, 700);
-        }
-        function finishTest() {
-            const p = (testScore / placementQuestions.length)*100;
-            gameState.level = p>=80?3 : p>=50?2 : p>=25?1 : 0;
-            document.getElementById('setup-step-test').classList.add('hidden');
-            document.getElementById('setup-step-result').classList.remove('hidden');
-            document.getElementById('result-level-text').innerHTML = `Nivel: <strong class="text-amber-400">${LEVELS[gameState.level].name}</strong><br>${testScore}/${placementQuestions.length}`;
+            iniciarTestNivel({ repeticion: false });
         }
         function finishSetup() {
             document.getElementById('setup-modal').classList.add('hidden');
@@ -620,6 +582,7 @@
             if (confirm('¿Reiniciar? Se borrará el perfil y también el progreso y las grabaciones de voz de este dispositivo.')) {
                 localStorage.removeItem('ligaHablaVisual');
                 localStorage.removeItem('ligaHablaVoz');
+                localStorage.removeItem('ligaHablaTestTextos');
                 const limpiar = (typeof audioClear === 'function') ? audioClear() : Promise.resolve();
                 limpiar.catch(() => {}).finally(() => location.reload());
             }
@@ -629,6 +592,7 @@
     </script>
     <script src="voz.js"></script>
     <script src="hablar.js"></script>
+    <script src="test-nivel.js"></script>
     <script src="sync.js"></script>
 </body>
 </html>

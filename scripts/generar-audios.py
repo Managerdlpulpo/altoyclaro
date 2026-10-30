@@ -2,9 +2,10 @@
 """Genera los audios naturales de la app (audio/*.mp3 + audio/manifest.json) con Piper, en local y gratis.
 
 Lee los textos fijos del código:
-  - index.html: todos los campos  es: '...'  (vocabulario, test inicial, penaltis)
+  - index.html: todos los campos  es: '...'  (vocabulario, penaltis)
   - hablar.js : las frases de ejemplo (const ejemplosFrase = { ... })
   - voz.js    : las frases de ánimo (const FRASES_VOZ = { ... } hasta // FIN FRASES_VOZ)
+  - test-nivel.js: preguntas y respuestas del test de nivel (const FRASES_TEST = { ... } hasta // FIN FRASES_TEST)
 Solo genera lo nuevo o lo que ha cambiado y borra los MP3 que ya no se usan.
 
 Requisitos: Python 3.9+, ffmpeg (con libmp3lame) y  pip install piper-tts
@@ -58,14 +59,14 @@ def textos_fijos():
         lit = literales(linea)
         if len(lit) >= 2:
             textos.append(lit[1])
-    voz = leer('voz.js')
-    m = re.search(r"const FRASES_VOZ = \{(.*?)// FIN FRASES_VOZ", voz, re.S)
-    if not m:
-        sys.exit('No encuentro FRASES_VOZ en voz.js')
-    for linea in m.group(1).splitlines():
-        lit = literales(linea)
-        if lit:
-            textos.append(lit[-1])
+    for archivo, bloque in (('voz.js', 'FRASES_VOZ'), ('test-nivel.js', 'FRASES_TEST')):
+        m = re.search(r"const " + bloque + r" = \{(.*?)// FIN " + bloque, leer(archivo), re.S)
+        if not m:
+            sys.exit(f'No encuentro {bloque} en {archivo}')
+        for linea in m.group(1).splitlines():
+            lit = literales(linea)
+            if lit:
+                textos.append(lit[-1])
     vistos, unicos = set(), []
     for t in textos:
         t = unicodedata.normalize('NFC', re.sub(r'\s+', ' ', t.strip()))

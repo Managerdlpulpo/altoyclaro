@@ -62,25 +62,15 @@
    "v": "9b85c41c",
    "h": "e8a855bd6ff6"
   },
-  "¡Hola!": {
-   "f": "hola.mp3",
-   "v": "e7cbc17e",
-   "h": "e2dd7b0761b0"
+  "¡Pasa la pelota!": {
+   "f": "pasa-la-pelota.mp3",
+   "v": "17d8b6f0",
+   "h": "e1c533aa8a64"
   },
   "¿Puedo ir al baño?": {
    "f": "puedo-ir-al-bano.mp3",
    "v": "6ba51a59",
    "h": "a086be204fac"
-  },
-  "Tengo siete años.": {
-   "f": "tengo-siete-anos.mp3",
-   "v": "048e3378",
-   "h": "0de348a825a3"
-  },
-  "¡Pasa la pelota!": {
-   "f": "pasa-la-pelota.mp3",
-   "v": "17d8b6f0",
-   "h": "e1c533aa8a64"
   },
   "Me gusta el fútbol.": {
    "f": "me-gusta-el-futbol.mp3",
@@ -206,6 +196,161 @@
    "f": "gol-muy-bien.mp3",
    "v": "ea35ff59",
    "h": "e7429924f971"
+  },
+  "¡Vamos a jugar un ratito! Escucha y responde. Si no sabes algo, no pasa nada.": {
+   "f": "vamos-a-jugar-un-ratito-escucha-y-responde-si-no-sabes-algo.mp3",
+   "v": "49f0f4d3",
+   "h": "039a72c21cac"
+  },
+  "Escucha y toca la foto correcta.": {
+   "f": "escucha-y-toca-la-foto-correcta.mp3",
+   "v": "def2aab7",
+   "h": "37777623df34"
+  },
+  "Toca el perro.": {
+   "f": "toca-el-perro.mp3",
+   "v": "2e200323",
+   "h": "0f39a4a41456"
+  },
+  "Toca la manzana.": {
+   "f": "toca-la-manzana.mp3",
+   "v": "87558481",
+   "h": "8a0f5f6b71f0"
+  },
+  "¿Dónde duermes por la noche?": {
+   "f": "donde-duermes-por-la-noche.mp3",
+   "v": "99a7e643",
+   "h": "7e88d83ea573"
+  },
+  "¿Con qué te lavas los dientes?": {
+   "f": "con-que-te-lavas-los-dientes.mp3",
+   "v": "511ca971",
+   "h": "789bbeaa2e76"
+  },
+  "Toca lo que usamos para beber agua.": {
+   "f": "toca-lo-que-usamos-para-beber-agua.mp3",
+   "v": "fde0f30b",
+   "h": "d015ffc1da20"
+  },
+  "Ahora dime qué es cada cosa.": {
+   "f": "ahora-dime-que-es-cada-cosa.mp3",
+   "v": "1c4b43a5",
+   "h": "7446fdc277cb"
+  },
+  "¿Qué es esto?": {
+   "f": "que-es-esto.mp3",
+   "v": "2d4669d5",
+   "h": "7379da8c39c5"
+  },
+  "¡Ahora vamos a hablar un poquito!": {
+   "f": "ahora-vamos-a-hablar-un-poquito.mp3",
+   "v": "b57c5cae",
+   "h": "0e31967f4f2a"
+  },
+  "¡Hola! ¿Qué tal estás?": {
+   "f": "hola-que-tal-estas.mp3",
+   "v": "66361c35",
+   "h": "a81be66fc886"
+  },
+  "Mira esta camiseta. ¿De qué color es?": {
+   "f": "mira-esta-camiseta-de-que-color-es.mp3",
+   "v": "a8210a57",
+   "h": "e37b74b9991d"
+  },
+  "¿Qué haces tú con una pelota?": {
+   "f": "que-haces-tu-con-una-pelota.mp3",
+   "v": "2277a531",
+   "h": "76139c0681c3"
+  },
+  "¿Qué te gusta comer?": {
+   "f": "que-te-gusta-comer.mp3",
+   "v": "efb8157d",
+   "h": "d6d117c939b8"
+  },
+  "Mira esta foto. Cuéntame qué ves.": {
+   "f": "mira-esta-foto-cuentame-que-ves.mp3",
+   "v": "04afcc82",
+   "h": "35ff86502eee"
+  },
+  "¿Qué hiciste ayer?": {
+   "f": "que-hiciste-ayer.mp3",
+   "v": "9e1370ef",
+   "h": "d9ad6cac17a7"
+  },
+  "¿Qué vas a hacer el fin de semana?": {
+   "f": "que-vas-a-hacer-el-fin-de-semana.mp3",
+   "v": "e227f25c",
+   "h": "6d989ae62d70"
+  },
+  "Ahora jugamos a la tienda. Yo soy la frutera.": {
+   "f": "ahora-jugamos-a-la-tienda-yo-soy-la-frutera.mp3",
+   "v": "c6acb257",
+   "h": "a77b03e88bf4"
+  },
+  "¡Hola! Bienvenidos a la frutería. ¿Qué quieres comprar?": {
+   "f": "hola-bienvenidos-a-la-fruteria-que-quieres-comprar.mp3",
+   "v": "e09c853b",
+   "h": "bf730000589a"
+  },
+  "¡Claro! ¿Cuántas quieres?": {
+   "f": "claro-cuantas-quieres.mp3",
+   "v": "bdf31ab5",
+   "h": "c233ac8555f0"
+  },
+  "Tengo unas manzanas muy ricas. ¿Cuántas quieres?": {
+   "f": "tengo-unas-manzanas-muy-ricas-cuantas-quieres.mp3",
+   "v": "73ccb69c",
+   "h": "5a6492b28154"
+  },
+  "¡Perfecto! Son dos euros. ¿Quieres algo más?": {
+   "f": "perfecto-son-dos-euros-quieres-algo-mas.mp3",
+   "v": "bd44f920",
+   "h": "81c2189b698c"
+  },
+  "Te pongo tres, ¿vale? Son dos euros. ¿Quieres algo más?": {
+   "f": "te-pongo-tres-vale-son-dos-euros-quieres-algo-mas.mp3",
+   "v": "0301f999",
+   "h": "d4fc09214941"
+  },
+  "¡Gracias a ti! ¡Hasta luego!": {
+   "f": "gracias-a-ti-hasta-luego.mp3",
+   "v": "46519333",
+   "h": "3a6dd0b5ee14"
+  },
+  "¡Vale! Gracias por venir. ¡Hasta luego!": {
+   "f": "vale-gracias-por-venir-hasta-luego.mp3",
+   "v": "c66a874c",
+   "h": "d30fc80023b9"
+  },
+  "¡Gracias!": {
+   "f": "gracias.mp3",
+   "v": "cb1c39dc",
+   "h": "b16caa0bcbd6"
+  },
+  "¡Seguimos!": {
+   "f": "seguimos.mp3",
+   "v": "b5c3751f",
+   "h": "c2db3cc1b6fb"
+  },
+  "No te he oído. ¿Lo dices otra vez?": {
+   "f": "no-te-he-oido-lo-dices-otra-vez.mp3",
+   "v": "e532b8f3",
+   "h": "39f7610e18af"
+  },
+  "¡Test terminado! ¡Lo has hecho genial!": {
+   "f": "test-terminado-lo-has-hecho-genial.mp3",
+   "v": "b1f4901c",
+   "h": "0cafbf9c9b2f"
+  },
+  "¡Has mejorado mucho!": {
+   "f": "has-mejorado-mucho.mp3",
+   "v": "59a8eec7",
+   "h": "e4b0a337123d"
+  },
+  "¡Vamos a jugar!": {
+   "f": "vamos-a-jugar.mp3",
+   "v": "43f0c5ab",
+   "h": "c02041aa2764"
   }
  }
 }

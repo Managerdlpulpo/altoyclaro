@@ -188,7 +188,7 @@ async function renderSelectorVoz() {
 function cambiarVoz(nombre) { vozPrefs.nombre = nombre || ''; guardarVozPrefs(); }
 function cambiarVozGrabada(v) { vozPrefs.grabada = !!v; guardarVozPrefs(); }
 function probarVoz() { decir('Hola, soy la voz de este dispositivo. ¡Vamos a jugar!', { navegador: true }); }
-function probarVozGrabada() { decir(['¡Hola!', 'Me gusta el fútbol.']); }
+function probarVozGrabada() { decir(['¡Hola! ¿Qué tal estás?', 'Me gusta el fútbol.']); }
 if (window.speechSynthesis && speechSynthesis.addEventListener) {
     speechSynthesis.addEventListener('voiceschanged', () => {
         const m = document.getElementById('teacher-modal');

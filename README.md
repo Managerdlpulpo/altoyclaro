@@ -2,7 +2,7 @@
 
 Juego web para que los niños practiquen vocabulario y expresión oral en español
 (Diccionario, prueba de nivel, penaltis y **Modo Hablar**). Es una web estática
-(`index.html`, `hablar.js`, `voz.js`, `sync.js`) con funciones `/api` en Vercel
+(`index.html`, `hablar.js`, `voz.js`, `test-nivel.js`, `sync.js`) con funciones `/api` en Vercel
 para las claves de acceso y la sincronización.
 
 ## Cómo suena la voz
@@ -26,7 +26,8 @@ proveedor; nunca la voz ni el nombre del niño (ver `privacidad.html`).
 ## Regenerar los audios (palabras nuevas)
 
 El script lee automáticamente todos los campos `es:` de `index.html`, los
-`ejemplosFrase` de `hablar.js` y el bloque `FRASES_VOZ` de `voz.js`. Al añadir
+`ejemplosFrase` de `hablar.js`, el bloque `FRASES_VOZ` de `voz.js` y el bloque
+`FRASES_TEST` de `test-nivel.js` (preguntas del test de nivel). Al añadir
 palabras o frases basta con volver a ejecutarlo: sólo genera lo nuevo o cambiado,
 mantiene los nombres de archivo y borra los mp3 que ya no se usan.
 
@@ -61,12 +62,42 @@ Formato: MP3 mono, 48 kbps, 22,05 kHz, volumen normalizado (-16 LUFS).
   cambiar, editar la voz en `scripts/generar-audios.py` y ejecutar con `--forzar`.
 - Piper (GPL) sólo se usa en local para generar los archivos; no se publica.
 
+## Test de nivel (`test-nivel.js`)
+
+Test inicial de 5–8 minutos, adaptativo y sin preguntas personales. La app lee cada
+pregunta en voz alta (audio grabado) y el niño contesta tocando o hablando.
+
+1. **👂 Comprensión** (5): «Toca el perro» → 4 fotos. Se para tras 2 fallos seguidos.
+2. **🗣️ Vocabulario** (5): «¿Qué es esto?» con una foto; reconocimiento de voz con
+   comparación difusa (perfecto = 1, casi = 0,5). Se para tras 2 fallos seguidos.
+3. **💬 Conversación** por escalones (solo se pasa al siguiente si se supera el anterior):
+   1. saludo y color (≥ 40 %), 2. ¿qué haces con la pelota? / ¿qué te gusta comer? (≥ 50 %),
+   3. describir una foto, pasado («¿Qué hiciste ayer?») y futuro (≥ 50 %),
+   4. mini-diálogo de 3 turnos en la frutería, en el que la frutera responde a lo que dice.
+
+Cada respuesta de conversación suma 1 punto por criterio: **R** responde, **L** frase
+(≥ 2–4 palabras), **V** usa un verbo, **K** tiene que ver con la pregunta, **Q** rápido
+(≤ 6 s), **T** tiempo verbal correcto (pasado/futuro) y **X** descripción larga (≥ 8 palabras).
+Las preguntas a las que no se llega cuentan 0.
+
+- Subpuntuaciones: Comprensión, Vocabulario y Conversación (0–100 %).
+- Total = 30 % Comprensión + 25 % Vocabulario + 45 % Conversación.
+- Nivel: 0 (< 20), 1 (≥ 20), 2 (≥ 45 y Conversación ≥ 25 %), 3 (≥ 70 y Conversación ≥ 55 %).
+- XP inicial: 0 / 100 / 250 / 500 (+10); al repetir el test el XP no baja nunca.
+
+Sin reconocimiento de voz (o si falla el micrófono, o se elige «Prefiero que valore un
+adulto»), un adulto valora con 3 botones: *No responde / Palabras sueltas / Frases*.
+El profe puede repetir el test (Panel del profe → «Repetir test de nivel») y ver el
+historial con la mejora en «Mi progreso». Se sincronizan solo las puntuaciones; lo que
+dijo el niño se queda en el dispositivo. No se graba audio en el test.
+
 ## Pruebas
 
 ```bash
 npm test                                            # API (claves y sincronización)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-voz.cjs        # voz
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # juego
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
 ```
 
 Los tests de navegador levantan `test/servidor-local.mjs` y usan Chrome headless.

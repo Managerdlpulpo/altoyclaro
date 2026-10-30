@@ -1,7 +1,8 @@
 /* Liga de Habla Soto Alto · Claves de acceso y sincronización
    - Sin clave: todo funciona como siempre, solo en este dispositivo.
-   - Con clave (la da el profe): el perfil (nombre, nivel, XP) y la lista de intentos al hablar
-     (fecha, palabra, lo que se oyó, puntuación) se sincronizan en hasta 2 dispositivos.
+   - Con clave (la da el profe): el perfil (nombre, nivel, XP, puntuaciones del test de nivel) y la lista
+     de intentos al hablar (fecha, palabra, lo que se oyó, puntuación) se sincronizan en hasta 2 dispositivos.
+   - Las respuestas libres del test de nivel (texto) se quedan solo en este dispositivo (ligaHablaTestTextos).
    - Las GRABACIONES DE VOZ NUNCA SALEN DEL DISPOSITIVO: se quedan en IndexedDB y no se envían.
 */
 const SYNC_KEY = 'ligaHablaSync';
@@ -148,6 +149,7 @@ let syncEstado = '';
 async function borrarDatosLocales() {
     localStorage.removeItem('ligaHablaVisual');
     localStorage.removeItem('ligaHablaVoz');
+    localStorage.removeItem('ligaHablaTestTextos');
     localStorage.removeItem(SYNC_KEY);
     try { if (typeof audioClear === 'function') await audioClear(); } catch (e) { }
 }
@@ -278,7 +280,7 @@ function actualizarCuentaUI() {
           <div>Última sincronización: ${syncMeta.ultima ? new Date(syncMeta.ultima).toLocaleString('es-ES') : 'todavía no'}</div>
           <div>${pend ? `⏳ ${pend} intento(s) por enviar` : '✅ Todo enviado'}</div>
           ${syncEstado ? `<div class="text-amber-300">${escS(syncEstado)}</div>` : ''}
-          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP e intentos (texto). Las grabaciones se quedan en este dispositivo.</div>`;
+          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP, puntuaciones del test de nivel e intentos (texto). Las grabaciones y las respuestas libres del test se quedan en este dispositivo.</div>`;
     }
 }
 
@@ -336,7 +338,7 @@ function adminPintar(d) {
         <div class="flex justify-between items-start gap-2">
           <div>
             <div class="font-bold text-white">${escS(n.alias)} ${n.revocado ? '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">clave anulada</span>' : ''}</div>
-            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'} · ${n.intentos} intentos · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
+            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
           </div>
         </div>
         ${n.dispositivos.map(x => `<div class="flex justify-between items-center text-[11px] text-slate-300 mt-1 bg-stadium-800 rounded-lg px-2 py-1">

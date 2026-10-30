@@ -45,6 +45,7 @@
             <tr><td>Nombre o apodo que pone el profe (sin apellidos)</td><td>Para que el profe sepa de quién es cada clave.</td></tr>
             <tr><td>La clave, <em>cifrada</em> (no se guarda tal cual)</td><td>Para comprobar que la clave es correcta. Ni siquiera el profe puede verla después de crearla.</td></tr>
             <tr><td>Perfil del juego: nombre que escribe el niño, edad, país, afición, nivel y puntos (XP)</td><td>Para continuar en otro dispositivo.</td></tr>
+            <tr><td>Resultados del test de nivel: fecha, nivel, puntuaciones (comprensión, vocabulario, conversación) y si cada pregunta salió bien o no</td><td>Para que el profe vea el punto de partida y cómo mejora al repetirlo. Lo que el niño contesta en voz alta en el test <strong>no</strong> se envía: se queda solo en el dispositivo.</td></tr>
             <tr><td>Intentos al hablar, en texto: fecha, palabra, lo que entendió el reconocimiento de voz y la puntuación</td><td>Para ver cómo avanza su expresión oral.</td></tr>
             <tr><td>Los dispositivos autorizados (un identificador al azar y un nombre genérico como «iPad · Safari») y la fecha de último uso</td><td>Para el límite de 2 dispositivos.</td></tr>
             <tr><td>Registro temporal de intentos fallidos de clave (dirección IP), se borra a las 24 horas</td><td>Para evitar que alguien pruebe claves al azar.</td></tr>
@@ -56,7 +57,7 @@
     <p>En una base de datos Postgres (Neon) asociada a esta web, alojada en Vercel. La conexión siempre va cifrada (HTTPS). En el navegador se usa una cookie de sesión técnica (necesaria para saber que el dispositivo entró con su clave); no se usan cookies de publicidad ni de seguimiento.</p>
 
     <h2>Reconocimiento de voz</h2>
-    <p>Para saber qué ha dicho el niño, la app usa el reconocimiento de voz que trae el propio navegador (en Chrome lo presta Google; en Safari, Apple), igual que el dictado del móvil. Si se prefiere evitarlo, en «Mi progreso al hablar» se puede marcar que la valoración la haga solo un adulto.</p>
+    <p>Para saber qué ha dicho el niño, la app usa el reconocimiento de voz que trae el propio navegador (en Chrome lo presta Google; en Safari, Apple), igual que el dictado del móvil. Si se prefiere evitarlo, en «Mi progreso al hablar» se puede marcar que la valoración la haga solo un adulto (en el test de nivel también: «Prefiero que valore un adulto»). El test de nivel no graba audio y no hace preguntas personales.</p>
 
     <h2>La voz que lee las palabras</h2>
     <p>Las palabras y frases del juego vienen ya grabadas con la web (son archivos de audio fijos, iguales para todos), así que escucharlas no envía nada. Para el resto de textos se usa la voz que trae el dispositivo; algunas voces «en línea» del navegador (por ejemplo, las de Google en Chrome o las «Online (Natural)» de Microsoft Edge) envían ese texto del juego a su proveedor para leerlo. Nunca se envía la voz ni el nombre del niño. En el Panel del profe → «Voz» se puede elegir otra voz del dispositivo.</p>

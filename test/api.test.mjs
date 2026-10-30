@@ -122,6 +122,30 @@ await prueba('sincronización: perfil (gana el más reciente) e intentos fusiona
     assert.equal(r.body.perfil.xp, 0); assert.equal(r.body.perfil.level, 3); assert.ok(!('extra' in r.body.perfil));
 });
 
+await prueba('test de nivel: se guardan solo puntuaciones limpias (sin textos), perfiles antiguos siguen valiendo', async () => {
+    let r = await llamar('sync', { cursor: 0 }, { cookie: c1 });
+    const cur = r.body.perfil, tCur = r.body.perfilT;
+    assert.ok(Array.isArray(cur.pruebas) || cur.pruebas === undefined, 'perfil antiguo sin pruebas vale');
+    const prueba = { id: 'tabc123', t: Date.now(), nivel: 2, nivelAntes: null, total: 58, comp: 80, voc: 70, conv: 41, modo: 'auto', completo: true, dur: 312,
+        texto: 'ayer fui al parque', textos: { c6: 'ayer fui al parque' },
+        items: [{ id: 'k1', b: 'comp', r: 'ok', p: 1, m: 1, c: 'K' }, { id: 'c6', b: 'conv', r: 'respuesta', p: 6, m: 6, c: 'RLVKQT', l: 2.4, texto: 'ayer fui al parque' },
+            { id: '<x>', b: 'conv', r: 'respuesta', p: 1, m: 1, c: 'R' }, { id: 'c1', b: 'mal', r: 'hackeo', p: 99, m: 5, c: 'R<script>' }] };
+    r = await llamar('sync', { perfil: { ...cur, pruebas: [prueba, { id: '', t: 1 }, 'basura'] }, perfilT: tCur + 1 }, { cookie: c1 });
+    const ps = r.body.perfil.pruebas;
+    assert.equal(ps.length, 1);
+    assert.equal(ps[0].nivel, 2); assert.equal(ps[0].conv, 41); assert.equal(ps[0].items.length, 3);
+    assert.ok(!JSON.stringify(ps).includes('parque'), 'las respuestas libres no se guardan en el servidor');
+    assert.deepEqual(ps[0].items[1], { id: 'c6', b: 'conv', r: 'respuesta', p: 6, m: 6, c: 'RLVKQT', l: 2.4 });
+    assert.deepEqual(ps[0].items[2], { id: 'c1', b: 'conv', r: 'nr', p: 10, m: 5, c: 'R' });
+    const l = await adm({ accion: 'listar' });
+    const n = l.body.ninos.find(x => x.id === nino);
+    assert.deepEqual(n.test, { t: prueba.t, nivel: 2, comp: 80, voc: 70, conv: 41 });
+    // 12 pruebas → se quedan las 10 últimas
+    const muchas = Array.from({ length: 12 }, (_, i) => ({ ...prueba, id: 't' + i, t: prueba.t + i }));
+    r = await llamar('sync', { perfil: { ...cur, pruebas: muchas }, perfilT: tCur + 2 }, { cookie: c1 });
+    assert.equal(r.body.perfil.pruebas.length, 10); assert.equal(r.body.perfil.pruebas[0].id, 't2');
+});
+
 await prueba('borrar historial se propaga (y no reaparece desde otro dispositivo)', async () => {
     let r = await llamar('sync', { borrarIntentos: true }, { cookie: c1 });
     assert.equal(r.body.intentos.length, 0); assert.ok(r.body.borradoT > 0);

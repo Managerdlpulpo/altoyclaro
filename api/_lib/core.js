@@ -148,7 +148,34 @@ function limpiarPerfil(p) {
     if (!p || typeof p !== 'object') return null;
     return {
         name: texto(p.name, 40), age: numero(p.age, 3, 18, 8), country: texto(p.country, 40),
-        hobby: texto(p.hobby, 30), level: Math.round(numero(p.level, 0, 3, 1)), xp: Math.round(numero(p.xp, 0, 1e7, 0))
+        hobby: texto(p.hobby, 30), level: Math.round(numero(p.level, 0, 3, 1)), xp: Math.round(numero(p.xp, 0, 1e7, 0)),
+        pruebas: Array.isArray(p.pruebas) ? p.pruebas.slice(-10).map(limpiarPrueba).filter(Boolean) : []
+    };
+}
+// Resultados del test de nivel: solo puntuaciones y resultado por pregunta. Nunca lo que dijo el niño.
+const RESULTADOS_ITEM = ['ok', 'mal', 'perfecto', 'casi', 'otra', 'respuesta', 'nr', 'salto', 'sueltas', 'frases'];
+function limpiarPrueba(x) {
+    if (!x || typeof x !== 'object') return null;
+    const id = texto(x.id, 20).replace(/[^a-z0-9]/gi, '');
+    const t = Math.round(numero(x.t, 0, Date.now() + 864e5, 0));
+    if (!id || !t) return null;
+    const pct = v => Math.round(numero(v, 0, 100, 0));
+    const nivel = v => Math.round(numero(v, 0, 3, 0));
+    return {
+        id, t, nivel: nivel(x.nivel), nivelAntes: x.nivelAntes == null ? null : nivel(x.nivelAntes),
+        total: pct(x.total), comp: pct(x.comp), voc: pct(x.voc), conv: pct(x.conv),
+        modo: ['auto', 'adulto', 'mixto'].includes(x.modo) ? x.modo : 'auto', completo: x.completo !== false,
+        dur: Math.round(numero(x.dur, 0, 3600, 0)),
+        items: Array.isArray(x.items) ? x.items.slice(0, 30).filter(i => i && typeof i === 'object' && /^[a-z][0-9]$/.test(i.id)).map(i => {
+            const o = {
+                id: i.id, b: ['comp', 'voc', 'conv'].includes(i.b) ? i.b : 'conv',
+                r: RESULTADOS_ITEM.includes(i.r) ? i.r : 'nr',
+                p: Math.round(numero(i.p, 0, 10, 0) * 10) / 10, m: Math.round(numero(i.m, 0, 10, 0) * 10) / 10,
+                c: texto(i.c, 10).replace(/[^A-Z]/g, '')
+            };
+            if (i.l != null) o.l = Math.round(numero(i.l, 0, 120, 0) * 10) / 10;
+            return o;
+        }) : []
     };
 }
 function limpiarIntento(i) {
@@ -317,6 +344,7 @@ export async function admin({ q, env, req, body }) {
                         return {
                             id: n.id, alias: n.alias, revocado: n.revocado, creado: Number(n.creado), intentos: Number(n.intentos),
                             xp: p ? p.xp : null, nivel: p ? p.level : null,
+                            test: p && Array.isArray(p.pruebas) && p.pruebas.length ? (({ t, nivel, comp, voc, conv }) => ({ t, nivel, comp, voc, conv }))(p.pruebas[p.pruebas.length - 1]) : null,
                             dispositivos: disp.filter(d => d.nino_id === n.id).map(d => ({ id: d.dispositivo_id, nombre: d.nombre, creado: Number(d.creado), ultimo: Number(d.ultimo) }))
                         };
                     })
