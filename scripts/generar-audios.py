@@ -57,8 +57,7 @@ def textos_fijos():
         sys.exit('No encuentro ejemplosFrase en hablar.js')
     for linea in m.group(1).splitlines():
         lit = literales(linea)
-        if len(lit) >= 2:
-            textos.append(lit[1])
+        textos.extend(lit[1:])  # 'palabra': ['frase 1', 'frase 2', …]
     for archivo, bloque in (('voz.js', 'FRASES_VOZ'), ('test-nivel.js', 'FRASES_TEST')):
         m = re.search(r"const " + bloque + r" = \{(.*?)// FIN " + bloque, leer(archivo), re.S)
         if not m:

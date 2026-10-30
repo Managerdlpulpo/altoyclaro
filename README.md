@@ -26,7 +26,7 @@ proveedor; nunca la voz ni el nombre del niño (ver `privacidad.html`).
 ## Regenerar los audios (palabras nuevas)
 
 El script lee automáticamente todos los campos `es:` de `index.html`, los
-`ejemplosFrase` de `hablar.js`, el bloque `FRASES_VOZ` de `voz.js` y el bloque
+`ejemplosFrase` de `hablar.js` (todas las frases de cada palabra), el bloque `FRASES_VOZ` de `voz.js` y el bloque
 `FRASES_TEST` de `test-nivel.js` (preguntas del test de nivel). Al añadir
 palabras o frases basta con volver a ejecutarlo: sólo genera lo nuevo o cambiado,
 mantiene los nombres de archivo y borra los mp3 que ya no se usan.
@@ -71,9 +71,31 @@ pregunta en voz alta (audio grabado) y el niño contesta tocando o hablando.
 2. **🗣️ Vocabulario** (5): «¿Qué es esto?» con una foto; reconocimiento de voz con
    comparación difusa (perfecto = 1, casi = 0,5). Se para tras 2 fallos seguidos.
 3. **💬 Conversación** por escalones (solo se pasa al siguiente si se supera el anterior):
-   1. saludo y color (≥ 40 %), 2. ¿qué haces con la pelota? / ¿qué te gusta comer? (≥ 50 %),
+   1. saludo y color (≥ 40 %), 2. ¿qué haces con…? / ¿qué te gusta…? (≥ 50 %),
    3. describir una foto, pasado («¿Qué hiciste ayer?») y futuro (≥ 50 %),
-   4. mini-diálogo de 3 turnos en la frutería, en el que la frutera responde a lo que dice.
+   4. mini-diálogo de 3 turnos (frutería, panadería, parque o cocina) que responde a lo que dice.
+
+**Preguntas distintas en cada test.** Las preguntas salen de bancos (al principio de
+`test-nivel.js`) y se sortean con una semilla en cada test (`tnPlanTest`), para que el
+niño no pueda aprenderlas de memoria:
+
+| Parte | Banco | En cada test |
+|---|---|---|
+| Comprensión | 12 «Toca el…» + 21 «¿Qué animal vuela?, ¿con qué te secas?…» | 2 + 3 |
+| Vocabulario | 30 palabras: 12 fáciles, 12 medias, 6 difíciles | 3 + 1 + 1 |
+| Conversación 1 | 4 saludos + 5 colores | 1 + 1 |
+| Conversación 2 | 6 «¿qué haces con…?» + 5 «¿qué te gusta…?» | 1 + 1 |
+| Conversación 3 | 5 fotos para describir + 4 pasado + 4 futuro | 1 + 1 + 1 |
+| Mini-diálogo | 4 situaciones con respuestas según lo que diga | 1 |
+
+- En Comprensión, la foto correcta, las 3 fotos de distracción (de otras categorías) y su
+  orden cambian cada vez; Comprensión y Vocabulario nunca preguntan la misma palabra.
+- No se repiten preguntas de los 2 últimos tests del niño (se guardan solo los ids de las
+  preguntas y la semilla, en el dispositivo y en la sincronización).
+- Las variantes de un mismo tipo puntúan igual (mismos criterios y mismo máximo), así que
+  los resultados se pueden comparar entre tests. `npm test` lo comprueba con 3000 semillas.
+- Las fotos nuevas están en `img/vocab/` (Wikimedia Commons; autores y licencias en
+  `img/CREDITOS.md`).
 
 Cada respuesta de conversación suma 1 punto por criterio: **R** responde, **L** frase
 (≥ 2–4 palabras), **V** usa un verbo, **K** tiene que ver con la pregunta, **Q** rápido
@@ -88,13 +110,14 @@ Las preguntas a las que no se llega cuentan 0.
 Sin reconocimiento de voz (o si falla el micrófono, o se elige «Prefiero que valore un
 adulto»), un adulto valora con 3 botones: *No responde / Palabras sueltas / Frases*.
 El profe puede repetir el test (Panel del profe → «Repetir test de nivel») y ver el
-historial con la mejora en «Mi progreso». Se sincronizan solo las puntuaciones; lo que
+historial con la mejora en «Mi progreso». Se sincronizan solo las puntuaciones, el
+resultado de cada pregunta y qué preguntas salieron (ids); lo que
 dijo el niño se queda en el dispositivo. No se graba audio en el test.
 
 ## Pruebas
 
 ```bash
-npm test                                            # API (claves y sincronización)
+npm test                                            # API (claves y sincronización) y sorteo del test
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-voz.cjs        # voz
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # juego
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
