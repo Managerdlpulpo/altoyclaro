@@ -15,7 +15,10 @@ const FRASES_VOZ = {
     correcto: '¡Correcto!',
     laCorrectaEs: 'La correcta es:',
     aPracticar: '¡A practicar!',
-    gol: '¡Gol! ¡Muy bien!'
+    gol: '¡Gol! ¡Muy bien!',
+    respuestaEs: 'La respuesta es:',
+    buenaLectura: '¡Qué bien has leído!',
+    sigueAsi: '¡Sigue practicando, lo haces cada vez mejor!'
 };
 // FIN FRASES_VOZ
 

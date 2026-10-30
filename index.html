@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liga de Habla Soto Alto - Programa Visual | Andel</title>
+    <title>Me gusta hablar Alto y claro | Andel</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,7 +14,8 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], game: ['Fredoka', 'sans-serif'] },
                     colors: {
-                        pitch: { 500: '#22c55e', 600: '#16a34a', 700: '#15803d' },
+                        // Colores de acento: cambian con el tema favorito (temas.js)
+                        pitch: { 500: 'rgb(var(--ac-500) / <alpha-value>)', 600: 'rgb(var(--ac-600) / <alpha-value>)', 700: 'rgb(var(--ac-700) / <alpha-value>)', 900: 'rgb(var(--ac-900) / <alpha-value>)' },
                         stadium: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
                     }
                 }
@@ -23,8 +24,10 @@
     </script>
     <style>
         body { background-color: #0f172a; color: #f8fafc; }
-        .card-glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.12); }
-        .tab-btn.active { background-color: #16a34a; color: white; border-color: #4ade80; }
+        :root { --ac-500: 139 92 246; --ac-600: 124 58 237; --ac-700: 109 40 217; --ac-900: 46 16 101; }
+        body { background-repeat: repeat; background-size: 128px 128px; }
+        .card-glow { box-shadow: 0 0 20px rgb(var(--ac-500) / 0.14); }
+        .tab-btn.active { background-color: rgb(var(--ac-600)); color: white; border-color: rgb(var(--ac-500)); }
         /* Acceso obligatorio: hasta comprobar la clave solo se ve la pantalla de acceso */
         html.sin-acceso body > *:not(#acceso-pantalla) { display: none !important; }
         html:not(.sin-acceso) #acceso-pantalla { display: none !important; }
@@ -41,7 +44,20 @@
         .mic-btn.listening { background-color: #dc2626; animation: micPulse 1.2s infinite; }
         @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(244,63,94,0.6); } 70% { box-shadow: 0 0 0 24px rgba(244,63,94,0); } 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); } }
         .modo-btn.active { background-color: #e11d48; color: white; border-color: #fb7185; }
-        .chip-btn.active { background-color: #16a34a; color: white; border-color: #4ade80; }
+        .chip-btn.active { background-color: rgb(var(--ac-600)); color: white; border-color: rgb(var(--ac-500)); }
+        /* Leo en voz alta */
+        .lec-texto { font-size: 1.35rem; line-height: 2.1rem; }
+        @media (min-width: 640px) { .lec-texto { font-size: 1.6rem; line-height: 2.5rem; } }
+        .lec-w { padding: 0 2px; border-radius: 6px; transition: background-color .2s, color .2s; }
+        .lec-frase-activa { background: rgb(var(--ac-500) / 0.18); border-radius: 8px; }
+        .lec-actual { outline: 3px solid #fbbf24; background: rgba(251, 191, 36, .18); }
+        .lec-b { color: #6ee7b7; }
+        .lec-d { color: #fcd34d; text-decoration: underline wavy #f59e0b; text-underline-offset: 6px; }
+        .lec-m { color: #fda4af; background: rgba(244, 63, 94, .18); }
+        .lec-s { color: #94a3b8; text-decoration: line-through; opacity: .75; }
+        .lec-n { color: #64748b; }
+        .lec-adulto .lec-w { cursor: pointer; }
+        .lec-adulto .lec-w:hover { outline: 2px dashed #94a3b8; }
         .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1 1 0; min-width: 22px; }
     </style>
 </head>
@@ -51,7 +67,7 @@
     <div id="acceso-pantalla" role="dialog" aria-labelledby="acceso-titulo">
         <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-md w-full mx-4 my-6 text-center">
             <div class="text-5xl mb-2" aria-hidden="true">⚽</div>
-            <h1 id="acceso-titulo" class="font-game text-2xl text-white mb-1">Liga de Habla Soto Alto</h1>
+            <h1 id="acceso-titulo" class="font-game text-2xl text-white mb-1">Me gusta hablar Alto y claro</h1>
             <div id="acceso-cargando" class="text-sm text-slate-300 py-6" role="status">Comprobando tu clave…</div>
             <div id="acceso-error" class="hidden py-2">
                 <div class="text-3xl mb-2" aria-hidden="true">📡</div>
@@ -81,7 +97,7 @@
                     <button id="acceso-borrar-local" onclick="borrarDispositivoBloqueado()" class="hidden mt-3 text-[11px] text-slate-500 underline">Borrar los datos guardados en este dispositivo</button>
                 </div>
             </div>
-            <noscript><p class="text-sm text-amber-200">Para usar la Liga de Habla hay que activar JavaScript.</p></noscript>
+            <noscript><p class="text-sm text-amber-200">Para usar «Me gusta hablar Alto y claro» hay que activar JavaScript.</p></noscript>
         </div>
     </div>
 
@@ -89,10 +105,15 @@
     <div id="setup-modal" class="modal">
         <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div id="setup-step-profile">
-                <h2 class="text-2xl font-game font-bold text-white mb-2">¡Bienvenido a la Liga de Habla Visual!</h2>
+                <h2 class="text-2xl font-game font-bold text-white mb-2">¡Bienvenido a Me gusta hablar Alto y claro!</h2>
                 <p class="text-sm text-slate-300 mb-6">Escribe tu nombre o apodo. Verás fotos reales y practicarás identificándolas.</p>
                 <div class="space-y-4">
                     <input id="input-name" type="text" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-4 py-3 text-white" placeholder="Tu nombre o apodo" maxlength="40" autocomplete="off">
+                    <div>
+                        <p class="text-sm text-slate-200 font-bold mb-1">¿Qué te gusta más? <span class="font-normal text-slate-400 text-xs">(opcional, se puede cambiar cuando quieras)</span></p>
+                        <p class="text-[11px] text-slate-400 mb-2">Cambia los colores, la mascota y las celebraciones, y verás más palabras y cuentos de ese tema.</p>
+                        <div id="setup-temas" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+                    </div>
                     <button onclick="startPlacementTest()" class="w-full bg-pitch-600 hover:bg-pitch-500 text-white font-bold py-3 rounded-xl">Empezar</button>
                     <p class="text-[11px] text-slate-400 text-center">Tu progreso se guarda con tu clave. Las grabaciones de voz no salen de este dispositivo. <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
                 </div>
@@ -119,6 +140,7 @@
                     <div class="w-full h-full rounded-full bg-stadium-900 flex items-center justify-center font-bold text-lg text-amber-400 font-game" id="header-initials">A</div>
                 </div>
                 <div>
+                    <div class="text-[10px] uppercase tracking-wide text-pitch-500 font-bold leading-none" id="header-marca"><span id="header-mascota" aria-hidden="true">🦉</span> Me gusta hablar Alto y claro</div>
                     <h1 class="text-lg font-bold font-game text-white" id="header-name">Alumno</h1>
                     <div class="text-xs text-slate-400" id="header-info">Andel</div>
                 </div>
@@ -128,6 +150,7 @@
                     <div class="text-xs text-slate-300">XP</div>
                     <div id="xp-text-display" class="text-amber-400 font-game font-bold">0</div>
                 </div>
+                <button id="tema-btn" onclick="abrirTemas()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-pitch-600/60 text-xs text-slate-200 font-bold flex items-center gap-1" title="Mi tema (cambiar)" aria-label="Mi tema (cambiar)"><span aria-hidden="true">🌈</span><span class="hidden sm:inline">Mi tema</span></button>
                 <button id="cuenta-btn" onclick="abrirCuenta()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 text-xs text-slate-200 font-bold flex items-center gap-1" title="Entrar con mi clave" aria-label="Entrar con mi clave"><span aria-hidden="true">🔑</span><span class="hidden sm:inline">Entrar</span></button>
                 <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs" title="Panel del profe"><i class="fa-solid fa-user-gear text-amber-400"></i></button>
             </div>
@@ -137,6 +160,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-6 flex-1 w-full">
         <div class="bg-gradient-to-r from-pitch-900 to-stadium-900 border border-pitch-600/40 rounded-2xl p-4 mb-6 card-glow">
             <h2 class="font-game font-bold text-white" id="welcome-title">¡Identifica las fotos!</h2>
+            <p id="welcome-tema" class="text-xs text-slate-200 mt-1"></p>
             <p class="text-xs text-slate-300">Mira las imágenes reales y di o elige la palabra correcta en castellano.</p>
         </div>
 
@@ -145,7 +169,7 @@
             <button onclick="switchTab('hablar')" id="tab-btn-hablar" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-microphone text-rose-400 mr-1"></i> Hablar</button>
             <button onclick="switchTab('pictionary')" id="tab-btn-pictionary" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-images text-blue-400 mr-1"></i> Diccionario Visual</button>
             <button onclick="switchTab('penalty')" id="tab-btn-penalty" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-bullseye text-amber-400 mr-1"></i> Penalty</button>
-            <button onclick="switchTab('cuentos')" id="tab-btn-cuentos" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-book text-purple-400 mr-1"></i> Cuentos</button>
+            <button onclick="switchTab('lectura')" id="tab-btn-lectura" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><span aria-hidden="true">📖</span> Leo en voz alta</button>
             <button onclick="switchTab('progreso')" id="tab-btn-progreso" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-chart-line text-sky-400 mr-1"></i> Mi progreso al hablar</button>
         </div>
 
@@ -210,6 +234,7 @@
                 <p class="text-xs text-slate-400 mb-4" id="prog-nombre"></p>
                 <div id="prog-resumen" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"></div>
                 <div id="prog-tendencia" class="text-sm mb-4"></div>
+                <div id="prog-lectura" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4"></div>
                 <div id="prog-test-card" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
                     <h4 class="font-bold text-sm text-white mb-2"><i class="fa-solid fa-compass text-amber-400 mr-1"></i> Test de nivel (escuchar, palabras y conversación)</h4>
                     <div id="prog-test"></div>
@@ -276,19 +301,29 @@
                 <div id="penalty-spanish-text" class="text-2xl font-game font-bold text-white mb-4">—</div>
                 <div id="penalty-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
                 <div id="goal-result-box" class="hidden mt-6 bg-emerald-950/90 border-2 border-emerald-400 rounded-2xl p-6">
-                    <h3 class="text-2xl font-game text-amber-400">¡Bien!</h3>
+                    <h3 id="goal-titulo" class="text-2xl font-game text-amber-400">¡Bien!</h3>
                     <button onclick="nextPenalty()" class="mt-3 bg-amber-500 text-stadium-950 font-bold px-6 py-2 rounded-xl">Siguiente</button>
                 </div>
             </div>
         </section>
 
-        <section id="tab-cuentos" class="tab-content hidden space-y-6">
-            <div class="bg-stadium-900 border border-slate-800 rounded-3xl p-6 card-glow">
-                <h3 class="font-game text-lg mb-4"><i class="fa-solid fa-book text-purple-400"></i> Cuentos</h3>
-                <div id="cuentos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            </div>
+        <!-- LEO EN VOZ ALTA (lectura.js) -->
+        <section id="tab-lectura" class="tab-content hidden space-y-6">
+            <div id="lectura-app" class="bg-stadium-900 border border-slate-800 rounded-3xl p-4 sm:p-6 card-glow"></div>
         </section>
     </main>
+
+    <!-- Mi tema (temas.js) -->
+    <div id="tema-modal" class="modal hidden" onclick="if (event.target === this) cerrarTemas()">
+        <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-5 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-1">
+                <h3 class="font-game text-white text-lg">🎨 Mi tema favorito</h3>
+                <button onclick="cerrarTemas()" class="text-slate-400" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="text-xs text-slate-300 mb-3">Cambia los colores, los dibujos del fondo, la mascota y las celebraciones. Además, las palabras y los cuentos de tu tema salen más a menudo (mezclados con los demás). El test de nivel es igual para todos.</p>
+            <div id="tema-opciones" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        </div>
+    </div>
 
     <!-- Teacher modal (simplified) -->
     <div id="teacher-modal" class="modal hidden">
@@ -369,7 +404,7 @@
             { es: 'el plato', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&h=500&fit=crop', cat: 'Cocina', uk: 'тарілка', ar: 'صحن' },
             { es: 'el vaso', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&h=500&fit=crop', cat: 'Cocina', uk: 'склянка', ar: 'كأس' },
             { es: 'el cepillo de dientes', img: 'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500&h=500&fit=crop', cat: 'Higiene', uk: 'зубна щітка', ar: 'فرشاة الأسنان' },
-            { es: 'la pelota', img: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=500&h=500&fit=crop', cat: 'Parque', uk: 'м\'яч', ar: 'كرة' },
+            { es: 'la pelota', img: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=500&h=500&fit=crop', cat: 'Fútbol', uk: 'м\'яч', ar: 'كرة' },
             { es: 'el perro', img: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&h=500&fit=crop', cat: 'Animales', uk: 'собака', ar: 'كلب' },
             { es: 'el gato', img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&h=500&fit=crop', cat: 'Animales', uk: 'кіт', ar: 'قطة' },
             { es: 'la manzana', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500&h=500&fit=crop', cat: 'Comida', uk: 'яблуко', ar: 'تفاحة' },
@@ -392,7 +427,14 @@
             { es: 'los lápices', img: 'img/vocab/lapices.jpg', cat: 'Colegio', uk: 'олівці', ar: 'أقلام ملونة' },
             { es: 'la mochila', img: 'img/vocab/mochila.jpg', cat: 'Colegio', uk: 'рюкзак', ar: 'حقيبة مدرسية' },
             { es: 'la toalla', img: 'img/vocab/toalla.jpg', cat: 'Higiene', uk: 'рушник', ar: 'منشفة' },
-            { es: 'las gafas', img: 'img/vocab/gafas.jpg', cat: 'Ropa', uk: 'окуляри', ar: 'نظارات' }
+            { es: 'las gafas', img: 'img/vocab/gafas.jpg', cat: 'Ropa', uk: 'окуляри', ar: 'نظارات' },
+            { es: 'las botas de fútbol', img: 'img/vocab/botas.jpg', cat: 'Fútbol', uk: 'бутси', ar: 'حذاء كرة القدم' },
+            { es: 'el silbato', img: 'img/vocab/silbato.jpg', cat: 'Fútbol', uk: 'свисток', ar: 'الصافرة' },
+            { es: 'la mariposa', img: 'img/vocab/mariposa.jpg', cat: 'Naturaleza', uk: 'метелик', ar: 'الفراشة' },
+            { es: 'la montaña', img: 'img/vocab/montana.jpg', cat: 'Naturaleza', uk: 'гора', ar: 'الجبل' },
+            { es: 'el autobús', img: 'img/vocab/autobus.jpg', cat: 'Transporte', uk: 'автобус', ar: 'الحافلة' },
+            { es: 'el barco', img: 'img/vocab/barco.jpg', cat: 'Transporte', uk: 'корабель', ar: 'القارب' },
+            { es: 'el avión', img: 'img/vocab/avion.jpg', cat: 'Transporte', uk: 'літак', ar: 'الطائرة' }
         ];
 
         const contentByLevel = {
@@ -409,12 +451,6 @@
                 {es:"¿Dónde vives?", options:["¿Dónde vives?","Me llamo","Tengo hambre"], correct:0}
             ]}
         };
-
-        const cuentos = [
-            {title:"La ovejita que vino a cenar", url:"https://youtu.be/ee-Wkw2SnnI"},
-            {title:"El monstruo de colores", url:"https://www.youtube.com/watch?v=S-PTa20NNrI"},
-            {title:"La pequeña oruga glotona", url:"https://www.youtube.com/watch?v=SjiGJWylfHc"}
-        ];
 
         function loadState() {
             const saved = localStorage.getItem('ligaHablaVisual');
@@ -448,6 +484,7 @@
             const name = document.getElementById('input-name').value.trim();
             if (!name) { alert('Escribe tu nombre'); return; }
             gameState.name = name;
+            if (typeof temaElegidoSetup !== 'undefined' && temaElegidoSetup) gameState.tema = temaElegidoSetup;
             iniciarTestNivel({ repeticion: false });
         }
         function finishSetup() {
@@ -456,8 +493,16 @@
             if (!gameState.xp) addXP(10);
         }
 
-        // IDENTIFICAR FOTOS
-        let currentIdentIndex = 0;
+        // IDENTIFICAR FOTOS (las fotos del tema favorito salen más a menudo: ordenConTema en temas.js)
+        let currentIdentIndex = 0, identOrden = [];
+        function reordenarIdentificar() {
+            identOrden = typeof ordenConTema === 'function' ? ordenConTema(visualVocab, temaActual().cat) : visualVocab.slice();
+            currentIdentIndex = 0;
+        }
+        function identItem() {
+            if (!identOrden.length || currentIdentIndex >= identOrden.length) reordenarIdentificar();
+            return identOrden[currentIdentIndex];
+        }
         // Mejor mezcla aleatoria (Fisher-Yates)
         function shuffle(array) {
             const a = [...array];
@@ -469,7 +514,7 @@
         }
 
         function renderIdentificar() {
-            const item = visualVocab[currentIdentIndex % visualVocab.length];
+            const item = identItem();
             document.getElementById('ident-image').src = item.img;
             document.getElementById('ident-category').innerText = item.cat;
             document.getElementById('ident-word').classList.add('hidden');
@@ -496,9 +541,11 @@
                 btn.classList.add('correct');
                 document.getElementById('ident-word').innerText = item.es;
                 document.getElementById('ident-word').classList.remove('hidden');
-                document.getElementById('ident-feedback').innerHTML = '<span class="text-emerald-400 font-bold">¡Correcto! +15 XP</span>';
+                const frase = typeof temaCelebracion === 'function' ? temaCelebracion() : FRASES_VOZ.correcto;
+                const mascota = typeof temaActual === 'function' ? temaActual().mascota + ' ' : '';
+                document.getElementById('ident-feedback').innerHTML = `<span class="text-emerald-400 font-bold">${mascota}${esc(frase)} +15 XP</span>`;
                 addXP(15);
-                decir([FRASES_VOZ.correcto, item.es]);
+                decir([frase, item.es]);
             } else {
                 btn.classList.add('wrong');
                 document.getElementById('ident-feedback').innerHTML = '<span class="text-rose-400">Casi... la correcta es: <strong>'+item.es+'</strong></span>';
@@ -508,19 +555,21 @@
             setTimeout(() => { currentIdentIndex++; renderIdentificar(); }, 1800);
         }
         function playIdentTTS() {
-            const item = visualVocab[currentIdentIndex % visualVocab.length];
+            const item = identItem();
             speakSpanish(item.es);
         }
 
         // PICTIONARY
         function renderPictionaryCategories() {
-            const cats = [...new Set(visualVocab.map(v => v.cat))];
+            const temaCat = typeof temaActual === 'function' ? temaActual().cat : null;
+            const cats = [...new Set([temaCat, ...visualVocab.map(v => v.cat)].filter(Boolean))]; // el tema favorito, primero
             const cont = document.getElementById('pictionary-categories');
             cont.innerHTML = '';
             cats.forEach(c => {
                 const b = document.createElement('button');
-                b.className = 'bg-stadium-800 hover:bg-pitch-700 text-white text-xs px-3 py-1.5 rounded-lg border border-slate-700';
-                b.innerText = c;
+                b.className = 'chip-btn bg-stadium-800 hover:bg-pitch-700 text-white text-xs px-3 py-1.5 rounded-lg border border-slate-700';
+                b.dataset.cat = c;
+                b.innerText = (c === temaCat ? temaActual().emoji + ' ' : '') + c;
                 b.onclick = () => renderPictionary(c);
                 cont.appendChild(b);
             });
@@ -529,6 +578,7 @@
         function renderPictionary(cat) {
             const grid = document.getElementById('pictionary-grid');
             grid.innerHTML = '';
+            document.querySelectorAll('#pictionary-categories button').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
             visualVocab.filter(v => v.cat === cat).forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'img-card bg-stadium-950 border border-slate-800 rounded-2xl overflow-hidden';
@@ -564,7 +614,7 @@
                     if (item.isCorrect) {
                         document.getElementById('goal-result-box').classList.remove('hidden');
                         addXP(20);
-                        decir(FRASES_VOZ.gol);
+                        decir(typeof temaCelebracion === 'function' ? temaCelebracion() : FRASES_VOZ.gol);
                     } else {
                         b.classList.add('wrong');
                         setTimeout(() => b.classList.remove('wrong'), 800);
@@ -580,23 +630,10 @@
             speakSpanish(q.es);
         }
 
-        function renderCuentos() {
-            const cont = document.getElementById('cuentos-container');
-            cont.innerHTML = '';
-            cuentos.forEach(c => {
-                const a = document.createElement('a');
-                a.href = c.url; a.target = '_blank';
-                a.className = 'block bg-stadium-950 border border-slate-800 rounded-2xl p-4 hover:border-purple-500';
-                a.innerHTML = `<h4 class="font-bold text-white">${c.title}</h4><p class="text-xs text-purple-300">Ver en YouTube →</p>`;
-                cont.appendChild(a);
-            });
-        }
-
         function renderAll() {
             renderIdentificar();
             renderPictionaryCategories();
             renderPenalty();
-            renderCuentos();
             if (typeof renderHablar === 'function') renderHablar();
         }
 
@@ -609,6 +646,8 @@
             document.getElementById('tab-btn-'+id).classList.add('active');
             if (id !== 'hablar' && typeof cancelarSesionHabla === 'function') cancelarSesionHabla();
             if (id === 'progreso' && typeof renderProgresoHabla === 'function') renderProgresoHabla();
+            if (id !== 'lectura' && typeof lecSalir === 'function') lecSalir();
+            if (id === 'lectura' && typeof renderLectura === 'function') renderLectura();
         }
         function toggleTeacherModal() {
             const m = document.getElementById('teacher-modal');
@@ -624,6 +663,7 @@
                 localStorage.removeItem('ligaHablaVisual');
                 localStorage.removeItem('ligaHablaVoz');
                 localStorage.removeItem('ligaHablaTestTextos');
+                localStorage.removeItem('ligaHablaLectura');
                 const limpiar = (typeof audioClear === 'function') ? audioClear() : Promise.resolve();
                 limpiar.catch(() => {}).finally(() => location.reload());
             }
@@ -632,8 +672,10 @@
         window.onload = loadState;
     </script>
     <script src="voz.js"></script>
+    <script src="temas.js"></script>
     <script src="hablar.js"></script>
     <script src="test-nivel.js"></script>
+    <script src="lectura.js"></script>
     <script src="sync.js"></script>
 </body>
 </html>

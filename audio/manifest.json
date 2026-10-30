@@ -152,6 +152,41 @@
    "v": "bbba051a",
    "h": "7cd927757988"
   },
+  "las botas de fútbol": {
+   "f": "las-botas-de-futbol.mp3",
+   "v": "d325f892",
+   "h": "1e535c612aaa"
+  },
+  "el silbato": {
+   "f": "el-silbato.mp3",
+   "v": "f20bb913",
+   "h": "34df1e5335c7"
+  },
+  "la mariposa": {
+   "f": "la-mariposa.mp3",
+   "v": "1a4992c4",
+   "h": "90c3e627e865"
+  },
+  "la montaña": {
+   "f": "la-montana.mp3",
+   "v": "4a1c0330",
+   "h": "468fbd40f6d7"
+  },
+  "el autobús": {
+   "f": "el-autobus.mp3",
+   "v": "f1af32a1",
+   "h": "ec0a7e5bb5ff"
+  },
+  "el barco": {
+   "f": "el-barco.mp3",
+   "v": "33ca3ccc",
+   "h": "2967e378b374"
+  },
+  "el avión": {
+   "f": "el-avion.mp3",
+   "v": "cefe00bb",
+   "h": "5f2a49ac4f96"
+  },
   "¡Pasa la pelota!": {
    "f": "pasa-la-pelota.mp3",
    "v": "17d8b6f0",
@@ -632,6 +667,111 @@
    "v": "fe464e9c",
    "h": "28d70bf82ea5"
   },
+  "Me pongo las botas de fútbol.": {
+   "f": "me-pongo-las-botas-de-futbol.mp3",
+   "v": "f5b0b5e8",
+   "h": "7112b1585aff"
+  },
+  "Mis botas de fútbol son rojas.": {
+   "f": "mis-botas-de-futbol-son-rojas.mp3",
+   "v": "60727d08",
+   "h": "945e2b61b6c7"
+  },
+  "Con las botas de fútbol corro mucho.": {
+   "f": "con-las-botas-de-futbol-corro-mucho.mp3",
+   "v": "da35f34d",
+   "h": "7af036adf5d2"
+  },
+  "El árbitro toca el silbato.": {
+   "f": "el-arbitro-toca-el-silbato.mp3",
+   "v": "fec97e84",
+   "h": "cabc3a52df60"
+  },
+  "El silbato suena muy fuerte.": {
+   "f": "el-silbato-suena-muy-fuerte.mp3",
+   "v": "79d6cfe1",
+   "h": "7efca20036d0"
+  },
+  "Con el silbato empieza el partido.": {
+   "f": "con-el-silbato-empieza-el-partido.mp3",
+   "v": "2033745c",
+   "h": "41e80952938e"
+  },
+  "La mariposa vuela entre las flores.": {
+   "f": "la-mariposa-vuela-entre-las-flores.mp3",
+   "v": "840e9302",
+   "h": "f6a20b99ddd2"
+  },
+  "La mariposa tiene alas de colores.": {
+   "f": "la-mariposa-tiene-alas-de-colores.mp3",
+   "v": "3835406d",
+   "h": "a7814fe31892"
+  },
+  "Veo una mariposa en el jardín.": {
+   "f": "veo-una-mariposa-en-el-jardin.mp3",
+   "v": "676aac05",
+   "h": "4269637590f3"
+  },
+  "La montaña es muy alta.": {
+   "f": "la-montana-es-muy-alta.mp3",
+   "v": "42922ada",
+   "h": "0c8ee3290c03"
+  },
+  "En la montaña hay nieve.": {
+   "f": "en-la-montana-hay-nieve.mp3",
+   "v": "f3377cbe",
+   "h": "bec234d005d8"
+  },
+  "Subimos a la montaña en verano.": {
+   "f": "subimos-a-la-montana-en-verano.mp3",
+   "v": "4c33bafa",
+   "h": "3957b11e06bc"
+  },
+  "Voy al colegio en autobús.": {
+   "f": "voy-al-colegio-en-autobus.mp3",
+   "v": "9bb96b5d",
+   "h": "5df4e9a77972"
+  },
+  "El autobús es amarillo.": {
+   "f": "el-autobus-es-amarillo.mp3",
+   "v": "56f10d5d",
+   "h": "35e260144d76"
+  },
+  "Espero el autobús en la parada.": {
+   "f": "espero-el-autobus-en-la-parada.mp3",
+   "v": "c77731b4",
+   "h": "209de2a0c1e0"
+  },
+  "El barco navega por el mar.": {
+   "f": "el-barco-navega-por-el-mar.mp3",
+   "v": "d261f87c",
+   "h": "6c5028bf0293"
+  },
+  "El barco tiene una vela blanca.": {
+   "f": "el-barco-tiene-una-vela-blanca.mp3",
+   "v": "5c708cf2",
+   "h": "9f1c7c7a1496"
+  },
+  "Me gusta viajar en barco.": {
+   "f": "me-gusta-viajar-en-barco.mp3",
+   "v": "e4493bad",
+   "h": "3db877d4ccb8"
+  },
+  "El avión vuela muy alto.": {
+   "f": "el-avion-vuela-muy-alto.mp3",
+   "v": "3ecd2c40",
+   "h": "f7eeb6633758"
+  },
+  "El avión va a otro país.": {
+   "f": "el-avion-va-a-otro-pais.mp3",
+   "v": "2c5dfd3a",
+   "h": "3adfe7d55ca5"
+  },
+  "Veo un avión en el cielo.": {
+   "f": "veo-un-avion-en-el-cielo.mp3",
+   "v": "1a6774b7",
+   "h": "3fca6c129572"
+  },
   "¡Perfecto!": {
    "f": "perfecto.mp3",
    "v": "f5302dc5",
@@ -676,6 +816,21 @@
    "f": "gol-muy-bien.mp3",
    "v": "ea35ff59",
    "h": "e7429924f971"
+  },
+  "La respuesta es:": {
+   "f": "la-respuesta-es.mp3",
+   "v": "44f697aa",
+   "h": "fe0aacb2239e"
+  },
+  "¡Qué bien has leído!": {
+   "f": "que-bien-has-leido.mp3",
+   "v": "ff48827c",
+   "h": "77c7a1f67bf9"
+  },
+  "¡Sigue practicando, lo haces cada vez mejor!": {
+   "f": "sigue-practicando-lo-haces-cada-vez-mejor.mp3",
+   "v": "66aa937d",
+   "h": "cbcd0c590682"
   },
   "¡Vamos a jugar un ratito! Escucha y responde. Si no sabes algo, no pasa nada.": {
    "f": "vamos-a-jugar-un-ratito-escucha-y-responde-si-no-sabes-algo.mp3",
@@ -1221,6 +1376,1401 @@
    "f": "vamos-a-jugar.mp3",
    "v": "43f0c5ab",
    "h": "c02041aa2764"
+  },
+  "El gato Bigotes": {
+   "f": "el-gato-bigotes.mp3",
+   "v": "1a499b7e",
+   "h": "c8f7fdce25c7"
+  },
+  "Bigotes es un gato gris.": {
+   "f": "bigotes-es-un-gato-gris.mp3",
+   "v": "55cf67d2",
+   "h": "d27f36982185"
+  },
+  "Bigotes duerme en la cama de Ana.": {
+   "f": "bigotes-duerme-en-la-cama-de-ana.mp3",
+   "v": "b0c9f946",
+   "h": "743377049163"
+  },
+  "Por la mañana, Bigotes bebe leche y juega con una pelota.": {
+   "f": "por-la-manana-bigotes-bebe-leche-y-juega-con-una-pelota.mp3",
+   "v": "569f1888",
+   "h": "886e65b8be08"
+  },
+  "Ana quiere mucho a Bigotes.": {
+   "f": "ana-quiere-mucho-a-bigotes.mp3",
+   "v": "f992b3e4",
+   "h": "b2373e7f6035"
+  },
+  "¿De qué color es Bigotes?": {
+   "f": "de-que-color-es-bigotes.mp3",
+   "v": "4f68604d",
+   "h": "a5439baac261"
+  },
+  "Gris": {
+   "f": "gris.mp3",
+   "v": "1bbe70e1",
+   "h": "da511ec14675"
+  },
+  "Negro": {
+   "f": "negro.mp3",
+   "v": "c7fdd9ae",
+   "h": "2f64815537dd"
+  },
+  "Blanco": {
+   "f": "blanco.mp3",
+   "v": "0b5c36ee",
+   "h": "6c17e5e6dd91"
+  },
+  "¿Dónde duerme Bigotes?": {
+   "f": "donde-duerme-bigotes.mp3",
+   "v": "c21aeb44",
+   "h": "95a97405579e"
+  },
+  "En la cama de Ana.": {
+   "f": "en-la-cama-de-ana.mp3",
+   "v": "c58cdd5f",
+   "h": "f781a5530093"
+  },
+  "La manzana roja": {
+   "f": "la-manzana-roja.mp3",
+   "v": "37272b6f",
+   "h": "c9a7edf53429"
+  },
+  "Leo tiene una manzana roja.": {
+   "f": "leo-tiene-una-manzana-roja.mp3",
+   "v": "f9ac8cbe",
+   "h": "7098a8e3c1a0"
+  },
+  "La manzana es grande y dulce.": {
+   "f": "la-manzana-es-grande-y-dulce.mp3",
+   "v": "2160d44c",
+   "h": "d302453bb199"
+  },
+  "Leo lava la manzana.": {
+   "f": "leo-lava-la-manzana.mp3",
+   "v": "82be55c7",
+   "h": "7450024eba9c"
+  },
+  "Después, se la come en el patio con su amiga Sara.": {
+   "f": "despues-se-la-come-en-el-patio-con-su-amiga-sara.mp3",
+   "v": "3a38a0e1",
+   "h": "a0a6838af596"
+  },
+  "¿De qué color es la manzana?": {
+   "f": "de-que-color-es-la-manzana.mp3",
+   "v": "d59027e4",
+   "h": "a40075ca841e"
+  },
+  "Roja": {
+   "f": "roja.mp3",
+   "v": "5b925ec5",
+   "h": "7e4e6806435b"
+  },
+  "Verde": {
+   "f": "verde.mp3",
+   "v": "573eae25",
+   "h": "a8305af56997"
+  },
+  "Amarilla": {
+   "f": "amarilla.mp3",
+   "v": "e07b40eb",
+   "h": "0295cf84a7ed"
+  },
+  "¿Dónde se come Leo la manzana?": {
+   "f": "donde-se-come-leo-la-manzana.mp3",
+   "v": "d01cfac5",
+   "h": "7eb5252e693d"
+  },
+  "En el patio.": {
+   "f": "en-el-patio.mp3",
+   "v": "e538495b",
+   "h": "2cc33ed73b01"
+  },
+  "Mi balón": {
+   "f": "mi-balon.mp3",
+   "v": "c62cae5e",
+   "h": "182470d68a11"
+  },
+  "Tengo un balón nuevo.": {
+   "f": "tengo-un-balon-nuevo.mp3",
+   "v": "533ae8ff",
+   "h": "bea919c8ae95"
+  },
+  "Es blanco y negro.": {
+   "f": "es-blanco-y-negro.mp3",
+   "v": "5288a94a",
+   "h": "93e3018e8879"
+  },
+  "Juego al fútbol con mi hermano.": {
+   "f": "juego-al-futbol-con-mi-hermano.mp3",
+   "v": "d93fa913",
+   "h": "ded104d6922b"
+  },
+  "Yo chuto fuerte y el balón entra en la portería.": {
+   "f": "yo-chuto-fuerte-y-el-balon-entra-en-la-porteria.mp3",
+   "v": "806fb063",
+   "h": "403f3c91c99a"
+  },
+  "¡Gol!": {
+   "f": "gol.mp3",
+   "v": "515a7033",
+   "h": "7cbdd6f58dd3"
+  },
+  "¿Con quién juega al fútbol?": {
+   "f": "con-quien-juega-al-futbol.mp3",
+   "v": "0a71ca97",
+   "h": "468c7bcbd4bd"
+  },
+  "Con su hermano": {
+   "f": "con-su-hermano.mp3",
+   "v": "f8b54ac5",
+   "h": "1490cc423e10"
+  },
+  "Con su abuela": {
+   "f": "con-su-abuela.mp3",
+   "v": "d63a3d7c",
+   "h": "10b456ac1cf6"
+  },
+  "Solo": {
+   "f": "solo.mp3",
+   "v": "dbf6e45e",
+   "h": "41092e6ba35b"
+  },
+  "¿De qué colores es el balón?": {
+   "f": "de-que-colores-es-el-balon.mp3",
+   "v": "3a2982bb",
+   "h": "8b9af464b28d"
+  },
+  "Blanco y negro.": {
+   "f": "blanco-y-negro.mp3",
+   "v": "3d02b70e",
+   "h": "2b65d2f73aed"
+  },
+  "Los dientes de Hugo": {
+   "f": "los-dientes-de-hugo.mp3",
+   "v": "d8ac1f28",
+   "h": "3c1c6d64d1c3"
+  },
+  "Hugo se lava los dientes.": {
+   "f": "hugo-se-lava-los-dientes.mp3",
+   "v": "da4386ea",
+   "h": "a014297df9da"
+  },
+  "Usa su cepillo azul y un poco de pasta.": {
+   "f": "usa-su-cepillo-azul-y-un-poco-de-pasta.mp3",
+   "v": "e27eaf90",
+   "h": "f136592b9a92"
+  },
+  "Se lava por la mañana y por la noche.": {
+   "f": "se-lava-por-la-manana-y-por-la-noche.mp3",
+   "v": "1f503e7f",
+   "h": "a0bce1324134"
+  },
+  "¡Qué sonrisa tan bonita!": {
+   "f": "que-sonrisa-tan-bonita.mp3",
+   "v": "f66efe3d",
+   "h": "510fc69849fd"
+  },
+  "¿De qué color es el cepillo?": {
+   "f": "de-que-color-es-el-cepillo.mp3",
+   "v": "e7756e02",
+   "h": "43f15afbd4be"
+  },
+  "Azul": {
+   "f": "azul.mp3",
+   "v": "0272d37a",
+   "h": "2dce7447a959"
+  },
+  "Rojo": {
+   "f": "rojo.mp3",
+   "v": "c5f608ba",
+   "h": "b80fc6107dfe"
+  },
+  "¿Cuándo se lava Hugo los dientes?": {
+   "f": "cuando-se-lava-hugo-los-dientes.mp3",
+   "v": "651804f0",
+   "h": "c09239d0be6c"
+  },
+  "Por la mañana y por la noche.": {
+   "f": "por-la-manana-y-por-la-noche.mp3",
+   "v": "84f84f89",
+   "h": "4f0fd94de656"
+  },
+  "La flor del jardín": {
+   "f": "la-flor-del-jardin.mp3",
+   "v": "7582af5b",
+   "h": "55d88eb0a2e9"
+  },
+  "En el jardín hay una flor amarilla.": {
+   "f": "en-el-jardin-hay-una-flor-amarilla.mp3",
+   "v": "ff42e3c6",
+   "h": "52d387938442"
+  },
+  "Sale el sol y la flor se abre.": {
+   "f": "sale-el-sol-y-la-flor-se-abre.mp3",
+   "v": "105fdac8",
+   "h": "7f697b2ae6ab"
+  },
+  "Una abeja pequeña viene a visitarla.": {
+   "f": "una-abeja-pequena-viene-a-visitarla.mp3",
+   "v": "a3024087",
+   "h": "374152d45ebf"
+  },
+  "Mi abuela riega la flor con agua.": {
+   "f": "mi-abuela-riega-la-flor-con-agua.mp3",
+   "v": "bce09354",
+   "h": "39b1eb3462b4"
+  },
+  "¿Quién visita la flor?": {
+   "f": "quien-visita-la-flor.mp3",
+   "v": "62875f80",
+   "h": "79cfb8e90d78"
+  },
+  "Una abeja": {
+   "f": "una-abeja.mp3",
+   "v": "12e8e337",
+   "h": "a861572f151b"
+  },
+  "Un perro": {
+   "f": "un-perro.mp3",
+   "v": "f1515b50",
+   "h": "01a3570a29ef"
+  },
+  "Un pez": {
+   "f": "un-pez.mp3",
+   "v": "9cbb85d3",
+   "h": "7fa344972769"
+  },
+  "¿Con qué riega la abuela la flor?": {
+   "f": "con-que-riega-la-abuela-la-flor.mp3",
+   "v": "48916aac",
+   "h": "14f1ab5167a1"
+  },
+  "Con agua.": {
+   "f": "con-agua.mp3",
+   "v": "8a8a776a",
+   "h": "dc97e5cc2514"
+  },
+  "El perro en el parque": {
+   "f": "el-perro-en-el-parque.mp3",
+   "v": "c2e0de6b",
+   "h": "de2f360d9351"
+  },
+  "Mi perro se llama Rayo.": {
+   "f": "mi-perro-se-llama-rayo.mp3",
+   "v": "fd5abd47",
+   "h": "ca6d3ad7ff04"
+  },
+  "Es pequeño, marrón y muy rápido.": {
+   "f": "es-pequeno-marron-y-muy-rapido.mp3",
+   "v": "ad6391c6",
+   "h": "13aa9302bc41"
+  },
+  "Todas las tardes vamos al parque.": {
+   "f": "todas-las-tardes-vamos-al-parque.mp3",
+   "v": "2e90c488",
+   "h": "f63bc74f6bcd"
+  },
+  "Allí Rayo corre detrás de los pájaros, pero nunca los atrapa.": {
+   "f": "alli-rayo-corre-detras-de-los-pajaros-pero-nunca-los-atrapa.mp3",
+   "v": "40368c0a",
+   "h": "2622a34d6212"
+  },
+  "Cuando se cansa, se tumba debajo de un árbol.": {
+   "f": "cuando-se-cansa-se-tumba-debajo-de-un-arbol.mp3",
+   "v": "68cdb19e",
+   "h": "c9614ffc12d0"
+  },
+  "Luego volvemos a casa y bebe mucha agua.": {
+   "f": "luego-volvemos-a-casa-y-bebe-mucha-agua.mp3",
+   "v": "350e8ae3",
+   "h": "b29ad027a813"
+  },
+  "¿Cómo se llama el perro?": {
+   "f": "como-se-llama-el-perro.mp3",
+   "v": "d39a48ee",
+   "h": "82c55faac202"
+  },
+  "Rayo": {
+   "f": "rayo.mp3",
+   "v": "8e44d548",
+   "h": "c93ce489ef98"
+  },
+  "Toby": {
+   "f": "toby.mp3",
+   "v": "f884f2fb",
+   "h": "0c55f0db9800"
+  },
+  "Sol": {
+   "f": "sol.mp3",
+   "v": "a0ed3c01",
+   "h": "77fad2b8edc9"
+  },
+  "¿Qué hace Rayo cuando se cansa?": {
+   "f": "que-hace-rayo-cuando-se-cansa.mp3",
+   "v": "e16569f9",
+   "h": "46b270abd68e"
+  },
+  "Se tumba debajo de un árbol.": {
+   "f": "se-tumba-debajo-de-un-arbol.mp3",
+   "v": "9979235d",
+   "h": "ce2729dd71ee"
+  },
+  "¿Cuándo van al parque?": {
+   "f": "cuando-van-al-parque.mp3",
+   "v": "19262a9b",
+   "h": "c95db947a413"
+  },
+  "Por la tarde": {
+   "f": "por-la-tarde.mp3",
+   "v": "10a2bd71",
+   "h": "62d177690abd"
+  },
+  "Por la noche": {
+   "f": "por-la-noche.mp3",
+   "v": "fbefeec8",
+   "h": "b99b81d37ca2"
+  },
+  "Nunca": {
+   "f": "nunca.mp3",
+   "v": "cc1571d4",
+   "h": "d8b40e40e82b"
+  },
+  "El desayuno": {
+   "f": "el-desayuno.mp3",
+   "v": "324d9556",
+   "h": "eb6ee5c613cd"
+  },
+  "Por la mañana, Lucía desayuna en la cocina.": {
+   "f": "por-la-manana-lucia-desayuna-en-la-cocina.mp3",
+   "v": "3a898de2",
+   "h": "5028fad43a93"
+  },
+  "Su padre le pone un vaso de leche y pan con tomate.": {
+   "f": "su-padre-le-pone-un-vaso-de-leche-y-pan-con-tomate.mp3",
+   "v": "9a07b5bb",
+   "h": "d33a6e8d7223"
+  },
+  "Lucía también se come un plátano.": {
+   "f": "lucia-tambien-se-come-un-platano.mp3",
+   "v": "2fa6dcc1",
+   "h": "7e31e0fbbee7"
+  },
+  "Después se lava las manos, coge la mochila y sale hacia el colegio.": {
+   "f": "despues-se-lava-las-manos-coge-la-mochila-y-sale-hacia-el-co.mp3",
+   "v": "f06e9292",
+   "h": "2aa6cca53e00"
+  },
+  "¡Hoy tiene clase de música!": {
+   "f": "hoy-tiene-clase-de-musica.mp3",
+   "v": "444887df",
+   "h": "9ac98bd2ed12"
+  },
+  "¿Qué bebe Lucía?": {
+   "f": "que-bebe-lucia.mp3",
+   "v": "320b4116",
+   "h": "f6d435cc5605"
+  },
+  "Leche": {
+   "f": "leche.mp3",
+   "v": "dd966959",
+   "h": "9d619f737e62"
+  },
+  "Zumo": {
+   "f": "zumo.mp3",
+   "v": "db7aee52",
+   "h": "6674d7596280"
+  },
+  "Agua": {
+   "f": "agua.mp3",
+   "v": "780f58fc",
+   "h": "e770fe597e34"
+  },
+  "¿Qué fruta se come Lucía?": {
+   "f": "que-fruta-se-come-lucia.mp3",
+   "v": "a08c950b",
+   "h": "2b13fd53a705"
+  },
+  "Un plátano.": {
+   "f": "un-platano.mp3",
+   "v": "933753db",
+   "h": "70868c720a98"
+  },
+  "El pájaro en la ventana": {
+   "f": "el-pajaro-en-la-ventana.mp3",
+   "v": "074fce9e",
+   "h": "c68bfd124487"
+  },
+  "Un pájaro azul se para en mi ventana.": {
+   "f": "un-pajaro-azul-se-para-en-mi-ventana.mp3",
+   "v": "6580b7b1",
+   "h": "60c9ab312858"
+  },
+  "Canta una canción muy alegre.": {
+   "f": "canta-una-cancion-muy-alegre.mp3",
+   "v": "037e9378",
+   "h": "758bd68b55c0"
+  },
+  "Le pongo unas migas de pan en un plato pequeño.": {
+   "f": "le-pongo-unas-migas-de-pan-en-un-plato-pequeno.mp3",
+   "v": "f16a0dec",
+   "h": "4721920e9b11"
+  },
+  "El pájaro come, mueve las alas y se va volando hacia los árboles.": {
+   "f": "el-pajaro-come-mueve-las-alas-y-se-va-volando-hacia-los-arbo.mp3",
+   "v": "a88472c5",
+   "h": "3eebda8eab65"
+  },
+  "Mañana, a lo mejor, vuelve a visitarme.": {
+   "f": "manana-a-lo-mejor-vuelve-a-visitarme.mp3",
+   "v": "d1d5cf74",
+   "h": "00f9b4564f7f"
+  },
+  "¿De qué color es el pájaro?": {
+   "f": "de-que-color-es-el-pajaro.mp3",
+   "v": "2b4f68c2",
+   "h": "63f141ad6d58"
+  },
+  "¿Qué le da de comer al pájaro?": {
+   "f": "que-le-da-de-comer-al-pajaro.mp3",
+   "v": "0c9d148f",
+   "h": "7a69e2021188"
+  },
+  "Migas de pan.": {
+   "f": "migas-de-pan.mp3",
+   "v": "c3f6d072",
+   "h": "ba684f52e814"
+  },
+  "La frutería": {
+   "f": "la-fruteria.mp3",
+   "v": "03093ae7",
+   "h": "b57131967089"
+  },
+  "El sábado voy con mi madre a la frutería.": {
+   "f": "el-sabado-voy-con-mi-madre-a-la-fruteria.mp3",
+   "v": "2b9b3adf",
+   "h": "e0a76c571862"
+  },
+  "Compramos naranjas, plátanos y fresas.": {
+   "f": "compramos-naranjas-platanos-y-fresas.mp3",
+   "v": "3f08c296",
+   "h": "3621b1a881b1"
+  },
+  "Las fresas son rojas y huelen muy bien.": {
+   "f": "las-fresas-son-rojas-y-huelen-muy-bien.mp3",
+   "v": "f0c5a599",
+   "h": "c670b53e320b"
+  },
+  "El frutero me regala una mandarina.": {
+   "f": "el-frutero-me-regala-una-mandarina.mp3",
+   "v": "c55fbde0",
+   "h": "966fd0a8d21c"
+  },
+  "Yo le digo: «¡Muchas gracias!».": {
+   "f": "yo-le-digo-muchas-gracias.mp3",
+   "v": "3f5da34a",
+   "h": "f9b4ce7119c4"
+  },
+  "En casa preparamos una macedonia para merendar.": {
+   "f": "en-casa-preparamos-una-macedonia-para-merendar.mp3",
+   "v": "5630f4f6",
+   "h": "41d47f272e85"
+  },
+  "¿Qué le regala el frutero?": {
+   "f": "que-le-regala-el-frutero.mp3",
+   "v": "6cd69d78",
+   "h": "57f72786d764"
+  },
+  "Una mandarina": {
+   "f": "una-mandarina.mp3",
+   "v": "9faf8330",
+   "h": "43e9e697f544"
+  },
+  "Una fresa": {
+   "f": "una-fresa.mp3",
+   "v": "167f7a96",
+   "h": "1a41fb48c49d"
+  },
+  "Una manzana": {
+   "f": "una-manzana.mp3",
+   "v": "356e146b",
+   "h": "6ecf1d8f9833"
+  },
+  "¿Qué le dice el niño al frutero?": {
+   "f": "que-le-dice-el-nino-al-frutero.mp3",
+   "v": "b9495326",
+   "h": "0eb5d4b17897"
+  },
+  "¡Muchas gracias!": {
+   "f": "muchas-gracias.mp3",
+   "v": "1aa7baed",
+   "h": "d163e41f2c69"
+  },
+  "La bicicleta de Marta": {
+   "f": "la-bicicleta-de-marta.mp3",
+   "v": "663f4e0a",
+   "h": "715fb6814884"
+  },
+  "Marta tiene una bicicleta roja.": {
+   "f": "marta-tiene-una-bicicleta-roja.mp3",
+   "v": "7ff22124",
+   "h": "7e3a6b2be9ef"
+  },
+  "Los domingos va al parque con su padre.": {
+   "f": "los-domingos-va-al-parque-con-su-padre.mp3",
+   "v": "913d59b5",
+   "h": "6e0d442046ad"
+  },
+  "Siempre lleva el casco puesto.": {
+   "f": "siempre-lleva-el-casco-puesto.mp3",
+   "v": "f6d65720",
+   "h": "a8cb6a6260aa"
+  },
+  "Al principio iba despacio, pero ahora ya pedalea muy bien.": {
+   "f": "al-principio-iba-despacio-pero-ahora-ya-pedalea-muy-bien.mp3",
+   "v": "ad16c15e",
+   "h": "02302d324daa"
+  },
+  "Cuando ve una cuesta, Marta grita: «¡Allá voy!».": {
+   "f": "cuando-ve-una-cuesta-marta-grita-alla-voy.mp3",
+   "v": "7c604269",
+   "h": "a8a1bc2f9116"
+  },
+  "Y baja con mucho cuidado.": {
+   "f": "y-baja-con-mucho-cuidado.mp3",
+   "v": "0416b45f",
+   "h": "7b710f92da45"
+  },
+  "¿Qué lleva siempre Marta?": {
+   "f": "que-lleva-siempre-marta.mp3",
+   "v": "5ae3f389",
+   "h": "c8dde19b1ad2"
+  },
+  "El casco": {
+   "f": "el-casco.mp3",
+   "v": "98d65faf",
+   "h": "fe3a693a2c75"
+  },
+  "Una gorra": {
+   "f": "una-gorra.mp3",
+   "v": "06b5d4f6",
+   "h": "6b7996603428"
+  },
+  "Una mochila": {
+   "f": "una-mochila.mp3",
+   "v": "400c7d67",
+   "h": "f6096fd6b3a3"
+  },
+  "¿De qué color es la bicicleta?": {
+   "f": "de-que-color-es-la-bicicleta.mp3",
+   "v": "fc22abe3",
+   "h": "938501e8682b"
+  },
+  "Roja.": {
+   "f": "roja-2.mp3",
+   "v": "3a6abc26",
+   "h": "9383d52c0acc"
+  },
+  "El partido del sábado": {
+   "f": "el-partido-del-sabado.mp3",
+   "v": "7ea5592e",
+   "h": "23049707f423"
+  },
+  "El sábado jugamos un partido contra el equipo del otro colegio.": {
+   "f": "el-sabado-jugamos-un-partido-contra-el-equipo-del-otro-coleg.mp3",
+   "v": "37061fa2",
+   "h": "5deb787d417f"
+  },
+  "Yo llevaba la camiseta verde con el número siete.": {
+   "f": "yo-llevaba-la-camiseta-verde-con-el-numero-siete.mp3",
+   "v": "ef12c016",
+   "h": "240145d27019"
+  },
+  "Al principio estábamos nerviosos y ellos marcaron el primer gol.": {
+   "f": "al-principio-estabamos-nerviosos-y-ellos-marcaron-el-primer.mp3",
+   "v": "439c735f",
+   "h": "1290d9d83647"
+  },
+  "En el descanso, la entrenadora nos pidió que pasáramos más el balón.": {
+   "f": "en-el-descanso-la-entrenadora-nos-pidio-que-pasaramos-mas-el.mp3",
+   "v": "21c805a2",
+   "h": "149aa36bf35e"
+  },
+  "En la segunda parte, Pablo me dio un pase muy bueno y yo marqué.": {
+   "f": "en-la-segunda-parte-pablo-me-dio-un-pase-muy-bueno-y-yo-marq.mp3",
+   "v": "e4b3b4cd",
+   "h": "8f7907774b5e"
+  },
+  "Al final empatamos a uno.": {
+   "f": "al-final-empatamos-a-uno.mp3",
+   "v": "94add898",
+   "h": "485c78b3d24c"
+  },
+  "Después del partido, nos dimos la mano y merendamos todos juntos.": {
+   "f": "despues-del-partido-nos-dimos-la-mano-y-merendamos-todos-jun.mp3",
+   "v": "edb7ff43",
+   "h": "514f982e1a9a"
+  },
+  "¿Qué número llevaba en la camiseta?": {
+   "f": "que-numero-llevaba-en-la-camiseta.mp3",
+   "v": "01baa1ee",
+   "h": "ae13508063ee"
+  },
+  "El siete": {
+   "f": "el-siete.mp3",
+   "v": "10486212",
+   "h": "191bd5adf55b"
+  },
+  "El diez": {
+   "f": "el-diez.mp3",
+   "v": "c7bc70f1",
+   "h": "373ec19cb069"
+  },
+  "El uno": {
+   "f": "el-uno.mp3",
+   "v": "368d6361",
+   "h": "934708319a9b"
+  },
+  "¿Cómo terminó el partido?": {
+   "f": "como-termino-el-partido.mp3",
+   "v": "d3f3e5aa",
+   "h": "18cc4b494e5b"
+  },
+  "Empataron a uno.": {
+   "f": "empataron-a-uno.mp3",
+   "v": "f55dde74",
+   "h": "efcba4cd4774"
+  },
+  "¿Qué hicieron después del partido?": {
+   "f": "que-hicieron-despues-del-partido.mp3",
+   "v": "68cd300e",
+   "h": "068d0e77a8d5"
+  },
+  "Merendaron juntos": {
+   "f": "merendaron-juntos.mp3",
+   "v": "872f24c6",
+   "h": "f1ebf3b672fc"
+  },
+  "Se fueron a dormir": {
+   "f": "se-fueron-a-dormir.mp3",
+   "v": "56050a19",
+   "h": "e45bcd5dee97"
+  },
+  "Vieron la tele": {
+   "f": "vieron-la-tele.mp3",
+   "v": "0c3dcaff",
+   "h": "a120fde2dff5"
+  },
+  "Cocinamos una tortilla": {
+   "f": "cocinamos-una-tortilla.mp3",
+   "v": "6f8b5cf4",
+   "h": "0741a947a30e"
+  },
+  "Ayer mi abuelo y yo hicimos una tortilla de patatas.": {
+   "f": "ayer-mi-abuelo-y-yo-hicimos-una-tortilla-de-patatas.mp3",
+   "v": "2a041e62",
+   "h": "2e92ffb74643"
+  },
+  "Primero, él peló y cortó las patatas, porque el cuchillo corta mucho.": {
+   "f": "primero-el-pelo-y-corto-las-patatas-porque-el-cuchillo-corta.mp3",
+   "v": "68f5a1b3",
+   "h": "fed9c78bacea"
+  },
+  "Yo batí cuatro huevos en un plato hondo con un tenedor.": {
+   "f": "yo-bati-cuatro-huevos-en-un-plato-hondo-con-un-tenedor.mp3",
+   "v": "4ec4bb84",
+   "h": "4c2770d51223"
+  },
+  "Luego lo mezclamos todo con un poco de sal.": {
+   "f": "luego-lo-mezclamos-todo-con-un-poco-de-sal.mp3",
+   "v": "500e672b",
+   "h": "ff001e8391c3"
+  },
+  "El abuelo le dio la vuelta a la tortilla con un plato grande.": {
+   "f": "el-abuelo-le-dio-la-vuelta-a-la-tortilla-con-un-plato-grande.mp3",
+   "v": "23ea3aa3",
+   "h": "6f838145de89"
+  },
+  "¡Casi se cae!": {
+   "f": "casi-se-cae.mp3",
+   "v": "f9cb76eb",
+   "h": "06220242a6bc"
+  },
+  "Al final nos salió redonda y muy rica, y la comimos con pan.": {
+   "f": "al-final-nos-salio-redonda-y-muy-rica-y-la-comimos-con-pan.mp3",
+   "v": "44dae4d7",
+   "h": "312f3710359c"
+  },
+  "¿Cuántos huevos batió?": {
+   "f": "cuantos-huevos-batio.mp3",
+   "v": "38fa2069",
+   "h": "e7c4f80501c6"
+  },
+  "Cuatro": {
+   "f": "cuatro.mp3",
+   "v": "df98239a",
+   "h": "dc10a39608b7"
+  },
+  "Dos": {
+   "f": "dos.mp3",
+   "v": "63223cba",
+   "h": "ed789f357628"
+  },
+  "Diez": {
+   "f": "diez.mp3",
+   "v": "ebc8f40f",
+   "h": "efc1df21e998"
+  },
+  "¿Quién cortó las patatas?": {
+   "f": "quien-corto-las-patatas.mp3",
+   "v": "463e252b",
+   "h": "d44977279c94"
+  },
+  "El abuelo.": {
+   "f": "el-abuelo.mp3",
+   "v": "4e8f0065",
+   "h": "8f367beffb2a"
+  },
+  "La tarde en el parque": {
+   "f": "la-tarde-en-el-parque.mp3",
+   "v": "3985add0",
+   "h": "3a037a1260a2"
+  },
+  "Después del colegio fuimos al parque con mis primos.": {
+   "f": "despues-del-colegio-fuimos-al-parque-con-mis-primos.mp3",
+   "v": "9f8f4529",
+   "h": "bd1172120386"
+  },
+  "Primero subimos al tobogán y luego jugamos a la pelota.": {
+   "f": "primero-subimos-al-tobogan-y-luego-jugamos-a-la-pelota.mp3",
+   "v": "b1378806",
+   "h": "30779b0f3cb4"
+  },
+  "De repente, la pelota rodó hasta un charco y se llenó de barro.": {
+   "f": "de-repente-la-pelota-rodo-hasta-un-charco-y-se-lleno-de-barr.mp3",
+   "v": "9a6d4f54",
+   "h": "cf8401dd310c"
+  },
+  "Mi prima Elena la limpió con un pañuelo.": {
+   "f": "mi-prima-elena-la-limpio-con-un-panuelo.mp3",
+   "v": "ff0170bc",
+   "h": "bfb3e8878655"
+  },
+  "Más tarde merendamos un bocadillo sentados en un banco.": {
+   "f": "mas-tarde-merendamos-un-bocadillo-sentados-en-un-banco.mp3",
+   "v": "385fd308",
+   "h": "61d6dc05ae0c"
+  },
+  "Cuando empezó a oscurecer, nos despedimos de los columpios y volvimos a casa cansados y contentos.": {
+   "f": "cuando-empezo-a-oscurecer-nos-despedimos-de-los-columpios-y.mp3",
+   "v": "04c36317",
+   "h": "913ca2d72574"
+  },
+  "¿Dónde cayó la pelota?": {
+   "f": "donde-cayo-la-pelota.mp3",
+   "v": "fb0c4be8",
+   "h": "74a18ff241f3"
+  },
+  "En un charco": {
+   "f": "en-un-charco.mp3",
+   "v": "1c8605cc",
+   "h": "65d59b2fdc53"
+  },
+  "En el río": {
+   "f": "en-el-rio.mp3",
+   "v": "6daff5c4",
+   "h": "402c93631858"
+  },
+  "En un árbol": {
+   "f": "en-un-arbol.mp3",
+   "v": "301431db",
+   "h": "5b073cc7ee24"
+  },
+  "¿Quién limpió la pelota?": {
+   "f": "quien-limpio-la-pelota.mp3",
+   "v": "9f6726e5",
+   "h": "79b26e9a4ecc"
+  },
+  "Su prima Elena.": {
+   "f": "su-prima-elena.mp3",
+   "v": "cac3421b",
+   "h": "c5dbd3074b10"
+  },
+  "Un día de lluvia": {
+   "f": "un-dia-de-lluvia.mp3",
+   "v": "74d20689",
+   "h": "68ba9bb7d003"
+  },
+  "El martes llovió muchísimo durante toda la mañana.": {
+   "f": "el-martes-llovio-muchisimo-durante-toda-la-manana.mp3",
+   "v": "ab3a38e5",
+   "h": "7a63e02c1333"
+  },
+  "No pudimos salir al patio, así que la profesora nos leyó un cuento en clase.": {
+   "f": "no-pudimos-salir-al-patio-asi-que-la-profesora-nos-leyo-un-c.mp3",
+   "v": "773765fa",
+   "h": "28109a329374"
+  },
+  "Por la ventana veíamos cómo caían las gotas de las hojas del árbol.": {
+   "f": "por-la-ventana-veiamos-como-caian-las-gotas-de-las-hojas-del.mp3",
+   "v": "bcc5acb8",
+   "h": "d38271d494c5"
+  },
+  "A la salida, me puse las botas de agua y salté en todos los charcos.": {
+   "f": "a-la-salida-me-puse-las-botas-de-agua-y-salte-en-todos-los-c.mp3",
+   "v": "0e30da8f",
+   "h": "e36f4a05c468"
+  },
+  "Mi madre se rio y me dijo que parecía una rana.": {
+   "f": "mi-madre-se-rio-y-me-dijo-que-parecia-una-rana.mp3",
+   "v": "27c93a5c",
+   "h": "8855499d00c0"
+  },
+  "Por la tarde salió el sol y apareció un arcoíris precioso.": {
+   "f": "por-la-tarde-salio-el-sol-y-aparecio-un-arcoiris-precioso.mp3",
+   "v": "0b2c9358",
+   "h": "cc17799c53c7"
+  },
+  "¿Qué apareció por la tarde?": {
+   "f": "que-aparecio-por-la-tarde.mp3",
+   "v": "af76b33c",
+   "h": "3450cc48b744"
+  },
+  "Un arcoíris": {
+   "f": "un-arcoiris.mp3",
+   "v": "7998b227",
+   "h": "c1d63f536961"
+  },
+  "La luna": {
+   "f": "la-luna.mp3",
+   "v": "d059e43d",
+   "h": "e6b58146fcb0"
+  },
+  "La nieve": {
+   "f": "la-nieve.mp3",
+   "v": "42d2b503",
+   "h": "25aa8f5f71d6"
+  },
+  "¿A qué animal se parecía saltando en los charcos?": {
+   "f": "a-que-animal-se-parecia-saltando-en-los-charcos.mp3",
+   "v": "ba7bad07",
+   "h": "d383a614a67a"
+  },
+  "A una rana.": {
+   "f": "a-una-rana.mp3",
+   "v": "2d7c68d0",
+   "h": "8dbb92b31138"
+  },
+  "El viaje en tren": {
+   "f": "el-viaje-en-tren.mp3",
+   "v": "867e24fb",
+   "h": "926a13b696c6"
+  },
+  "En verano fuimos en tren a visitar a mis tíos.": {
+   "f": "en-verano-fuimos-en-tren-a-visitar-a-mis-tios.mp3",
+   "v": "468807f9",
+   "h": "2a9b055e3638"
+  },
+  "El tren salió muy temprano de la estación.": {
+   "f": "el-tren-salio-muy-temprano-de-la-estacion.mp3",
+   "v": "13ee9831",
+   "h": "a583d1c3165c"
+  },
+  "Yo me senté al lado de la ventana para ver el paisaje.": {
+   "f": "yo-me-sente-al-lado-de-la-ventana-para-ver-el-paisaje.mp3",
+   "v": "00a0d1a2",
+   "h": "c3632fc2bc4f"
+  },
+  "Vimos montañas, ríos y muchas vacas en el campo.": {
+   "f": "vimos-montanas-rios-y-muchas-vacas-en-el-campo.mp3",
+   "v": "f4612002",
+   "h": "78240123e99f"
+  },
+  "Durante el viaje jugamos a las cartas y comimos fruta.": {
+   "f": "durante-el-viaje-jugamos-a-las-cartas-y-comimos-fruta.mp3",
+   "v": "3f16fc95",
+   "h": "340ca82f330b"
+  },
+  "Tres horas después, el tren llegó a su destino.": {
+   "f": "tres-horas-despues-el-tren-llego-a-su-destino.mp3",
+   "v": "79b720df",
+   "h": "be0b24226952"
+  },
+  "Mis tíos nos esperaban en el andén con una gran sonrisa.": {
+   "f": "mis-tios-nos-esperaban-en-el-anden-con-una-gran-sonrisa.mp3",
+   "v": "3f1fbaf4",
+   "h": "31b29f78428a"
+  },
+  "¿Dónde se sentó?": {
+   "f": "donde-se-sento.mp3",
+   "v": "2c5d56c9",
+   "h": "1f0662382459"
+  },
+  "Al lado de la ventana": {
+   "f": "al-lado-de-la-ventana.mp3",
+   "v": "99e73a28",
+   "h": "f81c7ce18b99"
+  },
+  "En el suelo": {
+   "f": "en-el-suelo.mp3",
+   "v": "f7147dba",
+   "h": "4f6d50d0deac"
+  },
+  "Junto a la puerta": {
+   "f": "junto-a-la-puerta.mp3",
+   "v": "1872cac6",
+   "h": "0ff0f18a88c1"
+  },
+  "¿Qué animales vieron en el campo?": {
+   "f": "que-animales-vieron-en-el-campo.mp3",
+   "v": "ee0d2e9b",
+   "h": "e5521bf93530"
+  },
+  "Vacas.": {
+   "f": "vacas.mp3",
+   "v": "c1709bb4",
+   "h": "6e0d5d44d54c"
+  },
+  "¿Cuánto duró el viaje?": {
+   "f": "cuanto-duro-el-viaje.mp3",
+   "v": "5e82dc3a",
+   "h": "ce9c71f05fe5"
+  },
+  "Tres horas": {
+   "f": "tres-horas.mp3",
+   "v": "47c64d5a",
+   "h": "da9e056252b4"
+  },
+  "Un día": {
+   "f": "un-dia.mp3",
+   "v": "be86e8f1",
+   "h": "da42505e4866"
+  },
+  "Diez minutos": {
+   "f": "diez-minutos.mp3",
+   "v": "6727f10e",
+   "h": "57ab91aa8ea8"
+  },
+  "La granja del tío Juan": {
+   "f": "la-granja-del-tio-juan.mp3",
+   "v": "9606ab18",
+   "h": "5ed0f2e5b887"
+  },
+  "El fin de semana pasado fuimos a la granja del tío Juan.": {
+   "f": "el-fin-de-semana-pasado-fuimos-a-la-granja-del-tio-juan.mp3",
+   "v": "9a1e78fc",
+   "h": "7123cb1f8982"
+  },
+  "Nada más llegar, su perro Lobo salió a recibirnos moviendo la cola.": {
+   "f": "nada-mas-llegar-su-perro-lobo-salio-a-recibirnos-moviendo-la.mp3",
+   "v": "400d6c75",
+   "h": "87f4fb096fbb"
+  },
+  "El tío nos enseñó las vacas, las gallinas y un caballo marrón que se llamaba Trueno.": {
+   "f": "el-tio-nos-enseno-las-vacas-las-gallinas-y-un-caballo-marron.mp3",
+   "v": "d2503660",
+   "h": "cdbd3192f70c"
+  },
+  "«¿Puedo darle de comer?», le pregunté.": {
+   "f": "puedo-darle-de-comer-le-pregunte.mp3",
+   "v": "bba3d561",
+   "h": "4377fb4e737f"
+  },
+  "«Claro, pero ponle la zanahoria en la mano abierta», me contestó.": {
+   "f": "claro-pero-ponle-la-zanahoria-en-la-mano-abierta-me-contesto.mp3",
+   "v": "d0476b8c",
+   "h": "eb45de03040f"
+  },
+  "Trueno se la comió en un segundo y me hizo cosquillas con los labios.": {
+   "f": "trueno-se-la-comio-en-un-segundo-y-me-hizo-cosquillas-con-lo.mp3",
+   "v": "e73fd959",
+   "h": "648d9d0366ea"
+  },
+  "Por la tarde recogimos huevos todavía calientes y los llevamos a la cocina en una cesta.": {
+   "f": "por-la-tarde-recogimos-huevos-todavia-calientes-y-los-llevam.mp3",
+   "v": "84c7b618",
+   "h": "e1c3af822555"
+  },
+  "Antes de irnos, el tío Juan nos prometió que en primavera podríamos montar a caballo.": {
+   "f": "antes-de-irnos-el-tio-juan-nos-prometio-que-en-primavera-pod.mp3",
+   "v": "bd8e88b7",
+   "h": "3601527396f9"
+  },
+  "¡Estoy deseando volver!": {
+   "f": "estoy-deseando-volver.mp3",
+   "v": "ab7a2c50",
+   "h": "2bca8fc96b24"
+  },
+  "¿Cómo se llamaba el caballo?": {
+   "f": "como-se-llamaba-el-caballo.mp3",
+   "v": "0dc81b3c",
+   "h": "a29e70aec09c"
+  },
+  "Trueno": {
+   "f": "trueno.mp3",
+   "v": "ec13aee8",
+   "h": "c8c532e195fa"
+  },
+  "Lobo": {
+   "f": "lobo.mp3",
+   "v": "2f19776f",
+   "h": "ef879a44a66f"
+  },
+  "¿Qué le dio de comer al caballo?": {
+   "f": "que-le-dio-de-comer-al-caballo.mp3",
+   "v": "2e3b8d4e",
+   "h": "ee1ede480e5e"
+  },
+  "Una zanahoria.": {
+   "f": "una-zanahoria.mp3",
+   "v": "f972bb17",
+   "h": "282a3b1e01f4"
+  },
+  "¿Qué podrán hacer en primavera?": {
+   "f": "que-podran-hacer-en-primavera.mp3",
+   "v": "540eddd5",
+   "h": "ff7b2d9599a5"
+  },
+  "Montar a caballo": {
+   "f": "montar-a-caballo.mp3",
+   "v": "eec3f18e",
+   "h": "e15e1dfe29f8"
+  },
+  "Ir a la playa": {
+   "f": "ir-a-la-playa.mp3",
+   "v": "cdfcb621",
+   "h": "30945fb61bbf"
+  },
+  "Pescar en el río": {
+   "f": "pescar-en-el-rio.mp3",
+   "v": "94b4f60c",
+   "h": "428ae8784775"
+  },
+  "La sorpresa de cumpleaños": {
+   "f": "la-sorpresa-de-cumpleanos.mp3",
+   "v": "fcedf523",
+   "h": "f20bfad37265"
+  },
+  "El jueves era el cumpleaños de mi madre, y mi hermana y yo le preparamos una sorpresa.": {
+   "f": "el-jueves-era-el-cumpleanos-de-mi-madre-y-mi-hermana-y-yo-le.mp3",
+   "v": "429cba30",
+   "h": "d6c85d60d256"
+  },
+  "Por la mañana, mientras ella trabajaba, hicimos un dibujo enorme con globos y flores.": {
+   "f": "por-la-manana-mientras-ella-trabajaba-hicimos-un-dibujo-enor.mp3",
+   "v": "078588f1",
+   "h": "b984f8fe2782"
+  },
+  "Mi padre nos ayudó a preparar un bizcocho de chocolate.": {
+   "f": "mi-padre-nos-ayudo-a-preparar-un-bizcocho-de-chocolate.mp3",
+   "v": "cdddf4ad",
+   "h": "e6967f147a91"
+  },
+  "Después pusimos la mesa con el mantel bueno y escondimos el regalo debajo de una silla.": {
+   "f": "despues-pusimos-la-mesa-con-el-mantel-bueno-y-escondimos-el.mp3",
+   "v": "e2cbc58b",
+   "h": "f05de8839202"
+  },
+  "Cuando mamá abrió la puerta, apagamos las luces y gritamos: «¡Sorpresa!».": {
+   "f": "cuando-mama-abrio-la-puerta-apagamos-las-luces-y-gritamos-so.mp3",
+   "v": "80d75149",
+   "h": "d5dc19efae58"
+  },
+  "Ella se llevó las manos a la cara y empezó a reírse.": {
+   "f": "ella-se-llevo-las-manos-a-la-cara-y-empezo-a-reirse.mp3",
+   "v": "dd813e05",
+   "h": "ec674212efbf"
+  },
+  "«¡Es el mejor cumpleaños de mi vida!», dijo mientras soplaba las velas.": {
+   "f": "es-el-mejor-cumpleanos-de-mi-vida-dijo-mientras-soplaba-las.mp3",
+   "v": "ad71ea5b",
+   "h": "fdb4d6791899"
+  },
+  "Luego comimos bizcocho hasta que no pudimos más.": {
+   "f": "luego-comimos-bizcocho-hasta-que-no-pudimos-mas.mp3",
+   "v": "5b1fdbe2",
+   "h": "b09cb02daec7"
+  },
+  "¿De qué era el bizcocho?": {
+   "f": "de-que-era-el-bizcocho.mp3",
+   "v": "5d28460f",
+   "h": "6c1d6a5d1917"
+  },
+  "De chocolate": {
+   "f": "de-chocolate.mp3",
+   "v": "bb0586f5",
+   "h": "363a3ccca7cc"
+  },
+  "De limón": {
+   "f": "de-limon.mp3",
+   "v": "8adc66ea",
+   "h": "d999326ac1f6"
+  },
+  "De fresa": {
+   "f": "de-fresa.mp3",
+   "v": "2a06bf63",
+   "h": "3dfe0add9adb"
+  },
+  "¿Qué gritaron cuando entró mamá?": {
+   "f": "que-gritaron-cuando-entro-mama.mp3",
+   "v": "7d50106a",
+   "h": "9d4a37f07a5e"
+  },
+  "¡Sorpresa!": {
+   "f": "sorpresa.mp3",
+   "v": "6a8ce549",
+   "h": "cba89739c83c"
+  },
+  "¿Dónde escondieron el regalo?": {
+   "f": "donde-escondieron-el-regalo.mp3",
+   "v": "6a090aa6",
+   "h": "2ce6405bc899"
+  },
+  "Debajo de una silla": {
+   "f": "debajo-de-una-silla.mp3",
+   "v": "c00d6b54",
+   "h": "cf93d8dabee2"
+  },
+  "En el armario": {
+   "f": "en-el-armario.mp3",
+   "v": "148a402c",
+   "h": "7ee6a522b441"
+  },
+  "En la cama": {
+   "f": "en-la-cama.mp3",
+   "v": "376cd687",
+   "h": "b1ba11522032"
+  },
+  "Las manos limpias": {
+   "f": "las-manos-limpias.mp3",
+   "v": "ed6db3ba",
+   "h": "b39d4ae08dbc"
+  },
+  "Un día, en clase, la profesora Carmen nos hizo un experimento.": {
+   "f": "un-dia-en-clase-la-profesora-carmen-nos-hizo-un-experimento.mp3",
+   "v": "33851554",
+   "h": "990d68823a89"
+  },
+  "Echó un poco de purpurina en las manos de Daniel y le pidió que saludara a sus compañeros.": {
+   "f": "echo-un-poco-de-purpurina-en-las-manos-de-daniel-y-le-pidio.mp3",
+   "v": "3ce5a3d5",
+   "h": "59dbbfb4e996"
+  },
+  "En pocos minutos, casi toda la clase tenía las manos brillantes.": {
+   "f": "en-pocos-minutos-casi-toda-la-clase-tenia-las-manos-brillant.mp3",
+   "v": "db3c7da1",
+   "h": "a22a5fa1e53f"
+  },
+  "«Los microbios son como la purpurina, pero no se ven», nos explicó.": {
+   "f": "los-microbios-son-como-la-purpurina-pero-no-se-ven-nos-expli.mp3",
+   "v": "5ae72d89",
+   "h": "cd82deb32c47"
+  },
+  "Después fuimos al baño y nos lavamos las manos con agua y jabón.": {
+   "f": "despues-fuimos-al-bano-y-nos-lavamos-las-manos-con-agua-y-ja.mp3",
+   "v": "4979fc66",
+   "h": "7e76d4fbdd2b"
+  },
+  "Contamos hasta veinte mientras frotábamos entre los dedos y debajo de las uñas.": {
+   "f": "contamos-hasta-veinte-mientras-frotabamos-entre-los-dedos-y.mp3",
+   "v": "66057c0c",
+   "h": "bdefed9295df"
+  },
+  "Al final, nos secamos con la toalla.": {
+   "f": "al-final-nos-secamos-con-la-toalla.mp3",
+   "v": "30cea30f",
+   "h": "f7cb5feb014a"
+  },
+  "Desde ese día, me lavo las manos antes de comer y después de jugar en el patio.": {
+   "f": "desde-ese-dia-me-lavo-las-manos-antes-de-comer-y-despues-de.mp3",
+   "v": "96c7fe96",
+   "h": "7dcc0bf5b7ba"
+  },
+  "¿Qué echó la profesora en las manos de Daniel?": {
+   "f": "que-echo-la-profesora-en-las-manos-de-daniel.mp3",
+   "v": "35911b79",
+   "h": "bcbd44fd2cec"
+  },
+  "Purpurina": {
+   "f": "purpurina.mp3",
+   "v": "f39226e2",
+   "h": "20bae5e3876f"
+  },
+  "Pintura": {
+   "f": "pintura.mp3",
+   "v": "6905f51d",
+   "h": "098a8d233c62"
+  },
+  "Arena": {
+   "f": "arena.mp3",
+   "v": "4fc90453",
+   "h": "f6c93943bd67"
+  },
+  "¿Hasta qué número contaron?": {
+   "f": "hasta-que-numero-contaron.mp3",
+   "v": "5cea0327",
+   "h": "3bdfb7025a3b"
+  },
+  "Hasta veinte.": {
+   "f": "hasta-veinte.mp3",
+   "v": "ea35a234",
+   "h": "6dcd17417f2b"
+  },
+  "La final del torneo": {
+   "f": "la-final-del-torneo.mp3",
+   "v": "c25e66a6",
+   "h": "209913c08c6c"
+  },
+  "Por fin llegó el día de la final del torneo del barrio.": {
+   "f": "por-fin-llego-el-dia-de-la-final-del-torneo-del-barrio.mp3",
+   "v": "64b613a5",
+   "h": "09b043eda889"
+  },
+  "Nuestro equipo, los Leones, jugaba contra los Tigres, que no habían perdido ningún partido.": {
+   "f": "nuestro-equipo-los-leones-jugaba-contra-los-tigres-que-no-ha.mp3",
+   "v": "23c0a57f",
+   "h": "f2e79d62a232"
+  },
+  "Las gradas estaban llenas de familias con bufandas y carteles.": {
+   "f": "las-gradas-estaban-llenas-de-familias-con-bufandas-y-cartele.mp3",
+   "v": "141a7af2",
+   "h": "39a3b8fe62ad"
+  },
+  "En la primera parte, los Tigres marcaron dos goles y nosotros solo uno.": {
+   "f": "en-la-primera-parte-los-tigres-marcaron-dos-goles-y-nosotros.mp3",
+   "v": "21777cad",
+   "h": "405f3428d595"
+  },
+  "En el descanso, nuestra capitana, Irene, nos animó: «¡Todavía podemos ganar si jugamos juntos!».": {
+   "f": "en-el-descanso-nuestra-capitana-irene-nos-animo-todavia-pode.mp3",
+   "v": "c6408ca5",
+   "h": "cb5ac1b2c209"
+  },
+  "En la segunda parte, Irene empató con un remate de cabeza.": {
+   "f": "en-la-segunda-parte-irene-empato-con-un-remate-de-cabeza.mp3",
+   "v": "3dbd599d",
+   "h": "4ae36279e3e1"
+  },
+  "Faltaba un minuto cuando Samuel robó el balón y me lo pasó.": {
+   "f": "faltaba-un-minuto-cuando-samuel-robo-el-balon-y-me-lo-paso.mp3",
+   "v": "e0d02084",
+   "h": "d14ff2908aba"
+  },
+  "Respiré hondo, chuté con todas mis fuerzas y el balón entró por la escuadra.": {
+   "f": "respire-hondo-chute-con-todas-mis-fuerzas-y-el-balon-entro-p.mp3",
+   "v": "0c24a8a4",
+   "h": "587366e52479"
+  },
+  "¡Éramos campeones!": {
+   "f": "eramos-campeones.mp3",
+   "v": "e9e5accf",
+   "h": "80124138de42"
+  },
+  "¿Cómo se llamaba nuestro equipo?": {
+   "f": "como-se-llamaba-nuestro-equipo.mp3",
+   "v": "81ede251",
+   "h": "a631462f8bfb"
+  },
+  "Los Leones": {
+   "f": "los-leones.mp3",
+   "v": "9d501eb2",
+   "h": "2b1d80b52809"
+  },
+  "Los Tigres": {
+   "f": "los-tigres.mp3",
+   "v": "65f56669",
+   "h": "8e9b9bd23029"
+  },
+  "Los Lobos": {
+   "f": "los-lobos.mp3",
+   "v": "73da91b9",
+   "h": "d9bba6e3d7a6"
+  },
+  "¿Quién era la capitana?": {
+   "f": "quien-era-la-capitana.mp3",
+   "v": "2fe0e385",
+   "h": "cf29dbdf58f8"
+  },
+  "Irene.": {
+   "f": "irene.mp3",
+   "v": "f9b82c8a",
+   "h": "ad18c00aa964"
+  },
+  "¿Cómo empató Irene?": {
+   "f": "como-empato-irene.mp3",
+   "v": "7367e98e",
+   "h": "9cdffcc84b11"
+  },
+  "De cabeza": {
+   "f": "de-cabeza.mp3",
+   "v": "75288fd7",
+   "h": "b751c241ad37"
+  },
+  "De penalti": {
+   "f": "de-penalti.mp3",
+   "v": "6f73f507",
+   "h": "8647a2172f69"
+  },
+  "Con la mano": {
+   "f": "con-la-mano.mp3",
+   "v": "d508bfd1",
+   "h": "f70ec8d18ffd"
+  },
+  "¡Genial, sigue así!": {
+   "f": "genial-sigue-asi.mp3",
+   "v": "23c2b1ac",
+   "h": "736b7e32d464"
+  },
+  "¡Gooool! ¡Muy bien!": {
+   "f": "gooool-muy-bien.mp3",
+   "v": "c731a752",
+   "h": "a7f22d3ae827"
+  },
+  "¡Golazo!": {
+   "f": "golazo.mp3",
+   "v": "85e68693",
+   "h": "0de4f40de4f2"
+  },
+  "¡Guau! ¡Muy bien!": {
+   "f": "guau-muy-bien.mp3",
+   "v": "0deda41d",
+   "h": "0016f28dcba9"
+  },
+  "¡Eres un campeón de la selva!": {
+   "f": "eres-un-campeon-de-la-selva.mp3",
+   "v": "56faf241",
+   "h": "e9c15fe5b96a"
+  },
+  "¡Delicioso! ¡Muy bien!": {
+   "f": "delicioso-muy-bien.mp3",
+   "v": "fb773178",
+   "h": "8627e7a3abe5"
+  },
+  "¡Qué rico te ha salido!": {
+   "f": "que-rico-te-ha-salido.mp3",
+   "v": "e9a4c453",
+   "h": "d7e622512789"
+  },
+  "¡Precioso! ¡Muy bien!": {
+   "f": "precioso-muy-bien.mp3",
+   "v": "e1ca8edb",
+   "h": "1ce250ea3a0e"
+  },
+  "¡Brillas como el sol!": {
+   "f": "brillas-como-el-sol.mp3",
+   "v": "33a2d6ab",
+   "h": "20728281148d"
+  },
+  "¡A toda máquina! ¡Muy bien!": {
+   "f": "a-toda-maquina-muy-bien.mp3",
+   "v": "a3460ae4",
+   "h": "110505387630"
+  },
+  "¡Pi, pi! ¡Genial!": {
+   "f": "pi-pi-genial.mp3",
+   "v": "43a21be7",
+   "h": "6197cda2f659"
   }
  }
 }

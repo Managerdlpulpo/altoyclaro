@@ -66,6 +66,31 @@ def textos_fijos():
             lit = literales(linea)
             if lit:
                 textos.append(lit[-1])
+    # Leo en voz alta (lectura.js): títulos, frases de los cuentos, preguntas, opciones y respuestas
+    m = re.search(r"const CUENTOS = \[(.*?)// FIN CUENTOS", leer('lectura.js'), re.S)
+    if not m:
+        sys.exit('No encuentro CUENTOS en lectura.js')
+    for linea in m.group(1).splitlines():
+        l = linea.strip()
+        lit = literales(linea)
+        if not lit:
+            continue
+        if l[0] in "'\"":
+            textos.append(lit[0])                     # una frase del cuento por línea
+        for campo in ('titulo', 'p', 'r'):
+            mm = re.search(r"\b" + campo + r"\s*:\s*(['\"])((?:\\.|(?!\1).)*)\1", linea)
+            if mm:
+                textos.append(re.sub(r"\\(.)", r"\1", mm.group(2)))
+        mm = re.search(r"\bops\s*:\s*\[(.*?)\]", linea)
+        if mm:
+            textos.extend(literales(mm.group(1)))
+    # Celebraciones de cada tema (temas.js)
+    m = re.search(r"const TEMAS = \{(.*?)// FIN TEMAS", leer('temas.js'), re.S)
+    if not m:
+        sys.exit('No encuentro TEMAS en temas.js')
+    for linea in m.group(1).splitlines():
+        if re.search(r"\bfrases\s*:", linea):
+            textos.extend(literales(linea))
     vistos, unicos = set(), []
     for t in textos:
         t = unicodedata.normalize('NFC', re.sub(r'\s+', ' ', t.strip()))

@@ -1,5 +1,5 @@
 /* =====================================================================
-   Liga de Habla Soto Alto · Modo HABLAR (expresión oral)
+   Me gusta hablar Alto y claro · Modo HABLAR (expresión oral)
    - El niño ve una foto, pulsa el micrófono y dice la palabra o una frase.
    - Reconocimiento de voz del navegador (Web Speech API, es-ES).
    - Historial de intentos en localStorage ('ligaHablaVoz').
@@ -53,7 +53,14 @@ const ejemplosFrase = {
     'los lápices': ['Pinto con los lápices.', 'Tengo lápices de colores.', 'Guardo los lápices en la mochila.'],
     'la mochila': ['Llevo los libros en la mochila.', 'Mi mochila es azul.', 'Pongo el bocadillo en la mochila.'],
     'la toalla': ['Me seco con la toalla.', 'Llevo la toalla a la piscina.', 'La toalla está mojada.'],
-    'las gafas': ['Mi abuelo lleva gafas.', 'Con las gafas veo mejor.', 'Mis gafas son negras.']
+    'las gafas': ['Mi abuelo lleva gafas.', 'Con las gafas veo mejor.', 'Mis gafas son negras.'],
+    'las botas de fútbol': ['Me pongo las botas de fútbol.', 'Mis botas de fútbol son rojas.', 'Con las botas de fútbol corro mucho.'],
+    'el silbato': ['El árbitro toca el silbato.', 'El silbato suena muy fuerte.', 'Con el silbato empieza el partido.'],
+    'la mariposa': ['La mariposa vuela entre las flores.', 'La mariposa tiene alas de colores.', 'Veo una mariposa en el jardín.'],
+    'la montaña': ['La montaña es muy alta.', 'En la montaña hay nieve.', 'Subimos a la montaña en verano.'],
+    'el autobús': ['Voy al colegio en autobús.', 'El autobús es amarillo.', 'Espero el autobús en la parada.'],
+    'el barco': ['El barco navega por el mar.', 'El barco tiene una vela blanca.', 'Me gusta viajar en barco.'],
+    'el avión': ['El avión vuela muy alto.', 'El avión va a otro país.', 'Veo un avión en el cielo.']
 };
 const CONSIGNAS_FRASE = ['Di una frase con la palabra:', 'Inventa una frase con:', 'Cuéntame algo con la palabra:', 'Dime una frase que tenga:'];
 let hablaEjemploActual = '';
@@ -211,6 +218,11 @@ async function podarGrabaciones() {
         let cambiado = false;
         hablaData.intentos.forEach(i => { if (i.audioId && borrar.has(i.audioId)) { i.audioId = null; cambiado = true; } });
         if (cambiado) guardarHabla();
+        if (typeof lecturaData !== 'undefined') {
+            let c2 = false;
+            lecturaData.lecturas.forEach(l => { if (l.audioId && borrar.has(l.audioId)) { l.audioId = null; c2 = true; } });
+            if (c2) guardarLecturas();
+        }
     }
 }
 
@@ -225,20 +237,26 @@ let hablaSesion = null;
 let hablaPendiente = null; // grabación esperando la valoración del adulto
 
 function hablaLista() { return hablaCat === 'Todas' ? visualVocab : visualVocab.filter(v => v.cat === hablaCat); }
+// Con «Todas», las palabras del tema favorito salen más a menudo (temas.js), mezcladas con las demás
+function hablaOrdenNuevo() {
+    const cat = hablaCat === 'Todas' && typeof temaActual === 'function' ? temaActual().cat : null;
+    return typeof ordenConTema === 'function' ? ordenConTema(hablaLista(), cat) : shuffle(hablaLista());
+}
 
 function renderHablar() {
-    const cats = ['Todas', ...new Set(visualVocab.map(v => v.cat))];
+    const temaCat = typeof temaActual === 'function' ? temaActual().cat : null;
+    const cats = ['Todas', ...new Set([temaCat, ...visualVocab.map(v => v.cat)].filter(Boolean))];
     const cont = document.getElementById('habla-categorias');
     if (!cont) return;
     cont.innerHTML = '';
     cats.forEach(c => {
         const b = document.createElement('button');
         b.className = 'chip-btn bg-stadium-800 hover:bg-pitch-700 text-white text-xs px-3 py-1.5 rounded-lg border border-slate-700' + (c === hablaCat ? ' active' : '');
-        b.innerText = c;
+        b.innerText = (c === temaCat ? temaActual().emoji + ' ' : '') + c;
         b.onclick = () => { hablaCat = c; renderHablar(); };
         cont.appendChild(b);
     });
-    hablaOrden = shuffle(hablaLista());
+    hablaOrden = hablaOrdenNuevo();
     hablaPos = 0;
     mostrarItemHabla();
     actualizarAvisoSoporte();
@@ -267,7 +285,7 @@ function setModoHabla(m) {
 }
 
 function mostrarItemHabla() {
-    if (!hablaOrden.length) hablaOrden = shuffle(hablaLista());
+    if (!hablaOrden.length) hablaOrden = hablaOrdenNuevo();
     hablaItem = hablaOrden[hablaPos % hablaOrden.length];
     hablaXPDado = false;
     hablaPendiente = null;
@@ -305,7 +323,7 @@ function hablaSiguiente() {
     hablaPos++;
     if (hablaPos >= hablaOrden.length) {
         const anterior = hablaItem;
-        hablaOrden = shuffle(hablaLista());
+        hablaOrden = hablaOrdenNuevo();
         if (hablaOrden.length > 1 && hablaOrden[0] === anterior) hablaOrden.push(hablaOrden.shift());
         hablaPos = 0;
     }
@@ -493,8 +511,8 @@ function mostrarResultado(ev, s) {
         let xp = 0;
         if (s.item === hablaItem && !hablaXPDado) { xp = s.modo === 'frase' ? XP_FRASE : XP_PALABRA; hablaXPDado = true; addXP(xp); }
         html = `<div class="bg-emerald-950/80 border-2 border-emerald-400 rounded-2xl p-4">
-            <div class="text-2xl font-game text-emerald-300">🌟 ¡Perfecto!${xp ? ` <span class="text-amber-400 text-lg">+${xp} XP</span>` : ''}</div>${oido}</div>`;
-        decir(s.modo === 'frase' ? [FRASES_VOZ.muyBien, FRASES_VOZ.buenaFrase] : [FRASES_VOZ.perfecto, s.item.es]);
+            <div class="text-2xl font-game text-emerald-300">${temaMascota()} ¡Perfecto!${xp ? ` <span class="text-amber-400 text-lg">+${xp} XP</span>` : ''}</div>${oido}</div>`;
+        decir(s.modo === 'frase' ? [temaFrase(), FRASES_VOZ.buenaFrase] : [temaFrase(), s.item.es]);
     } else if (ev.resultado === 'casi') {
         let pista = 'Escucha cómo se dice y prueba otra vez.';
         if (ev.motivo === 'corta') pista = 'Muy bien la palabra. Ahora di una frase más larga (3 palabras o más).';
@@ -533,6 +551,8 @@ function reproducirBlob(blob) {
     _audioActual = a;
     a.play().catch(e => console.warn('No se pudo reproducir', e));
 }
+function temaFrase() { return typeof temaCelebracion === 'function' ? temaCelebracion() : FRASES_VOZ.muyBien; }
+function temaMascota() { return typeof temaActual === 'function' ? temaActual().mascota : '🌟'; }
 function hablaReproducirPendiente() { if (hablaPendiente) reproducirBlob(hablaPendiente.blob); }
 function hablaValorar(bien) {
     const p = hablaPendiente;
@@ -543,8 +563,8 @@ function hablaValorar(bien) {
     if (bien) {
         let xp = 0;
         if (p.item === hablaItem && !hablaXPDado) { xp = XP_ADULTO; hablaXPDado = true; addXP(xp); }
-        decir(FRASES_VOZ.muyBien);
-        box.innerHTML = `<div class="bg-emerald-950/80 border-2 border-emerald-400 rounded-2xl p-4"><div class="text-2xl font-game text-emerald-300">🌟 ¡Muy bien!${xp ? ` <span class="text-amber-400 text-lg">+${xp} XP</span>` : ''}</div></div>`;
+        decir(temaFrase());
+        box.innerHTML = `<div class="bg-emerald-950/80 border-2 border-emerald-400 rounded-2xl p-4"><div class="text-2xl font-game text-emerald-300">${temaMascota()} ¡Muy bien!${xp ? ` <span class="text-amber-400 text-lg">+${xp} XP</span>` : ''}</div></div>`;
         setEstadoHabla('Pulsa «Siguiente» para otra foto');
     } else {
         box.innerHTML = `<div class="bg-amber-950/60 border-2 border-amber-400 rounded-2xl p-4"><div class="text-2xl font-game text-amber-300">💪 ¡A practicar!</div><div class="text-sm text-amber-100 mt-1">Escucha y prueba otra vez.</div></div>`;
@@ -697,7 +717,7 @@ async function renderGrabaciones() {
     _grabacionesCache = {};
     todas.forEach(r => { _grabacionesCache[r.id] = r; });
     const porPalabra = {};
-    todas.forEach(r => { (porPalabra[r.word] = porPalabra[r.word] || []).push(r); });
+    todas.forEach(r => { if (!String(r.word).startsWith('cuento:')) (porPalabra[r.word] = porPalabra[r.word] || []).push(r); });
     const palabras = Object.keys(porPalabra).sort((a, b) => a.localeCompare(b, 'es'));
     if (!palabras.length) { cont.innerHTML = '<span class="text-xs text-slate-500">Todavía no hay grabaciones guardadas.</span>'; return; }
     const resultadoDe = id => { const i = hablaData.intentos.find(x => x.audioId === id); return i ? (esAcierto(i.resultado) ? '✅' : i.resultado === 'casi' ? '🟡' : '🔁') : ''; };
@@ -737,12 +757,14 @@ function exportarProgreso(formato) {
     if (formato === 'json') {
         const stats = estadisticasPorPalabra();
         const datos = {
+            app: 'Me gusta hablar Alto y claro',
             exportado: new Date().toISOString(),
             alumno: gameState ? { nombre: gameState.name, nivel: gameState.level, xp: gameState.xp, testsDeNivel: gameState.pruebas || [] } : null,
             resumen: Object.fromEntries(Object.entries(stats).map(([w, s]) => [w, { intentos: s.total, aciertos: s.aciertos, dominada: s.dominada, cuesta: s.cuesta }])),
-            intentos: hablaData.intentos.map(i => ({ fecha: new Date(i.t).toISOString(), palabra: i.palabra, categoria: i.categoria, modo: i.modo, metodo: i.metodo, oido: i.oido, alternativas: i.alternativas, puntuacion: i.score, resultado: i.resultado, grabacion: !!i.audioId }))
+            intentos: hablaData.intentos.map(i => ({ fecha: new Date(i.t).toISOString(), palabra: i.palabra, categoria: i.categoria, modo: i.modo, metodo: i.metodo, oido: i.oido, alternativas: i.alternativas, puntuacion: i.score, resultado: i.resultado, grabacion: !!i.audioId })),
+            lecturas: typeof lecturaParaExportar === 'function' ? lecturaParaExportar() : []
         };
-        descargar(`progreso-habla-${nombre}-${fecha}.json`, JSON.stringify(datos, null, 2), 'application/json');
+        descargar(`alto-y-claro-progreso-${nombre}-${fecha}.json`, JSON.stringify(datos, null, 2), 'application/json');
     } else {
         const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
         const filas = [['fecha', 'hora', 'palabra', 'categoria', 'modo', 'valorado_por', 'lo_que_se_oyo', 'puntuacion', 'resultado', 'grabacion']];
@@ -750,7 +772,7 @@ function exportarProgreso(formato) {
             const d = new Date(i.t);
             filas.push([d.toLocaleDateString('es-ES'), d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), i.palabra, i.categoria, i.modo, i.metodo === 'adulto' ? 'adulto' : 'automatico', i.oido, i.score, i.resultado, i.audioId ? 'si' : 'no']);
         });
-        descargar(`progreso-habla-${nombre}-${fecha}.csv`, '\ufeff' + filas.map(f => f.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
+        descargar(`alto-y-claro-progreso-${nombre}-${fecha}.csv`, '\ufeff' + filas.map(f => f.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
     }
 }
 async function borrarGrabaciones() {
@@ -758,19 +780,21 @@ async function borrarGrabaciones() {
     try { await audioClear(); } catch (e) { console.warn(e); }
     hablaData.intentos.forEach(i => { i.audioId = null; });
     guardarHabla();
+    if (typeof lecturaData !== 'undefined') { lecturaData.lecturas.forEach(l => { l.audioId = null; }); guardarLecturas(); }
     renderProgresoHabla();
 }
 async function borrarHistorialHabla() {
     const conClave = typeof syncMeta !== 'undefined' && syncMeta.conectado;
     const pregunta = conClave
-        ? '¿Borrar TODO el progreso al hablar?\n\nSe borrarán los intentos guardados con tu clave (también en tu otro dispositivo) y las grabaciones de este dispositivo.'
-        : '¿Borrar TODO el progreso al hablar (intentos y grabaciones) de este dispositivo?';
+        ? '¿Borrar TODO el progreso al hablar y leer?\n\nSe borrarán los intentos y las lecturas guardados con tu clave (también en tu otro dispositivo) y las grabaciones de este dispositivo.'
+        : '¿Borrar TODO el progreso al hablar y leer (intentos, lecturas y grabaciones) de este dispositivo?';
     if (!confirm(pregunta)) return;
     try { await audioClear(); } catch (e) { console.warn(e); }
     const soloManual = hablaData.soloManual;
     hablaData = hablaDatosVacios();
     hablaData.soloManual = soloManual;
     guardarHabla();
+    if (typeof lecturaData !== 'undefined') { lecturaData = lecturaVacia(); guardarLecturas(); }
     if (typeof syncHistorialBorrado === 'function') syncHistorialBorrado();
     renderProgresoHabla();
 }
