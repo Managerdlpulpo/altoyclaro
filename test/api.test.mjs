@@ -16,8 +16,9 @@ async function llamar(fn, body, { cookie, ip = '10.0.0.1', profe, env = ENV, tip
     if (profe) req.headers['x-clave-profe'] = profe;
     const res = { headers: {}, statusCode: 0, setHeader(k, v) { this.headers[k.toLowerCase()] = v; }, end(d) { this.data = d; } };
     await manejar(req, res, fns[fn], env);
-    const sc = res.headers['set-cookie'];
-    return { status: res.statusCode, body: JSON.parse(res.data), cookie: sc ? sc.split(';')[0] : null, setCookie: sc, headers: res.headers };
+    const scs = res.headers['set-cookie'] == null ? [] : [].concat(res.headers['set-cookie']);
+    const sc = scs.join('\n') || undefined;
+    return { status: res.statusCode, body: JSON.parse(res.data), cookie: scs.length ? scs[0].split(';')[0] : null, setCookie: sc, cookies: scs, headers: res.headers };
 }
 const adm = (body, o = {}) => llamar('admin', body, { profe: ENV.ALTOYCLARO_CLAVE, ...o });
 const entrar = (codigo, dispositivo, o = {}) => llamar('acceso', { accion: 'entrar', codigo, dispositivo, nombre: 'Prueba' }, o);
@@ -220,6 +221,80 @@ await prueba('límite de intentos: 5 fallos con la misma clave y 20 por IP → 4
     // profe: 10 fallos → 429
     for (let i = 0; i < 10; i++) await adm({ accion: 'listar' }, { profe: 'mal', ip: '40.0.0.1' });
     assert.equal((await adm({ accion: 'listar' }, { ip: '40.0.0.1' })).status, 429);
+});
+
+
+/* ---------- Acceso obligatorio: sesión del profe y comprobación de sesión ---------- */
+const sesion = (o = {}) => llamar('acceso', { accion: 'sesion' }, o);
+let cProfe;
+await prueba('sin cookies: sesión vacía (ni niño ni profe)', async () => {
+    const r = await sesion();
+    assert.equal(r.status, 200); assert.equal(r.body.nino, null); assert.equal(r.body.profe, false);
+});
+await prueba('profe entra con su clave: cookie HttpOnly corta y aparte de la del niño', async () => {
+    let r = await llamar('acceso', { accion: 'entrar_profe', clave: 'mala' }, { ip: '50.0.0.1' });
+    assert.equal(r.status, 401); assert.equal(r.cookie, null);
+    r = await llamar('acceso', { accion: 'entrar_profe', clave: ENV.ALTOYCLARO_CLAVE }, { ip: '50.0.0.1' });
+    assert.equal(r.status, 200); assert.equal(r.body.profe, true);
+    assert.match(r.setCookie, /^ayc_profe=/); assert.match(r.setCookie, /HttpOnly/); assert.match(r.setCookie, /Secure/); assert.match(r.setCookie, /SameSite=Lax/);
+    const maxAge = Number(/Max-Age=(\d+)/.exec(r.setCookie)[1]); assert.ok(maxAge > 0 && maxAge <= 12 * 3600, 'caduca pronto: ' + maxAge);
+    assert.ok(!r.setCookie.includes(ENV.ALTOYCLARO_CLAVE), 'la clave del profe no va en la cookie');
+    cProfe = r.cookie;
+    const s = await sesion({ cookie: cProfe });
+    assert.equal(s.body.profe, true); assert.equal(s.body.nino, null);
+});
+await prueba('profe con sesión: gestiona claves sin enviar la clave', async () => {
+    const r = await llamar('admin', { accion: 'listar' }, { cookie: cProfe });
+    assert.equal(r.status, 200); assert.ok(Array.isArray(r.body.ninos));
+    const sin = await llamar('admin', { accion: 'listar' });
+    assert.equal(sin.status, 401);
+});
+await prueba('firmas separadas: una cookie de niño no vale como profe (ni al revés)', async () => {
+    const c = await adm({ accion: 'crear', alias: 'Prueba firma' });
+    const e = await entrar(c.body.codigo, 'dispositivo-firma-0001', { ip: '50.0.0.2' });
+    const valor = e.cookie.split('=')[1];
+    let r = await llamar('admin', { accion: 'listar' }, { cookie: 'ayc_profe=' + valor });
+    assert.equal(r.status, 401, 'cookie de niño copiada como profe');
+    r = await sesion({ cookie: 'ayc_profe=' + valor }); assert.equal(r.body.profe, false);
+    r = await llamar('sync', {}, { cookie: 'ayc_sesion=' + cProfe.split('=')[1] });
+    assert.equal(r.status, 401, 'cookie de profe copiada como niño');
+    // sesión de niño válida
+    r = await sesion({ cookie: e.cookie });
+    assert.equal(r.body.nino.alias, 'Prueba firma'); assert.equal(r.body.profe, false);
+    // revocada → la comprobación de sesión la rechaza, explica el motivo y borra la cookie
+    await adm({ accion: 'revocar', id: c.body.id });
+    r = await sesion({ cookie: e.cookie });
+    assert.equal(r.status, 200); assert.equal(r.body.nino, null); assert.match(r.body.motivo, /clave/); assert.match(r.setCookie, /ayc_sesion=;.*Max-Age=0/);
+});
+await prueba('sesión del profe caducada, manipulada o de otra clave de profe → no vale', async () => {
+    const { firmarSesion } = await import('../api/_lib/core.js');
+    const viejo = firmarSesion(ENV, { profe: 1, k: 'x', iat: 1, exp: Date.now() - 1000 }, 'firma-sesion-profe');
+    let r = await llamar('admin', { accion: 'listar' }, { cookie: 'ayc_profe=' + viejo });
+    assert.equal(r.status, 401);
+    r = await sesion({ cookie: 'ayc_profe=' + viejo });
+    assert.equal(r.body.profe, false); assert.match(r.body.motivo, /caducado/); assert.match(r.setCookie, /ayc_profe=;.*Max-Age=0/);
+    const [cuerpo] = cProfe.split('=')[1].split('.');
+    r = await llamar('admin', { accion: 'listar' }, { cookie: 'ayc_profe=' + cuerpo + '.AAAA' }); assert.equal(r.status, 401);
+    // si se cambia la clave del profe, las sesiones abiertas dejan de valer
+    r = await llamar('admin', { accion: 'listar' }, { cookie: cProfe, env: { ...ENV, ALTOYCLARO_CLAVE: 'otra-clave-del-profe-nueva' } });
+    assert.equal(r.status, 401);
+    // salir_profe borra la cookie
+    r = await llamar('acceso', { accion: 'salir_profe' }, { cookie: cProfe });
+    assert.equal(r.status, 200); assert.match(r.setCookie, /ayc_profe=;.*Max-Age=0/);
+});
+await prueba('entrar como profe también tiene límite de intentos (10 por IP → 429)', async () => {
+    for (let i = 0; i < 10; i++) await llamar('acceso', { accion: 'entrar_profe', clave: 'mal' + i }, { ip: '60.0.0.1' });
+    const r = await llamar('acceso', { accion: 'entrar_profe', clave: ENV.ALTOYCLARO_CLAVE }, { ip: '60.0.0.1' });
+    assert.equal(r.status, 429); assert.equal(r.cookie, null);
+});
+await prueba('base de datos caída → 503 con mensaje claro (no deja entrar)', async () => {
+    const guardado = globalThis.__aycQuery, listo = globalThis.__aycEsquemaListo;
+    globalThis.__aycQuery = async () => { throw new Error('connect ECONNREFUSED'); };
+    delete globalThis.__aycEsquemaListo;
+    try {
+        const r = await sesion();
+        assert.equal(r.status, 503); assert.equal(r.body.codigo, 'bd'); assert.match(r.body.mensaje, /base de datos/);
+    } finally { globalThis.__aycQuery = guardado; if (listo) globalThis.__aycEsquemaListo = listo; }
 });
 
 console.log(`\n${ok} pruebas superadas${process.exitCode ? ' (HAY FALLOS)' : ''}`);

@@ -9,6 +9,8 @@ export const LONGITUD_CODIGO = 8;
 export const MAX_DISPOSITIVOS = 2;
 const COOKIE = 'ayc_sesion';
 const SESION_SEG = 180 * 24 * 3600;
+const COOKIE_PROFE = 'ayc_profe';
+const SESION_PROFE_SEG = 8 * 3600; // la sesión del profe caduca a las 8 horas
 const VENTANA_MS = 15 * 60 * 1000;
 const LIMITE_IP = 20;       // intentos fallidos de clave por IP en 15 min
 const LIMITE_CODIGO = 5;    // intentos fallidos con la misma clave en 15 min
@@ -49,21 +51,34 @@ export function hashCodigo(env, c) { return hmac(subclave(env, 'pimienta-codigos
 
 /* ---------- Cookie de sesión firmada ---------- */
 const b64u = buf => Buffer.from(buf).toString('base64url');
-export function firmarSesion(env, datos) {
+// Cada tipo de sesión se firma con su propia subclave (niño: 'firma-sesion'; profe: 'firma-sesion-profe'),
+// así una cookie de niño nunca vale como cookie de profe aunque alguien copiara su contenido.
+export function firmarSesion(env, datos, uso = 'firma-sesion') {
     const cuerpo = b64u(JSON.stringify(datos));
-    return cuerpo + '.' + b64u(hmac(subclave(env, 'firma-sesion'), cuerpo));
+    return cuerpo + '.' + b64u(hmac(subclave(env, uso), cuerpo));
 }
-export function leerSesion(env, valor) {
+export function leerSesion(env, valor, uso = 'firma-sesion') {
     if (!valor || typeof valor !== 'string' || !valor.includes('.')) return null;
     const [cuerpo, firma] = valor.split('.');
-    const esperada = hmac(subclave(env, 'firma-sesion'), cuerpo);
+    const esperada = hmac(subclave(env, uso), cuerpo);
     let recibida;
     try { recibida = Buffer.from(firma, 'base64url'); } catch { return null; }
     if (recibida.length !== esperada.length || !crypto.timingSafeEqual(recibida, esperada)) return null;
     try { return JSON.parse(Buffer.from(cuerpo, 'base64url').toString('utf8')); } catch { return null; }
 }
-function cookieSesion(valor, maxAge) {
-    return `${COOKIE}=${valor}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
+function cookieSesion(valor, maxAge, nombre = COOKIE) {
+    return `${nombre}=${valor}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
+}
+/* ---------- Sesión del profe (cookie firmada, caduca a las 8 h) ---------- */
+// Huella de la clave del profe: si se cambia ALTOYCLARO_CLAVE, las sesiones de profe abiertas dejan de valer.
+const huellaProfe = env => hmac(subclave(env, 'huella-clave-profe'), claveProfe(env)).toString('base64url').slice(0, 16);
+function cookieProfeNueva(env) {
+    const ahora = Date.now();
+    return cookieSesion(firmarSesion(env, { profe: 1, k: huellaProfe(env), iat: ahora, exp: ahora + SESION_PROFE_SEG * 1000 }, 'firma-sesion-profe'), SESION_PROFE_SEG, COOKIE_PROFE);
+}
+function sesionProfe(env, req) {
+    const s = leerSesion(env, leerCookies(req)[COOKIE_PROFE], 'firma-sesion-profe');
+    return !!(s && s.profe === 1 && typeof s.exp === 'number' && s.exp > Date.now() && s.k === huellaProfe(env));
 }
 function leerCookies(req) {
     const out = {};
@@ -129,6 +144,12 @@ async function asegurarEsquema(q) {
     }
     await _esquemaListo;
 }
+
+function bdCaida(e) {
+    console.error('altoyclaro bd no disponible', e);
+    throw new ErrorHttp(503, 'bd', 'El servidor de claves no puede conectar con la base de datos. Inténtalo dentro de un rato o avisa al profe.');
+}
+async function comprobarBd(q) { try { await q('SELECT 1'); } catch (e) { bdCaida(e); } }
 
 /* ---------- Límite de intentos (rate limiting) ---------- */
 async function comprobarLimite(q, clave, max, mensaje) {
@@ -250,6 +271,39 @@ export async function acceso({ q, env, req, body }) {
         const { nino } = await sesionNino(q, env, req);
         return { status: 200, body: { ok: true, id: nino.id, alias: nino.alias } };
     }
+    if (accion === 'sesion') {
+        // Comprobación ligera al abrir la app: ¿hay sesión de niño válida? ¿y de profe?
+        claveProfe(env); secreto(env);
+        await comprobarBd(q); // si la base de datos no responde, no se deja entrar a nadie
+        const profe = sesionProfe(env, req);
+        let nino = null, motivo = '', cookie;
+        if (leerCookies(req)[COOKIE]) {
+            try { nino = (await sesionNino(q, env, req)).nino; }
+            catch (e) {
+                if (!(e instanceof ErrorHttp) || e.status !== 401) throw e;
+                motivo = e.message; cookie = cookieSesion('', 0); // revocada o caducada: se borra
+            }
+        }
+        if (!profe && leerCookies(req)[COOKIE_PROFE]) {
+            motivo = motivo || 'La sesión del profe ha caducado. Vuelve a entrar.';
+            cookie = cookie ? [cookie, cookieSesion('', 0, COOKIE_PROFE)] : cookieSesion('', 0, COOKIE_PROFE);
+        }
+        return { status: 200, cookie, body: { ok: true, nino: nino ? { id: nino.id, alias: nino.alias } : null, profe, motivo } };
+    }
+    if (accion === 'entrar_profe') {
+        const clave = claveProfe(env);
+        secreto(env);
+        const ip = ipDe(req);
+        await comprobarLimite(q, 'adm:' + ip, LIMITE_PROFE, 'Demasiados intentos con la clave del profe. Espera 15 minutos.');
+        if (typeof body.clave !== 'string' || !body.clave || !igualSeguro(body.clave, clave)) {
+            await apuntarFallo(q, ['adm:' + ip]);
+            throw new ErrorHttp(401, 'clave_profe', 'La clave del profe no es correcta.');
+        }
+        return { status: 200, cookie: cookieProfeNueva(env), body: { ok: true, profe: true } };
+    }
+    if (accion === 'salir_profe') {
+        return { status: 200, cookie: cookieSesion('', 0, COOKIE_PROFE), body: { ok: true } };
+    }
     if (accion === 'salir') {
         try {
             const { nino, dispositivo } = await sesionNino(q, env, req);
@@ -323,11 +377,16 @@ export async function admin({ q, env, req, body }) {
     const clave = claveProfe(env);
     secreto(env); // también hace falta para firmar y para las claves de los niños
     const ip = ipDe(req);
-    await comprobarLimite(q, 'adm:' + ip, LIMITE_PROFE, 'Demasiados intentos con la clave del profe. Espera 15 minutos.');
     const enviada = req.headers['x-clave-profe'];
-    if (!enviada || !igualSeguro(enviada, clave)) {
-        await apuntarFallo(q, ['adm:' + ip]);
-        throw new ErrorHttp(401, 'clave_profe', 'La clave del profe no es correcta.');
+    if (!enviada) {
+        // Sin cabecera: vale la sesión del profe (cookie firmada y sin caducar)
+        if (!sesionProfe(env, req)) throw new ErrorHttp(401, 'sin_sesion_profe', 'La sesión del profe ha caducado. Vuelve a entrar con la clave del profe.');
+    } else {
+        await comprobarLimite(q, 'adm:' + ip, LIMITE_PROFE, 'Demasiados intentos con la clave del profe. Espera 15 minutos.');
+        if (!igualSeguro(enviada, clave)) {
+            await apuntarFallo(q, ['adm:' + ip]);
+            throw new ErrorHttp(401, 'clave_profe', 'La clave del profe no es correcta.');
+        }
     }
     const id = texto(body.id, 40);
     const existe = async () => {
@@ -421,7 +480,7 @@ export async function manejar(req, res, fn, env = process.env) {
         if (!String(req.headers['content-type'] || '').includes('application/json')) throw new ErrorHttp(415, 'tipo', 'Se esperaba JSON.');
         const body = await leerCuerpo(req);
         const q = obtenerQuery(env);
-        await asegurarEsquema(q);
+        try { await asegurarEsquema(q); } catch (e) { bdCaida(e); }
         const r = await fn({ q, env, req, body });
         enviar(r.status, r.body, r.cookie);
     } catch (e) {

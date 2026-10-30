@@ -85,6 +85,8 @@ const FLOJO = {
     page.on('pageerror', e => errores.push(nombre + ' pageerror: ' + e.message));
     page.on('dialog', d => d.accept());
     page.__envios = [];
+    // El acceso es obligatorio: simulamos una sesión (profe, o el niño n1 si se prueba la sincronización)
+    await page.route('**/api/acceso', r => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(sync ? { ok: true, nino: { id: 'n1', alias: 'Prueba' }, profe: false } : { ok: true, nino: null, profe: true }) }));
     await page.route('**/api/sync', async r => { page.__envios.push(r.request().postData()); await r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false,"mensaje":"prueba"}' }); });
     await page.addInitScript(sr ? srFalso : sinSR);
     if (semilla != null) await page.addInitScript(s => { window.__tnSemilla = s; }, semilla);
