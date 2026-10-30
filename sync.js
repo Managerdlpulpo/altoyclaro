@@ -1,10 +1,12 @@
-/* Liga de Habla Soto Alto · Claves de acceso y sincronización
+/* Me gusta hablar Alto y claro · Claves de acceso y sincronización
    - ACCESO OBLIGATORIO: sin una sesión válida (clave de niño o sesión de profe, comprobadas en el servidor)
      solo se ve la pantalla de acceso. Si el servidor o la base de datos no responden, no se entra.
    - Profe: entra con la clave del profe (cookie HttpOnly firmada que caduca a las 8 h); puede probar la app
      (lo que haga se queda solo en este dispositivo) y gestionar las claves.
    - Niño, con su clave: el perfil (nombre, nivel, XP, puntuaciones del test de nivel) y la lista
      de intentos al hablar (fecha, palabra, lo que se oyó, puntuación) se sincronizan en hasta 2 dispositivos.
+   - Lectura en voz alta: solo las puntuaciones de cada lectura (precisión, palabras por minuto, pausas, comprensión y
+     el resultado de cada palabra del cuento: bien/dudas/saltada). Lo que oyó el reconocedor y el audio no se envían.
    - Las respuestas libres del test de nivel (texto) se quedan solo en este dispositivo (ligaHablaTestTextos).
    - Las GRABACIONES DE VOZ NUNCA SALEN DEL DISPOSITIVO: se quedan en IndexedDB y no se envían.
 */
@@ -77,7 +79,7 @@ function mostrarAcceso(modo, texto) {
     if (modo === 'formulario') {
         const m = document.getElementById('acceso-motivo');
         m.textContent = texto || ''; m.classList.toggle('hidden', !texto);
-        const hayLocal = !!localStorage.getItem('ligaHablaVisual') || !!localStorage.getItem('ligaHablaVoz');
+        const hayLocal = !!localStorage.getItem('ligaHablaVisual') || !!localStorage.getItem('ligaHablaVoz') || !!localStorage.getItem('ligaHablaLectura');
         document.getElementById('acceso-borrar-local').classList.toggle('hidden', !hayLocal);
         document.getElementById('login-boton').disabled = false;
         setTimeout(() => { const i = document.getElementById('login-codigo'); if (i && !document.getElementById('acceso-formulario').classList.contains('hidden')) i.focus(); }, 50);
@@ -96,7 +98,7 @@ async function _comprobarAcceso({ enSegundoPlano = false } = {}) {
         // Servidor o base de datos caídos: no se deja entrar (si ya estaba dentro, se sigue y se vuelve a comprobar luego)
         if (enSegundoPlano) return;
         const texto = r.status === 0
-            ? 'No hay conexión con el servidor. Para usar la Liga de Habla hace falta internet para comprobar tu clave. Revisa la conexión y pulsa Reintentar.'
+            ? 'No hay conexión con el servidor. Para usar «Me gusta hablar Alto y claro» hace falta internet para comprobar tu clave. Revisa la conexión y pulsa Reintentar.'
             : (r.datos.mensaje || 'El servidor de claves no responde ahora mismo.') + ' Mientras tanto no se puede entrar.';
         return mostrarAcceso('error', texto);
     }
@@ -132,11 +134,13 @@ async function _comprobarAcceso({ enSegundoPlano = false } = {}) {
 }
 // Al entrar por primera vez con una clave en un dispositivo que ya tenía progreso sin clave
 async function prepararDatosLocales(alias) {
-    const hayLocal = !!localStorage.getItem('ligaHablaVisual') || (typeof hablaData !== 'undefined' && hablaData.intentos.length > 0);
+    const hayLocal = !!localStorage.getItem('ligaHablaVisual') || (typeof hablaData !== 'undefined' && hablaData.intentos.length > 0)
+        || (typeof lecturaData !== 'undefined' && lecturaData.lecturas.length > 0);
     if (!hayLocal) return;
     const juntar = confirm(`Este dispositivo ya tiene progreso guardado sin clave.\n\n¿Es de ${alias}?\nAceptar = añadirlo a ${alias}.\nCancelar = borrarlo de este dispositivo.`);
     if (juntar) {
         if (typeof hablaData !== 'undefined') { hablaData.intentos.forEach(i => { delete i.s; }); guardarHabla(); }
+        if (typeof lecturaData !== 'undefined') { lecturaData.lecturas.forEach(i => { delete i.s; }); guardarLecturas(); }
         syncMeta._juntar = true; // perfilT = 1: si el servidor ya tiene perfil, manda el del servidor
     } else await borrarDatosLocales();
 }
@@ -191,9 +195,13 @@ function sincronizar(opciones = {}) {
 async function _sincronizarUnaVez(opciones) {
     if (typeof hablaData === 'undefined') return false;
     const pendientes = hablaData.intentos.filter(i => !i.s).slice(0, SYNC_LOTE);
+    const hayLect = typeof lecturaData !== 'undefined';
+    const pendLect = hayLect ? lecturaData.lecturas.filter(i => !i.s).slice(0, SYNC_LOTE) : [];
     const cuerpo = {
         cursor: syncMeta.cursor || 0,
         intentos: pendientes.map(({ s, audioId, ...resto }) => resto), // el audio no se envía nunca
+        // Lecturas en voz alta: solo las puntuaciones (lecturaParaServidor deja fuera audio y cualquier texto oído)
+        lecturas: pendLect.map(lecturaParaServidor),
         perfil: gameState && gameState.name ? gameState : null,
         perfilT: syncMeta.perfilT || 0
     };
@@ -207,12 +215,18 @@ async function _sincronizarUnaVez(opciones) {
     try {
         const recibidos = new Set(d.recibidos || []);
         hablaData.intentos.forEach(i => { if (recibidos.has(i.id)) i.s = 1; });
+        const recibidasL = new Set(d.lecturasRecibidas || []);
+        if (hayLect) lecturaData.lecturas.forEach(i => { if (recibidasL.has(i.id)) i.s = 1; });
         if (borrar) syncMeta.borrarPendiente = false;
         // Historial borrado (aquí o en el otro dispositivo): quitar intentos y grabaciones antiguos
         if (d.borradoT && d.borradoT > (syncMeta.borradoT || 0)) {
             const fuera = hablaData.intentos.filter(i => i.t <= d.borradoT);
             const audios = fuera.map(i => i.audioId).filter(Boolean);
             hablaData.intentos = hablaData.intentos.filter(i => i.t > d.borradoT);
+            if (hayLect) {
+                lecturaData.lecturas.filter(i => i.t <= d.borradoT).forEach(i => { if (i.audioId) audios.push(i.audioId); });
+                lecturaData.lecturas = lecturaData.lecturas.filter(i => i.t > d.borradoT);
+            }
             if (audios.length && typeof audioDelete === 'function') audioDelete(audios).catch(() => { });
             syncMeta.borradoT = d.borradoT;
         }
@@ -222,6 +236,12 @@ async function _sincronizarUnaVez(opciones) {
         (d.intentos || []).forEach(i => { if (!ids.has(i.id)) { hablaData.intentos.push(Object.assign({}, i, { audioId: null, s: 1 })); ids.add(i.id); nuevos++; } });
         if (nuevos) hablaData.intentos.sort((a, b) => a.t - b.t);
         guardarHabla();
+        if (hayLect) {
+            const idsL = new Set(lecturaData.lecturas.map(i => i.id));
+            (d.lecturas || []).forEach(i => { if (!idsL.has(i.id)) { lecturaData.lecturas.push(Object.assign({}, i, { audioId: null, s: 1 })); idsL.add(i.id); nuevos++; } });
+            lecturaData.lecturas.sort((a, b) => a.t - b.t);
+            guardarLecturas();
+        }
         // Perfil: gana el cambio más reciente
         if (d.perfil && d.perfilT > (syncMeta.perfilT || 0)) {
             gameState = limpiarPerfilLocal(Object.assign({}, gameState, d.perfil));
@@ -237,9 +257,11 @@ async function _sincronizarUnaVez(opciones) {
         guardarSyncMeta();
         syncEstado = '';
         const tabProg = document.getElementById('tab-progreso');
+        const tabLect = document.getElementById('tab-lectura');
+        if ((nuevos || d.borradoT) && tabLect && !tabLect.classList.contains('hidden') && typeof renderLectura === 'function' && typeof lecturaOcupada === 'function' && !lecturaOcupada()) renderLectura();
         if ((nuevos || d.borradoT) && tabProg && !tabProg.classList.contains('hidden') && typeof renderProgresoHabla === 'function') renderProgresoHabla();
     } finally { aplicandoRemoto = false; }
-    if (hablaData.intentos.some(i => !i.s)) _syncOtraVez = true;
+    if (hablaData.intentos.some(i => !i.s) || (hayLect && lecturaData.lecturas.some(i => !i.s))) _syncOtraVez = true;
     return true;
 }
 let syncEstado = '';
@@ -249,6 +271,7 @@ async function borrarDatosLocales() {
     localStorage.removeItem('ligaHablaVisual');
     localStorage.removeItem('ligaHablaVoz');
     localStorage.removeItem('ligaHablaTestTextos');
+    localStorage.removeItem('ligaHablaLectura');
     localStorage.removeItem(SYNC_KEY);
     try { if (typeof audioClear === 'function') await audioClear(); } catch (e) { }
 }
@@ -275,6 +298,7 @@ async function entrarConClave() {
     syncMeta = Object.assign(syncMetaVacia(), { conectado: true, ninoId: id, alias, perfilT });
     guardarSyncMeta();
     if (typeof hablaData !== 'undefined') hablaData = cargarHabla();
+    if (typeof lecturaData !== 'undefined') lecturaData = cargarLecturas();
     try { gameState = limpiarPerfilLocal(JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState); } catch (e) { }
     msg.textContent = 'Sincronizando…';
     rolActual = 'nino';
@@ -342,12 +366,13 @@ function actualizarCuentaUI() {
           <div class="text-xs text-slate-400">Lo que pruebes en la app como profe se queda solo en este dispositivo (no se sincroniza). Las claves de los niños se gestionan en el Panel del profe.</div>`;
         const s = document.querySelector('#cuenta-modal button[onclick^="sincronizar"]'); if (s) s.classList.add('hidden');
     } else if (info && syncMeta.conectado) {
-        const pend = (typeof hablaData !== 'undefined') ? hablaData.intentos.filter(i => !i.s).length : 0;
+        const pend = ((typeof hablaData !== 'undefined') ? hablaData.intentos.filter(i => !i.s).length : 0)
+            + ((typeof lecturaData !== 'undefined') ? lecturaData.lecturas.filter(i => !i.s).length : 0);
         info.innerHTML = `<div>Has entrado como <strong class="text-white">${escS(syncMeta.alias)}</strong>.</div>
           <div>Última sincronización: ${syncMeta.ultima ? new Date(syncMeta.ultima).toLocaleString('es-ES') : 'todavía no'}</div>
           <div>${pend ? `⏳ ${pend} intento(s) por enviar` : '✅ Todo enviado'}</div>
           ${syncEstado ? `<div class="text-amber-300">${escS(syncEstado)}</div>` : ''}
-          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP, puntuaciones del test de nivel e intentos (texto). Las grabaciones y las respuestas libres del test se quedan en este dispositivo.</div>`;
+          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP, puntuaciones del test de nivel, intentos (texto) y puntuaciones de lectura (sin lo que se oyó). Las grabaciones y las respuestas libres del test se quedan en este dispositivo.</div>`;
     }
 }
 
@@ -409,7 +434,7 @@ function adminPintar(d) {
         <div class="flex justify-between items-start gap-2">
           <div>
             <div class="font-bold text-white">${escS(n.alias)} ${n.revocado ? '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">clave anulada</span>' : ''}</div>
-            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
+            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · ${n.lecturas || 0} lecturas · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
           </div>
         </div>
         ${n.dispositivos.map(x => `<div class="flex justify-between items-center text-[11px] text-slate-300 mt-1 bg-stadium-800 rounded-lg px-2 py-1">
@@ -456,7 +481,7 @@ async function adminLiberar(id, dispositivo) {
 }
 async function adminBorrar(id) {
     const alias = aliasDe(id);
-    if (!confirm(`¿Borrar a ${alias} y TODOS sus datos del servidor (perfil, intentos, dispositivos y clave)?\n\nNo se puede deshacer.`)) return;
+    if (!confirm(`¿Borrar a ${alias} y TODOS sus datos del servidor (perfil, intentos, lecturas, dispositivos y clave)?\n\nNo se puede deshacer.`)) return;
     const r = await llamarAdmin('borrar', { id });
     if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
     adminMensaje(`${alias} y sus datos se han borrado del servidor.`, 'ok'); adminRefrescar();

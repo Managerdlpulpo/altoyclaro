@@ -9,6 +9,7 @@ globalThis.__aycQuery = async (t, p = []) => (await db.query(t, p)).rows;
 
 const ENV = { ALTOYCLARO_CLAVE: 'clave-de-prueba-del-profe', ALTOYCLARO_SECRETO: 'x'.repeat(40) + '-secreto-de-prueba' };
 const fns = { acceso, sync, admin };
+const eq = (a, b, m) => assert.equal(JSON.stringify(a), JSON.stringify(b), m);
 
 async function llamar(fn, body, { cookie, ip = '10.0.0.1', profe, env = ENV, tipo = 'application/json', metodo = 'POST' } = {}) {
     const req = { method: metodo, headers: { 'content-type': tipo, 'x-forwarded-for': ip }, body };
@@ -122,6 +123,12 @@ await prueba('sincronización: perfil (gana el más reciente) e intentos fusiona
     assert.ok(!r.body.perfil.name.includes('<')); assert.ok(r.body.perfil.name.length <= 40);
     assert.equal(r.body.perfil.xp, 0); assert.equal(r.body.perfil.level, 3); assert.ok(!('extra' in r.body.perfil));
     for (const k of ['age', 'country', 'hobby']) assert.ok(!(k in r.body.perfil), 'no se guarda ' + k);
+    // tema favorito: solo valores de la lista cerrada
+    const base = r.body.perfil;
+    r = await llamar('sync', { perfil: { ...base, tema: 'animales' }, perfilT: t0 + 30 }, { cookie: c1 });
+    assert.equal(r.body.perfil.tema, 'animales');
+    r = await llamar('sync', { perfil: { ...base, tema: '<b>Real Madrid</b>' }, perfilT: t0 + 40 }, { cookie: c1 });
+    assert.equal(r.body.perfil.tema, null);
 });
 
 await prueba('test de nivel: se guardan solo puntuaciones limpias (sin textos), perfiles antiguos siguen valiendo', async () => {
@@ -156,9 +163,27 @@ await prueba('test de nivel: se guardan solo puntuaciones limpias (sin textos), 
     assert.equal(r.body.perfil.pruebas.length, 10); assert.equal(r.body.perfil.pruebas[0].id, 't2');
 });
 
+await prueba('lecturas en voz alta: solo puntuaciones (lista blanca), fusionadas por id y visibles en otro dispositivo', async () => {
+    const t = Date.now();
+    const lec = { id: 'L1', t, cuento: 'l0-gato', nivel: 0, metodo: 'auto', prec: 92.4, ppm: 37, compl: 100, est: 3, pausas: 1, autoc: 0, pron: 88,
+        comp: 50, compN: 2, dur: 21, n: 24, esc: true, e: 'bbbbdbbbbbbbbbbbbbbbbbbs',
+        transcripcion: 'el gato duerme en la cama', oido: 'texto que no debe guardarse', audio: 'data:audio/webm;base64,AAAA', alias: 'Lucía' };
+    let r = await llamar('sync', { lecturas: [lec, { id: 'L2', t, cuento: '<script>', prec: 50 }, { id: 'L3', t, cuento: 'l1-x', e: 'hola mundo', ppm: 9999 }, 'basura'] }, { cookie: c1 });
+    assert.equal(r.status, 200); eq(r.body.lecturasRecibidas, ['L1', 'L3']);
+    r = await llamar('sync', { lecturas: [lec], cursor: 0 }, { cookie: c2 }); // repetida desde otro dispositivo: no se duplica
+    assert.equal(r.body.lecturas.length, 2);
+    const l1 = r.body.lecturas.find(x => x.id === 'L1');
+    eq(Object.keys(l1).sort(), ['autoc', 'comp', 'compN', 'compl', 'cuento', 'dur', 'e', 'esc', 'est', 'id', 'metodo', 'n', 'nivel', 'pausas', 'ppm', 'prec', 'pron', 't']);
+    assert.equal(l1.prec, 92); assert.equal(l1.e, lec.e);
+    assert.ok(!JSON.stringify(r.body.lecturas).includes('gato duerme') && !JSON.stringify(r.body.lecturas).includes('base64'));
+    const l3 = r.body.lecturas.find(x => x.id === 'L3'); assert.equal(l3.e, ''); assert.equal(l3.ppm, 400); assert.equal(l3.pausas, null);
+    const l = await adm({ accion: 'listar' }); assert.equal(l.body.ninos[0].lecturas, 2);
+});
+
 await prueba('borrar historial se propaga (y no reaparece desde otro dispositivo)', async () => {
     let r = await llamar('sync', { borrarIntentos: true }, { cookie: c1 });
     assert.equal(r.body.intentos.length, 0); assert.ok(r.body.borradoT > 0);
+    assert.equal(r.body.lecturas.length, 0, 'borrar el progreso también borra las lecturas');
     r = await llamar('sync', { intentos: [{ id: 'a1', t: Date.now() - 50000, palabra: 'perro', score: 100, resultado: 'perfecto' }], cursor: 0 }, { cookie: c2 });
     assert.equal(r.body.intentos.length, 0, 'intento antiguo no vuelve');
     r = await llamar('sync', { intentos: [{ id: 'b1', t: Date.now() + 5, palabra: 'sol', score: 100, resultado: 'perfecto' }], cursor: 0 }, { cookie: c2 });
@@ -199,10 +224,10 @@ await prueba('revocar: nadie puede entrar ni sincronizar', async () => {
 await prueba('borrar niño elimina todos sus datos del servidor', async () => {
     const r = await adm({ accion: 'crear', alias: 'Omar' });
     const e = await entrar(r.body.codigo, D1, { ip: '10.0.0.4' });
-    await llamar('sync', { perfil: { name: 'Omar', xp: 10 }, perfilT: Date.now(), intentos: [{ id: 'z', t: Date.now(), palabra: 'luna', score: 100, resultado: 'perfecto' }] }, { cookie: e.cookie });
+    await llamar('sync', { perfil: { name: 'Omar', xp: 10 }, perfilT: Date.now(), intentos: [{ id: 'z', t: Date.now(), palabra: 'luna', score: 100, resultado: 'perfecto' }], lecturas: [{ id: 'zl', t: Date.now(), cuento: 'l0-gato', prec: 80 }] }, { cookie: e.cookie });
     await adm({ accion: 'borrar', id: r.body.id });
     const q = globalThis.__aycQuery;
-    for (const t of ['ayc_ninos WHERE id', 'ayc_estado WHERE nino_id', 'ayc_intentos WHERE nino_id', 'ayc_dispositivos WHERE nino_id']) {
+    for (const t of ['ayc_ninos WHERE id', 'ayc_estado WHERE nino_id', 'ayc_intentos WHERE nino_id', 'ayc_lecturas WHERE nino_id', 'ayc_dispositivos WHERE nino_id']) {
         assert.equal((await q(`SELECT count(*)::int AS n FROM ${t} = $1`, [r.body.id]))[0].n, 0, t);
     }
     const s = await llamar('sync', {}, { cookie: e.cookie }); assert.equal(s.status, 401);

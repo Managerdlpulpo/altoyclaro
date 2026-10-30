@@ -1,4 +1,4 @@
-# Alto y Claro · Liga de Habla Soto Alto
+# Me gusta hablar Alto y claro
 
 Juego web para que los niños practiquen vocabulario y expresión oral en español
 (Diccionario, prueba de nivel, penaltis y **Modo Hablar**). Es una web estática
@@ -58,7 +58,9 @@ proveedor; nunca la voz ni el nombre del niño (ver `privacidad.html`).
 
 El script lee automáticamente todos los campos `es:` de `index.html`, los
 `ejemplosFrase` de `hablar.js` (todas las frases de cada palabra), el bloque `FRASES_VOZ` de `voz.js` y el bloque
-`FRASES_TEST` de `test-nivel.js` (preguntas del test de nivel). Al añadir
+`FRASES_TEST` de `test-nivel.js` (preguntas del test de nivel), el bloque `CUENTOS` de
+`lectura.js` (títulos, frases, preguntas y respuestas de los cuentos) y las frases de
+celebración de cada tema (`TEMAS` en `temas.js`). Al añadir
 palabras o frases basta con volver a ejecutarlo: sólo genera lo nuevo o cambiado,
 mantiene los nombres de archivo y borra los mp3 que ya no se usan.
 
@@ -77,7 +79,6 @@ python3 scripts/generar-audios.py --elegir-mejor 3  # varias tomas, se queda la 
 ellas, la de mejor calidad estimada (UTMOS).
 
 Formato: MP3 mono, 48 kbps, 22,05 kHz, volumen normalizado (-16 LUFS).
-41 archivos ≈ 320 KB en total.
 
 ## Voz elegida y licencia
 
@@ -145,13 +146,47 @@ historial con la mejora en «Mi progreso». Se sincronizan solo las puntuaciones
 resultado de cada pregunta y qué preguntas salieron (ids); lo que
 dijo el niño se queda en el dispositivo. No se graba audio en el test.
 
+## Leo en voz alta (`lectura.js`)
+
+19 cuentos originales en 4 niveles (0: ~25 palabras, 1: ~42, 2: ~70, 3: ~100), cada uno
+con 2-4 preguntas de comprensión (elegir o responder en voz alta). El niño lee en voz alta
+y el reconocimiento de voz del navegador (modo continuo) se alinea palabra a palabra con
+el texto: en directo se marca por dónde va y al terminar cada palabra sale de color
+(verde bien, amarillo con dudas, rojo mal, gris saltada).
+
+| Métrica | Definición |
+|---|---|
+| Precisión | palabras bien o «con dudas» ÷ palabras hasta donde llegó leyendo (mal o saltadas restan; las no leídas al final no cuentan) |
+| PCPM (palabras correctas por minuto) | palabras bien ÷ minutos desde que empieza a leer hasta la última palabra reconocida |
+| Leído | % del texto hasta la última palabra reconocida |
+| Pausas | silencios de más de 3 s entre palabras |
+| Repeticiones / autocorrecciones | palabras dichas dos veces / empezó mal y se corrigió (no penalizan) |
+| Pronunciación | parecido medio entre lo oído y el texto (aproximado); las «con dudas» la bajan |
+| Estrellas | ⭐⭐⭐ precisión ≥ 90 y leído ≥ 90 · ⭐⭐ ≥ 70 y ≥ 60 · ⭐ el resto con algo leído |
+
+Es una estimación: el reconocedor corrige palabras «al vuelo», así que una palabra mal
+dicha puede aparecer bien. Sin reconocimiento de voz, un adulto cronometra y toca las
+palabras con error. Un cuento se desbloquea si es de su nivel o menor, o con ⭐⭐ en el
+anterior. Solo se sincronizan las puntuaciones; lo que entendió el reconocedor y la
+grabación opcional («Guardar mi lectura», para comparar la primera y la última) se
+quedan en el dispositivo. Gráficas de PCPM y precisión en «Mi progreso».
+
+## Tema favorito (`temas.js`)
+
+Botón del tema arriba (y en la primera pantalla). Cambia colores, fondo, mascota y la
+celebración hablada, y da prioridad (1 de cada 3) a las palabras con foto de su
+categoría en Identificar, Hablar («Todas») y «Dime una frase», al chip del Diccionario
+y al cuento recomendado. No cambia el test de nivel. Se guarda en el perfil
+sincronizado (el servidor solo acepta los temas de la lista).
+
 ## Pruebas
 
 ```bash
-npm test                                            # API (claves y sincronización) y sorteo del test
+npm test                                            # API, sorteo del test, lectura (alineación, PCPM) y temas
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-voz.cjs        # voz
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # acceso con clave (niño, profe, anular, servidor caído)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-lectura.cjs    # leo en voz alta y temas (reconocimiento simulado)
 ```
 
 Los tests de navegador usan `test/servidor-local.mjs` (arrancarlo antes, con

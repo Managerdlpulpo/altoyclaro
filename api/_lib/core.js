@@ -1,6 +1,6 @@
-// Liga de Habla Soto Alto · backend de claves de acceso y sincronización
+// Me gusta hablar Alto y claro · backend de claves de acceso y sincronización
 // - Funciones serverless de Vercel (Node). Base de datos: Postgres (Neon).
-// - Las grabaciones de voz NUNCA llegan aquí: solo texto (perfil y lista de intentos).
+// - Las grabaciones de voz NUNCA llegan aquí: solo texto (perfil, lista de intentos y puntuaciones de lectura).
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 
@@ -17,6 +17,7 @@ const LIMITE_CODIGO = 5;    // intentos fallidos con la misma clave en 15 min
 const LIMITE_PROFE = 10;    // intentos fallidos de clave de profe por IP en 15 min
 const MAX_LOTE = 500;
 const MAX_INTENTOS_NINO = 5000;
+const MAX_LECTURAS_NINO = 2000;
 
 export class ErrorHttp extends Error {
     constructor(status, codigo, mensaje) { super(mensaje); this.status = status; this.codigo = codigo; }
@@ -132,6 +133,15 @@ export const ESQUEMA = [
         datos JSONB NOT NULL,
         PRIMARY KEY (nino_id, id))`,
     `CREATE INDEX IF NOT EXISTS ayc_intentos_recibido ON ayc_intentos (nino_id, recibido)`,
+    // Lecturas en voz alta: solo puntuaciones (nunca lo que se oyó ni audio)
+    `CREATE TABLE IF NOT EXISTS ayc_lecturas (
+        nino_id TEXT NOT NULL REFERENCES ayc_ninos(id) ON DELETE CASCADE,
+        id TEXT NOT NULL,
+        t BIGINT NOT NULL,
+        recibido BIGINT NOT NULL,
+        datos JSONB NOT NULL,
+        PRIMARY KEY (nino_id, id))`,
+    `CREATE INDEX IF NOT EXISTS ayc_lecturas_recibido ON ayc_lecturas (nino_id, recibido)`,
     `CREATE TABLE IF NOT EXISTS ayc_limite (clave TEXT NOT NULL, t BIGINT NOT NULL)`,
     `CREATE INDEX IF NOT EXISTS ayc_limite_idx ON ayc_limite (clave, t)`
 ];
@@ -165,12 +175,15 @@ async function apuntarFallo(q, claves) {
 /* ---------- Validación ---------- */
 const texto = (v, max) => (typeof v === 'string' ? v : v == null ? '' : String(v)).replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, max);
 const numero = (v, min, max, def = 0) => { const n = Number(v); return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : def; };
+const TEMAS_PERMITIDOS = ['mezcla', 'futbol', 'animales', 'comida', 'naturaleza', 'transporte'];
 function limpiarPerfil(p) {
     if (!p || typeof p !== 'object') return null;
     return {
-        // Solo nombre/apodo, nivel, XP y test (edad, país y afición ya no se guardan; se descartan)
+        // Solo nombre/apodo, nivel, XP, test y tema favorito (una preferencia de una lista cerrada).
+        // Edad, país y afición en texto libre ya no se guardan; se descartan.
         name: texto(p.name, 40), level: Math.round(numero(p.level, 0, 3, 1)), xp: Math.round(numero(p.xp, 0, 1e7, 0)),
-        pruebas: Array.isArray(p.pruebas) ? p.pruebas.slice(-10).map(limpiarPrueba).filter(Boolean) : []
+        pruebas: Array.isArray(p.pruebas) ? p.pruebas.slice(-10).map(limpiarPrueba).filter(Boolean) : [],
+        tema: TEMAS_PERMITIDOS.includes(p.tema) ? p.tema : null
     };
 }
 // Resultados del test de nivel: solo puntuaciones y resultado por pregunta. Nunca lo que dijo el niño.
@@ -216,6 +229,27 @@ function limpiarIntento(i) {
             alternativas: Array.isArray(i.alternativas) ? i.alternativas.slice(0, 5).map(a => texto(a, 200)) : [],
             score: Math.round(numero(i.score, 0, 100, 0)),
             resultado: ['perfecto', 'casi', 'otra', 'bien', 'practicar'].includes(i.resultado) ? i.resultado : 'otra'
+        }
+    };
+}
+// Lectura en voz alta: lista blanca de puntuaciones. Nada de transcripciones ni audio: lo demás se descarta.
+// e = resultado de cada palabra del cuento, en orden (b bien, d con dudas, m no se entendió, s saltada, n no leída).
+const ID_CUENTO = /^[a-z0-9-]{1,30}$/;
+function limpiarLectura(x) {
+    if (!x || typeof x !== 'object') return null;
+    const id = texto(x.id, 40);
+    const t = Math.round(numero(x.t, 0, Date.now() + 864e5, 0));
+    const cuento = typeof x.cuento === 'string' && ID_CUENTO.test(x.cuento) ? x.cuento : '';
+    if (!id || !t || !cuento) return null;
+    const ent = (v, max) => Math.round(numero(v, 0, max, 0));
+    const opc = (v, max) => (v == null || v === '' || !Number.isFinite(Number(v)) ? null : ent(v, max));
+    return {
+        id, t, datos: {
+            cuento, nivel: ent(x.nivel, 3), metodo: x.metodo === 'adulto' ? 'adulto' : 'auto',
+            prec: ent(x.prec, 100), ppm: ent(x.ppm, 400), compl: ent(x.compl, 100), est: ent(x.est, 3),
+            pausas: opc(x.pausas, 99), autoc: opc(x.autoc, 99), pron: opc(x.pron, 100),
+            comp: opc(x.comp, 100), compN: ent(x.compN, 5), dur: ent(x.dur, 1800), n: ent(x.n, 400), esc: x.esc === true,
+            e: typeof x.e === 'string' && /^[bdmsn]{0,400}$/.test(x.e) ? x.e : ''
         }
     };
 }
@@ -322,6 +356,7 @@ export async function sync({ q, env, req, body }) {
     await q('INSERT INTO ayc_estado (nino_id) VALUES ($1) ON CONFLICT (nino_id) DO NOTHING', [id]);
     if (body.borrarIntentos === true) {
         await q('DELETE FROM ayc_intentos WHERE nino_id = $1', [id]);
+        await q('DELETE FROM ayc_lecturas WHERE nino_id = $1', [id]);
         await q('UPDATE ayc_estado SET borrado_t = $2 WHERE nino_id = $1', [id, ahora]);
     }
     const est = (await q('SELECT perfil, perfil_t, borrado_t FROM ayc_estado WHERE nino_id = $1', [id]))[0];
@@ -347,12 +382,26 @@ export async function sync({ q, env, req, body }) {
                 SELECT id FROM ayc_intentos WHERE nino_id = $1 ORDER BY t ASC LIMIT $2)`, [id, total - MAX_INTENTOS_NINO]);
         }
     }
+    // Lecturas en voz alta (solo puntuaciones): igual que los intentos
+    const loteL = (Array.isArray(body.lecturas) ? body.lecturas : []).slice(0, MAX_LOTE).map(limpiarLectura).filter(i => i && i.t > borradoT);
+    if (loteL.length) {
+        await q(`INSERT INTO ayc_lecturas (nino_id, id, t, recibido, datos)
+            SELECT $1, x.id, x.t, $2, x.datos FROM jsonb_to_recordset($3::jsonb) AS x(id text, t bigint, datos jsonb)
+            ON CONFLICT (nino_id, id) DO NOTHING`, [id, ahora, JSON.stringify(loteL)]);
+        const total = Number((await q('SELECT count(*)::int AS n FROM ayc_lecturas WHERE nino_id = $1', [id]))[0].n);
+        if (total > MAX_LECTURAS_NINO) {
+            await q(`DELETE FROM ayc_lecturas WHERE nino_id = $1 AND id IN (
+                SELECT id FROM ayc_lecturas WHERE nino_id = $1 ORDER BY t ASC LIMIT $2)`, [id, total - MAX_LECTURAS_NINO]);
+        }
+    }
     const cursor = Math.max(0, Math.round(numero(body.cursor, 0, ahora, 0)) - 60000); // margen de 1 min
     const filas = await q(`SELECT id, t, recibido, datos FROM ayc_intentos WHERE nino_id = $1 AND recibido > $2 ORDER BY recibido ASC LIMIT ${MAX_INTENTOS_NINO}`, [id, cursor]);
+    const filasL = await q(`SELECT id, t, datos FROM ayc_lecturas WHERE nino_id = $1 AND recibido > $2 ORDER BY recibido ASC LIMIT ${MAX_LECTURAS_NINO}`, [id, cursor]);
     return {
         status: 200, body: {
             ok: true, alias: nino.alias, perfil: perfil ? limpiarPerfil(typeof perfil === 'string' ? JSON.parse(perfil) : perfil) : null, perfilT, borradoT, cursor: ahora,
-            recibidos: lote.map(i => i.id),
+            recibidos: lote.map(i => i.id), lecturasRecibidas: loteL.map(i => i.id),
+            lecturas: filasL.map(f => Object.assign({ id: f.id, t: Number(f.t) }, typeof f.datos === 'string' ? JSON.parse(f.datos) : f.datos)),
             intentos: filas.map(f => Object.assign({ id: f.id, t: Number(f.t) }, typeof f.datos === 'string' ? JSON.parse(f.datos) : f.datos))
         }
     };
@@ -397,7 +446,8 @@ export async function admin({ q, env, req, body }) {
         case 'comprobar': return { status: 200, body: { ok: true } };
         case 'listar': {
             const ninos = await q(`SELECT n.id, n.alias, n.revocado, n.creado, e.perfil, e.perfil_t,
-                (SELECT count(*)::int FROM ayc_intentos i WHERE i.nino_id = n.id) AS intentos
+                (SELECT count(*)::int FROM ayc_intentos i WHERE i.nino_id = n.id) AS intentos,
+                (SELECT count(*)::int FROM ayc_lecturas l WHERE l.nino_id = n.id) AS lecturas
                 FROM ayc_ninos n LEFT JOIN ayc_estado e ON e.nino_id = n.id ORDER BY lower(n.alias)`);
             const disp = await q('SELECT nino_id, dispositivo_id, nombre, creado, ultimo FROM ayc_dispositivos ORDER BY creado');
             return {
@@ -405,7 +455,7 @@ export async function admin({ q, env, req, body }) {
                     ok: true, maxDispositivos: MAX_DISPOSITIVOS, ninos: ninos.map(n => {
                         const p = typeof n.perfil === 'string' ? JSON.parse(n.perfil) : n.perfil;
                         return {
-                            id: n.id, alias: n.alias, revocado: n.revocado, creado: Number(n.creado), intentos: Number(n.intentos),
+                            id: n.id, alias: n.alias, revocado: n.revocado, creado: Number(n.creado), intentos: Number(n.intentos), lecturas: Number(n.lecturas || 0),
                             xp: p ? p.xp : null, nivel: p ? p.level : null,
                             test: p && Array.isArray(p.pruebas) && p.pruebas.length ? (({ t, nivel, comp, voc, conv }) => ({ t, nivel, comp, voc, conv }))(p.pruebas[p.pruebas.length - 1]) : null,
                             dispositivos: disp.filter(d => d.nino_id === n.id).map(d => ({ id: d.dispositivo_id, nombre: d.nombre, creado: Number(d.creado), ultimo: Number(d.ultimo) }))
@@ -444,6 +494,7 @@ export async function admin({ q, env, req, body }) {
         case 'borrar': {
             await existe();
             await q('DELETE FROM ayc_intentos WHERE nino_id = $1', [id]);
+            await q('DELETE FROM ayc_lecturas WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_dispositivos WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_estado WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_ninos WHERE id = $1', [id]);

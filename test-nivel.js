@@ -1,4 +1,4 @@
-/* Liga de Habla Soto Alto · Test de nivel adaptativo (comprensión + vocabulario + conversación)
+/* Me gusta hablar Alto y claro · Test de nivel adaptativo (comprensión + vocabulario + conversación)
    - Corto (5-8 min como mucho) y se adapta: si el niño falla lo fácil, se salta lo difícil y termina antes.
    - Tres partes: Comprensión (oye y toca la foto), Vocabulario (di qué es) y Conversación
      (preguntas habladas con dificultad creciente y una mini-conversación: frutería, panadería, parque o cocina).

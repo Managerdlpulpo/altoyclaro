@@ -1,7 +1,7 @@
--- Liga de Habla Soto Alto: esquema de base de datos (Postgres / Neon).
+-- Me gusta hablar Alto y claro: esquema de base de datos (Postgres / Neon).
 -- Las funciones /api lo crean solas la primera vez (CREATE ... IF NOT EXISTS);
 -- este archivo es solo de referencia o para crearlo a mano.
--- No se guarda ningún audio: solo alias, claves cifradas (hash), perfil y lista de intentos en texto.
+-- No se guarda ningún audio: solo alias, claves cifradas (hash), perfil, lista de intentos en texto y puntuaciones de lectura.
 
 CREATE TABLE IF NOT EXISTS ayc_ninos (
     id TEXT PRIMARY KEY,
@@ -34,6 +34,17 @@ CREATE TABLE IF NOT EXISTS ayc_intentos (
     PRIMARY KEY (nino_id, id));
 
 CREATE INDEX IF NOT EXISTS ayc_intentos_recibido ON ayc_intentos (nino_id, recibido);
+
+-- Lecturas en voz alta: solo puntuaciones (precisión, palabras por minuto, pausas...). Nunca lo que se oyó ni audio.
+CREATE TABLE IF NOT EXISTS ayc_lecturas (
+    nino_id TEXT NOT NULL REFERENCES ayc_ninos(id) ON DELETE CASCADE,
+    id TEXT NOT NULL,
+    t BIGINT NOT NULL,
+    recibido BIGINT NOT NULL,
+    datos JSONB NOT NULL,
+    PRIMARY KEY (nino_id, id));
+
+CREATE INDEX IF NOT EXISTS ayc_lecturas_recibido ON ayc_lecturas (nino_id, recibido);
 
 CREATE TABLE IF NOT EXISTS ayc_limite (clave TEXT NOT NULL, t BIGINT NOT NULL);
 

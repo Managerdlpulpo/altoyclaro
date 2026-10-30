@@ -24,3 +24,10 @@ Las fotos de las 12 palabras iniciales se cargan desde Unsplash (licencia Unspla
 | la mochila | `img/vocab/mochila.jpg` | WrS.tm.pl | CC0 | [File:Plecak Hiker 50 L HiMountain.jpg](https://commons.wikimedia.org/wiki/File:Plecak_Hiker_50_L_HiMountain.jpg) |
 | la toalla | `img/vocab/toalla.jpg` | Jessica F. | CC BY 2.5 | [File:Towel and small towel.jpg](https://commons.wikimedia.org/wiki/File:Towel_and_small_towel.jpg) |
 | las gafas | `img/vocab/gafas.jpg` | Jacek Halicki | CC BY-SA 4.0 | [File:2023 Okulary korekcyjne.jpg](https://commons.wikimedia.org/wiki/File:2023_Okulary_korekcyjne.jpg) |
+| las botas de fútbol | `img/vocab/botas.jpg` | Andy Hay | CC BY 2.0 | [File:Football boots (3293104040).jpg](https://commons.wikimedia.org/wiki/File:Football_boots_(3293104040).jpg) |
+| el silbato | `img/vocab/silbato.jpg` | Laslovarga | CC BY-SA 4.0 | [File:1992 Referee whistles for football Laslovarga (14).jpg](https://commons.wikimedia.org/wiki/File:1992_Referee_whistles_for_football_Laslovarga_(14).jpg) |
+| la montaña | `img/vocab/montana.jpg` | Vyacheslav Argenberg | CC BY 4.0 | [File:Mountains in snow, Mountain lake, Chola Valley, Nepal, Himalayas.jpg](https://commons.wikimedia.org/wiki/File:Mountains_in_snow,_Mountain_lake,_Chola_Valley,_Nepal,_Himalayas.jpg) |
+| el autobús | `img/vocab/autobus.jpg` | Pierre André Leclercq | CC BY 4.0 | [File:Superior IHC Loadstar school bus in Rodeberg (Be) (2).jpg](https://commons.wikimedia.org/wiki/File:Superior_IHC_Loadstar_school_bus_in_Rodeberg_(Be)_(2).jpg) |
+| el barco | `img/vocab/barco.jpg` | Julien Carnot | CC BY-SA 2.0 | [File:Pen Duick sailing.jpg](https://commons.wikimedia.org/wiki/File:Pen_Duick_sailing.jpg) |
+| el avión | `img/vocab/avion.jpg` | Julian Herzog | CC BY 4.0 | [File:Lufthansa Airbus A320-211 D-AIQT 01.jpg](https://commons.wikimedia.org/wiki/File:Lufthansa_Airbus_A320-211_D-AIQT_01.jpg) |
+| la mariposa | `img/vocab/mariposa.jpg` | Thomas Bresson | CC BY 2.0 | [File:ComputerHotline - Danaus plexippus (by) (3).jpg](https://commons.wikimedia.org/wiki/File:ComputerHotline_-_Danaus_plexippus_(by)_(3).jpg) |
