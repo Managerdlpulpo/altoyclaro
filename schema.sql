@@ -70,3 +70,29 @@ CREATE TABLE IF NOT EXISTS ayc_pegatinas (
 CREATE TABLE IF NOT EXISTS ayc_limite (clave TEXT NOT NULL, t BIGINT NOT NULL);
 
 CREATE INDEX IF NOT EXISTS ayc_limite_idx ON ayc_limite (clave, t);
+
+-- Profesores (cuentas de docente, aparte del administrador). La clave personal (PROF-XXXX-XXXX-XXXX) se guarda solo como hash.
+CREATE TABLE IF NOT EXISTS ayc_profesores (
+    id TEXT PRIMARY KEY,
+    nombre TEXT NOT NULL,
+    clase TEXT NOT NULL DEFAULT '',
+    clave_hash TEXT UNIQUE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    creado BIGINT NOT NULL);
+
+-- Cada alumno pertenece a un profesor; NULL = del administrador (los alumnos que ya existían se quedan así)
+ALTER TABLE ayc_ninos ADD COLUMN IF NOT EXISTS profesor_id TEXT REFERENCES ayc_profesores(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS ayc_ninos_profesor ON ayc_ninos (profesor_id);
+
+-- Registro de cambios (quién creó/borró claves de niños y profesores). Sin claves: solo alias y nombres.
+CREATE TABLE IF NOT EXISTS ayc_auditoria (
+    id BIGSERIAL PRIMARY KEY,
+    t BIGINT NOT NULL,
+    actor TEXT NOT NULL,
+    actor_nombre TEXT NOT NULL DEFAULT '',
+    accion TEXT NOT NULL,
+    objetivo TEXT NOT NULL DEFAULT '',
+    detalle TEXT NOT NULL DEFAULT '');
+
+CREATE INDEX IF NOT EXISTS ayc_auditoria_t ON ayc_auditoria (t);

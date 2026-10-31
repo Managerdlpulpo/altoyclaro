@@ -35,7 +35,7 @@
     </div>
 
     <h2>Hace falta una clave para usar la app</h2>
-    <p>La app solo se puede usar con una clave: la <strong>clave personal del niño</strong>, que le da su profe, o la <strong>clave del profe</strong> («Soy el profe»). Sin clave solo se ve la pantalla de entrada. Para entrar, el dispositivo comprueba la clave con el servidor de la clase; si el servidor no está disponible, la app lo dice y no deja entrar hasta que vuelva. Si el profe anula o cambia la clave, o libera el dispositivo, la app vuelve a la pantalla de entrada.</p>
+    <p>La app solo se puede usar con una clave: la <strong>clave personal del niño</strong>, que le da su profe, o la <strong>clave del profe</strong> («Soy el profe»). Cada profesor puede tener su propia clave personal: con ella solo ve a los niños de su clase. Sin clave solo se ve la pantalla de entrada. Para entrar, el dispositivo comprueba la clave con el servidor de la clase; si el servidor no está disponible, la app lo dice y no deja entrar hasta que vuelva. Si el profe anula o cambia la clave, o libera el dispositivo, la app vuelve a la pantalla de entrada.</p>
     <p>Si un dispositivo ya tenía progreso guardado de antes (de cuando se podía jugar sin clave), al entrar por primera vez con una clave de niño se pregunta si ese progreso es suyo (se añade a su clave) o no (se borra del dispositivo).</p>
 
     <h2>Qué se guarda con la clave del niño</h2>
@@ -52,6 +52,7 @@
             <tr><td>«Frases cotidianas»: solo qué frase o diálogo se practicó, en qué actividad, la puntuación y si salió bien</td><td>Para ver el progreso en cada situación del cole. Lo que entendió el reconocimiento de voz <strong>no</strong> se envía.</td></tr>
             <tr><td>Pegatinas conseguidas: qué pegatina, la fecha, si el profe ya la entregó y uno o dos números del motivo (por ejemplo, «de 32 a 48 palabras por minuto»)</td><td>Para que el profe sepa qué pegatina imprimir y entregar. Se calculan solo con las puntuaciones anteriores.</td></tr>
             <tr><td>Los dispositivos autorizados (un identificador al azar y un nombre genérico como «iPad · Safari») y la fecha de último uso</td><td>Para el límite de 2 dispositivos.</td></tr>
+            <tr><td>Qué profesor o clase tiene a cada niño</td><td>Para que cada profesor vea solo a los niños de su clase.</td></tr>
             <tr><td>Registro temporal de intentos fallidos de clave (dirección IP), se borra a las 24 horas</td><td>Para evitar que alguien pruebe claves al azar.</td></tr>
         </table>
     </div>
@@ -59,7 +60,8 @@
 
     <h2>Dónde se guarda</h2>
     <p>En una base de datos Postgres (Neon) asociada a esta web, alojada en Vercel. La conexión siempre va cifrada (HTTPS). En el navegador se usan solo cookies de sesión técnicas, necesarias para saber que el dispositivo entró con una clave: la del niño (dura hasta 180 días o hasta que se cierre sesión o se anule la clave) y la del profe (dura como máximo 8 horas). No contienen la clave ni datos del niño, y el JavaScript de la página no puede leerlas. No se usan cookies de publicidad ni de seguimiento.</p>
-    <p>Cuando entra el profe no se guarda nada suyo en el servidor: lo que pruebe en el juego se queda solo en ese dispositivo (y al salir puede borrarlo).</p>
+    <p>De cada profesor se guarda su nombre, su clase y su clave <em>cifrada</em> (no se guarda tal cual), y si está activo. Hay además un registro de cambios para el administrador: quién creó, anuló o borró la clave de un niño (con su nombre o apodo) y quién creó o desactivó a un profesor, con la fecha. No guarda claves ni nada de lo que hacen los niños en la app.</p>
+    <p>Lo que el profe pruebe en el juego no se guarda en el servidor: se queda solo en ese dispositivo (y al salir puede borrarlo).</p>
 
     <h2>Reconocimiento de voz</h2>
     <p>Para saber qué ha dicho el niño, la app usa el reconocimiento de voz que trae el propio navegador (en Chrome lo presta Google; en Safari, Apple), igual que el dictado del móvil. Si se prefiere evitarlo, en «Mi progreso al hablar» se puede marcar que la valoración la haga solo un adulto (en el test de nivel también: «Prefiero que valore un adulto»). El test de nivel no graba audio y no hace preguntas personales.</p>

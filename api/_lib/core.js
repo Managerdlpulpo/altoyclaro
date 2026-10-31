@@ -20,6 +20,8 @@ const MAX_LOTE = 500;
 const MAX_INTENTOS_NINO = 5000;
 const MAX_LECTURAS_NINO = 2000;
 const MAX_FRASES_NINO = 3000;
+const LONGITUD_CLAVE_DOCENTE = 12; // PROF-XXXX-XXXX-XXXX (~59 bits)
+const MAX_AUDITORIA = 5000;
 
 export class ErrorHttp extends Error {
     constructor(status, codigo, mensaje) { super(mensaje); this.status = status; this.codigo = codigo; }
@@ -52,6 +54,22 @@ export const formatoCodigo = c => c.slice(0, 4) + '-' + c.slice(4);
 // HMAC-SHA256 con "pimienta" del servidor: en la base de datos nunca se guarda la clave en claro
 export function hashCodigo(env, c) { return hmac(subclave(env, 'pimienta-codigos'), normalizarCodigo(c)).toString('hex'); }
 
+/* ---------- Claves personales de los profesores (PROF-XXXX-XXXX-XXXX) ---------- */
+export function generarClaveDocente() {
+    let c = '';
+    for (let i = 0; i < LONGITUD_CLAVE_DOCENTE; i++) c += ALFABETO[crypto.randomInt(ALFABETO.length)];
+    return c;
+}
+// Acepta «PROF-ABCD-EFGH-JKMN», en minúsculas, con o sin guiones/espacios
+export function normalizarClaveDocente(c) {
+    const n = normalizarCodigo(c);
+    return n.startsWith('PROF') ? n.slice(4) : n;
+}
+export const claveDocenteValida = c => c.length === LONGITUD_CLAVE_DOCENTE && [...c].every(ch => ALFABETO.includes(ch));
+export const formatoClaveDocente = c => 'PROF-' + c.slice(0, 4) + '-' + c.slice(4, 8) + '-' + c.slice(8);
+// Pimienta distinta de la de los niños: un hash de profesor nunca coincide con uno de niño
+export function hashClaveDocente(env, c) { return hmac(subclave(env, 'pimienta-profesores'), normalizarClaveDocente(c)).toString('hex'); }
+
 /* ---------- Cookie de sesión firmada ---------- */
 const b64u = buf => Buffer.from(buf).toString('base64url');
 // Cada tipo de sesión se firma con su propia subclave (niño: 'firma-sesion'; profe: 'firma-sesion-profe'),
@@ -73,16 +91,47 @@ function cookieSesion(valor, maxAge, nombre = COOKIE) {
     return `${nombre}=${valor}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
 }
 /* ---------- Sesión del profe (cookie firmada, caduca a las 8 h) ---------- */
-// Huella de la clave del profe: si se cambia ALTOYCLARO_CLAVE, las sesiones de profe abiertas dejan de valer.
+// Dos papeles: «admin» (entra con ALTOYCLARO_CLAVE, ve todo y gestiona profesores) y «docente» (clave personal,
+// ve solo a sus alumnos). La cookie lleva el papel, el id del profesor y una huella de su clave:
+// - admin: huella de ALTOYCLARO_CLAVE (si se cambia, las sesiones abiertas dejan de valer);
+// - docente: huella del hash de su clave (si el admin le da otra clave, sus sesiones caen) y además se comprueba
+//   en la base de datos en cada petición que sigue existiendo y está activo (desactivar = fuera al momento).
 const huellaProfe = env => hmac(subclave(env, 'huella-clave-profe'), claveProfe(env)).toString('base64url').slice(0, 16);
-function cookieProfeNueva(env) {
+const huellaDocente = (env, claveHash) => hmac(subclave(env, 'huella-clave-docente'), String(claveHash || '')).toString('base64url').slice(0, 16);
+function cookieProfeNueva(env, docente = null) {
     const ahora = Date.now();
-    return cookieSesion(firmarSesion(env, { profe: 1, k: huellaProfe(env), iat: ahora, exp: ahora + SESION_PROFE_SEG * 1000 }, 'firma-sesion-profe'), SESION_PROFE_SEG, COOKIE_PROFE);
+    const datos = docente
+        ? { profe: 1, rol: 'docente', pid: docente.id, k: huellaDocente(env, docente.clave_hash), iat: ahora, exp: ahora + SESION_PROFE_SEG * 1000 }
+        : { profe: 1, rol: 'admin', k: huellaProfe(env), iat: ahora, exp: ahora + SESION_PROFE_SEG * 1000 };
+    return cookieSesion(firmarSesion(env, datos, 'firma-sesion-profe'), SESION_PROFE_SEG, COOKIE_PROFE);
 }
-function sesionProfe(env, req) {
+// Devuelve { rol: 'admin' } o { rol: 'docente', id, nombre, clase } o null
+async function sesionProfe(q, env, req) {
     const s = leerSesion(env, leerCookies(req)[COOKIE_PROFE], 'firma-sesion-profe');
-    return !!(s && s.profe === 1 && typeof s.exp === 'number' && s.exp > Date.now() && s.k === huellaProfe(env));
+    if (!s || s.profe !== 1 || typeof s.exp !== 'number' || s.exp <= Date.now()) return null;
+    if (s.rol === 'docente') {
+        if (typeof s.pid !== 'string' || !s.pid) return null;
+        const d = (await q('SELECT id, nombre, clase, clave_hash, activo FROM ayc_profesores WHERE id = $1', [s.pid]))[0];
+        if (!d || !d.activo || !igualSeguro(String(s.k || ''), huellaDocente(env, d.clave_hash))) return null;
+        return { rol: 'docente', id: d.id, nombre: d.nombre, clase: d.clase };
+    }
+    // Cookies de admin (también las de antes de existir los papeles, que no llevan «rol»)
+    if (s.rol && s.rol !== 'admin') return null;
+    return s.k === huellaProfe(env) ? { rol: 'admin' } : null;
 }
+// ¿La clave escrita es la del admin o la personal de un profesor activo?
+async function identificarClaveProfe(q, env, enviada) {
+    if (typeof enviada !== 'string' || !enviada) return null;
+    if (igualSeguro(enviada, claveProfe(env))) return { rol: 'admin' };
+    const c = normalizarClaveDocente(enviada);
+    if (!claveDocenteValida(c)) return null;
+    const d = (await q('SELECT id, nombre, clase, clave_hash, activo FROM ayc_profesores WHERE clave_hash = $1', [hashClaveDocente(env, c)]))[0];
+    if (!d) return null;
+    if (!d.activo) throw new ErrorHttp(403, 'docente_inactivo', 'Tu clave de profesor está desactivada. Habla con el administrador.');
+    return { rol: 'docente', id: d.id, nombre: d.nombre, clase: d.clase, clave_hash: d.clave_hash };
+}
+const actorDe = a => a.rol === 'admin' ? { actor: 'admin', nombre: 'Administrador' } : { actor: 'prof:' + a.id, nombre: a.nombre + (a.clase ? ' – ' + a.clase : '') };
+const infoProfe = a => a ? (a.rol === 'admin' ? { rol: 'admin' } : { rol: 'docente', id: a.id, nombre: a.nombre, clase: a.clase }) : null;
 function leerCookies(req) {
     const out = {};
     String(req.headers.cookie || '').split(';').forEach(p => {
@@ -163,6 +212,27 @@ export const ESQUEMA = [
         nums JSONB,
         PRIMARY KEY (nino_id, pegatina))`,
     `CREATE TABLE IF NOT EXISTS ayc_limite (clave TEXT NOT NULL, t BIGINT NOT NULL)`,
+    // Profesores (cuentas de docente, aparte del admin). La clave se guarda solo como hash.
+    `CREATE TABLE IF NOT EXISTS ayc_profesores (
+        id TEXT PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        clase TEXT NOT NULL DEFAULT '',
+        clave_hash TEXT UNIQUE,
+        activo BOOLEAN NOT NULL DEFAULT TRUE,
+        creado BIGINT NOT NULL)`,
+    // Cada alumno pertenece a un profesor; NULL = del administrador (los alumnos de antes se quedan así)
+    `ALTER TABLE ayc_ninos ADD COLUMN IF NOT EXISTS profesor_id TEXT REFERENCES ayc_profesores(id) ON DELETE SET NULL`,
+    `CREATE INDEX IF NOT EXISTS ayc_ninos_profesor ON ayc_ninos (profesor_id)`,
+    // Registro de cambios: quién creó/borró claves de niños y profesores (sin claves, solo alias y nombres)
+    `CREATE TABLE IF NOT EXISTS ayc_auditoria (
+        id BIGSERIAL PRIMARY KEY,
+        t BIGINT NOT NULL,
+        actor TEXT NOT NULL,
+        actor_nombre TEXT NOT NULL DEFAULT '',
+        accion TEXT NOT NULL,
+        objetivo TEXT NOT NULL DEFAULT '',
+        detalle TEXT NOT NULL DEFAULT '')`,
+    `CREATE INDEX IF NOT EXISTS ayc_auditoria_t ON ayc_auditoria (t)`,
     `CREATE INDEX IF NOT EXISTS ayc_limite_idx ON ayc_limite (clave, t)`
 ];
 let _esquemaListo = null;
@@ -344,7 +414,8 @@ export async function acceso({ q, env, req, body }) {
         // Comprobación ligera al abrir la app: ¿hay sesión de niño válida? ¿y de profe?
         claveProfe(env); secreto(env);
         await comprobarBd(q); // si la base de datos no responde, no se deja entrar a nadie
-        const profe = sesionProfe(env, req);
+        const sp = await sesionProfe(q, env, req);
+        const profe = !!sp;
         let nino = null, motivo = '', cookie;
         if (leerCookies(req)[COOKIE]) {
             try { nino = (await sesionNino(q, env, req)).nino; }
@@ -357,18 +428,21 @@ export async function acceso({ q, env, req, body }) {
             motivo = motivo || 'La sesión del profe ha caducado. Vuelve a entrar.';
             cookie = cookie ? [cookie, cookieSesion('', 0, COOKIE_PROFE)] : cookieSesion('', 0, COOKIE_PROFE);
         }
-        return { status: 200, cookie, body: { ok: true, nino: nino ? { id: nino.id, alias: nino.alias } : null, profe, motivo } };
+        return { status: 200, cookie, body: { ok: true, nino: nino ? { id: nino.id, alias: nino.alias } : null, profe, profesor: infoProfe(sp), motivo } };
     }
     if (accion === 'entrar_profe') {
-        const clave = claveProfe(env);
-        secreto(env);
+        // La misma pantalla vale para el admin (ALTOYCLARO_CLAVE) y para cada profesor (su clave PROF-…)
+        claveProfe(env); secreto(env);
         const ip = ipDe(req);
         await comprobarLimite(q, 'adm:' + ip, LIMITE_PROFE, 'Demasiados intentos con la clave del profe. Espera 15 minutos.');
-        if (typeof body.clave !== 'string' || !body.clave || !igualSeguro(body.clave, clave)) {
+        let quien = null;
+        try { quien = await identificarClaveProfe(q, env, body.clave); }
+        catch (e) { if (e instanceof ErrorHttp) await apuntarFallo(q, ['adm:' + ip]); throw e; }
+        if (!quien) {
             await apuntarFallo(q, ['adm:' + ip]);
             throw new ErrorHttp(401, 'clave_profe', 'La clave del profe no es correcta.');
         }
-        return { status: 200, cookie: cookieProfeNueva(env), body: { ok: true, profe: true } };
+        return { status: 200, cookie: cookieProfeNueva(env, quien.rol === 'docente' ? quien : null), body: { ok: true, profe: true, profesor: infoProfe(quien) } };
     }
     if (accion === 'salir_profe') {
         return { status: 200, cookie: cookieSesion('', 0, COOKIE_PROFE), body: { ok: true } };
@@ -492,42 +566,80 @@ async function codigoNuevoUnico(q, env) {
     }
     throw new ErrorHttp(500, 'codigo', 'No se pudo generar una clave nueva. Inténtalo otra vez.');
 }
+async function auditar(q, quien, accion, objetivo = '', detalle = '') {
+    const a = actorDe(quien);
+    await q('INSERT INTO ayc_auditoria (t, actor, actor_nombre, accion, objetivo, detalle) VALUES ($1, $2, $3, $4, $5, $6)',
+        [Date.now(), a.actor, texto(a.nombre, 120), accion, texto(objetivo, 60), texto(detalle, 200)]);
+    if (Math.random() < 0.02) await q(`DELETE FROM ayc_auditoria WHERE id IN (SELECT id FROM ayc_auditoria ORDER BY id DESC OFFSET ${MAX_AUDITORIA})`);
+}
+async function claveDocenteNuevaUnica(q, env) {
+    for (let i = 0; i < 5; i++) {
+        const c = generarClaveDocente(), h = hashClaveDocente(env, c);
+        const r = await q('SELECT 1 FROM ayc_profesores WHERE clave_hash = $1', [h]);
+        if (!r.length) return { c, h };
+    }
+    throw new ErrorHttp(500, 'codigo', 'No se pudo generar una clave nueva. Inténtalo otra vez.');
+}
+const SOLO_ADMIN = ['profesores', 'profesor_crear', 'profesor_regenerar', 'profesor_activo', 'profesor_borrar', 'reasignar', 'auditoria'];
 export async function admin({ q, env, req, body }) {
-    const clave = claveProfe(env);
+    claveProfe(env);
     secreto(env); // también hace falta para firmar y para las claves de los niños
     const ip = ipDe(req);
     const enviada = req.headers['x-clave-profe'];
+    let quien;
     if (!enviada) {
-        // Sin cabecera: vale la sesión del profe (cookie firmada y sin caducar)
-        if (!sesionProfe(env, req)) throw new ErrorHttp(401, 'sin_sesion_profe', 'La sesión del profe ha caducado. Vuelve a entrar con la clave del profe.');
+        // Sin cabecera: vale la sesión del profe (cookie firmada y sin caducar; la de un docente se comprueba en la BD)
+        quien = await sesionProfe(q, env, req);
+        if (!quien) throw new ErrorHttp(401, 'sin_sesion_profe', 'La sesión del profe ha caducado. Vuelve a entrar con la clave del profe.');
     } else {
         await comprobarLimite(q, 'adm:' + ip, LIMITE_PROFE, 'Demasiados intentos con la clave del profe. Espera 15 minutos.');
-        if (!igualSeguro(enviada, clave)) {
+        try { quien = await identificarClaveProfe(q, env, enviada); }
+        catch (e) { if (e instanceof ErrorHttp) await apuntarFallo(q, ['adm:' + ip]); throw e; }
+        if (!quien) {
             await apuntarFallo(q, ['adm:' + ip]);
             throw new ErrorHttp(401, 'clave_profe', 'La clave del profe no es correcta.');
         }
     }
+    const esAdmin = quien.rol === 'admin';
+    if (SOLO_ADMIN.includes(body.accion) && !esAdmin) throw new ErrorHttp(403, 'solo_admin', 'Solo el administrador puede hacer esto.');
+    // Ámbito: el admin ve a todos; un docente, solo a sus alumnos. Se aplica SIEMPRE en el servidor (en el SQL).
+    // $1 en cada consulta con ámbito es el id del profesor (o NULL para el admin, que no filtra).
+    const pid = esAdmin ? null : quien.id;
+    const AMBITO = n => `($1::text IS NULL OR ${n}.profesor_id = $1)`;
     const id = texto(body.id, 40);
     const existe = async () => {
-        const n = (await q('SELECT id FROM ayc_ninos WHERE id = $1', [id]))[0];
+        // Un alumno de otra clase responde igual que uno que no existe (no se revela nada)
+        const n = (await q(`SELECT n.id, n.alias, n.profesor_id FROM ayc_ninos n WHERE n.id = $2 AND ${AMBITO('n')}`, [pid, id]))[0];
         if (!n) throw new ErrorHttp(404, 'no_existe', 'Ese niño no existe.');
+        return n;
     };
+    const profesorExiste = async (pidObj) => {
+        const d = (await q('SELECT id, nombre, clase, activo FROM ayc_profesores WHERE id = $1', [pidObj]))[0];
+        if (!d) throw new ErrorHttp(404, 'no_existe', 'Ese profesor no existe.');
+        return d;
+    };
+    const nombreProf = d => d.nombre + (d.clase ? ' – ' + d.clase : '');
     switch (body.accion) {
-        case 'comprobar': return { status: 200, body: { ok: true } };
+        case 'comprobar': return { status: 200, body: { ok: true, profesor: infoProfe(quien) } };
         case 'listar': {
-            const ninos = await q(`SELECT n.id, n.alias, n.revocado, n.creado, e.perfil, e.perfil_t,
+            const ninos = await q(`SELECT n.id, n.alias, n.revocado, n.creado, n.profesor_id, e.perfil, e.perfil_t,
                 (SELECT count(*)::int FROM ayc_intentos i WHERE i.nino_id = n.id) AS intentos,
                 (SELECT count(*)::int FROM ayc_lecturas l WHERE l.nino_id = n.id) AS lecturas,
                 (SELECT count(*)::int FROM ayc_frases f WHERE f.nino_id = n.id) AS frases,
                 (SELECT count(*)::int FROM ayc_pegatinas g WHERE g.nino_id = n.id AND g.entregada = FALSE) AS pegatinas_pendientes
-                FROM ayc_ninos n LEFT JOIN ayc_estado e ON e.nino_id = n.id ORDER BY lower(n.alias)`);
-            const disp = await q('SELECT nino_id, dispositivo_id, nombre, creado, ultimo FROM ayc_dispositivos ORDER BY creado');
+                FROM ayc_ninos n LEFT JOIN ayc_estado e ON e.nino_id = n.id WHERE ${AMBITO('n')} ORDER BY lower(n.alias)`, [pid]);
+            const disp = await q(`SELECT d.nino_id, d.dispositivo_id, d.nombre, d.creado, d.ultimo FROM ayc_dispositivos d
+                JOIN ayc_ninos n ON n.id = d.nino_id WHERE ${AMBITO('n')} ORDER BY d.creado`, [pid]);
+            const profesores = esAdmin ? await q('SELECT id, nombre, clase, activo FROM ayc_profesores ORDER BY lower(nombre)') : [];
             return {
                 status: 200, body: {
-                    ok: true, maxDispositivos: MAX_DISPOSITIVOS, pegatinasPendientes: ninos.reduce((a, n) => a + Number(n.pegatinas_pendientes || 0), 0), ninos: ninos.map(n => {
+                    ok: true, profesor: infoProfe(quien), maxDispositivos: MAX_DISPOSITIVOS,
+                    ...(esAdmin ? { profesores: profesores.map(d => ({ id: d.id, nombre: d.nombre, clase: d.clase, activo: d.activo })) } : {}),
+                    pegatinasPendientes: ninos.reduce((a, n) => a + Number(n.pegatinas_pendientes || 0), 0), ninos: ninos.map(n => {
                         const p = typeof n.perfil === 'string' ? JSON.parse(n.perfil) : n.perfil;
                         return {
                             id: n.id, alias: n.alias, revocado: n.revocado, creado: Number(n.creado), intentos: Number(n.intentos), lecturas: Number(n.lecturas || 0), frases: Number(n.frases || 0), pegatinasPendientes: Number(n.pegatinas_pendientes || 0),
+                            ...(esAdmin ? { profesor: n.profesor_id || null } : {}),
                             xp: p ? p.xp : null, nivel: p ? p.level : null,
                             test: p && Array.isArray(p.pruebas) && p.pruebas.length ? (({ t, nivel, comp, voc, conv }) => ({ t, nivel, comp, voc, conv }))(p.pruebas[p.pruebas.length - 1]) : null,
                             dispositivos: disp.filter(d => d.nino_id === n.id).map(d => ({ id: d.dispositivo_id, nombre: d.nombre, creado: Number(d.creado), ultimo: Number(d.ultimo) }))
@@ -538,7 +650,7 @@ export async function admin({ q, env, req, body }) {
         }
         case 'pegatinas': {
             const filas = await q(`SELECT g.nino_id, n.alias, g.pegatina, g.t, g.entregada, g.entregada_t, g.nums
-                FROM ayc_pegatinas g JOIN ayc_ninos n ON n.id = g.nino_id ORDER BY g.t DESC LIMIT 2000`);
+                FROM ayc_pegatinas g JOIN ayc_ninos n ON n.id = g.nino_id WHERE ${AMBITO('n')} ORDER BY g.t DESC LIMIT 2000`, [pid]);
             const f = x => Object.assign({ nino: x.nino_id, alias: x.alias }, pegatinaFila(x));
             return {
                 status: 200, body: {
@@ -562,23 +674,29 @@ export async function admin({ q, env, req, body }) {
         case 'crear': {
             const alias = texto(body.alias, 40);
             if (!alias) throw new ErrorHttp(400, 'alias', 'Escribe un nombre o apodo (sin apellidos).');
+            // El docente crea siempre en su clase; el admin puede elegir profesor (o dejarlo para sí mismo)
+            let prof = pid;
+            if (esAdmin && body.profesor) prof = (await profesorExiste(texto(body.profesor, 40))).id;
             const nuevoId = crypto.randomBytes(8).toString('hex');
             const { c, h } = await codigoNuevoUnico(q, env);
-            await q('INSERT INTO ayc_ninos (id, alias, codigo_hash, creado) VALUES ($1, $2, $3, $4)', [nuevoId, alias, h, Date.now()]);
+            await q('INSERT INTO ayc_ninos (id, alias, codigo_hash, creado, profesor_id) VALUES ($1, $2, $3, $4, $5)', [nuevoId, alias, h, Date.now(), prof]);
             await q('INSERT INTO ayc_estado (nino_id) VALUES ($1) ON CONFLICT DO NOTHING', [nuevoId]);
+            await auditar(q, quien, 'nino_crear', nuevoId, alias);
             return { status: 200, body: { ok: true, id: nuevoId, alias, codigo: formatoCodigo(c) } };
         }
         case 'regenerar': {
-            await existe();
+            const n = await existe();
             const { c, h } = await codigoNuevoUnico(q, env);
             await q('UPDATE ayc_ninos SET codigo_hash = $2, gen = gen + 1, revocado = FALSE WHERE id = $1', [id, h]);
             await q('DELETE FROM ayc_dispositivos WHERE nino_id = $1', [id]);
+            await auditar(q, quien, 'nino_regenerar', id, n.alias);
             return { status: 200, body: { ok: true, id, codigo: formatoCodigo(c) } };
         }
         case 'revocar': {
-            await existe();
+            const n = await existe();
             await q('UPDATE ayc_ninos SET codigo_hash = NULL, gen = gen + 1, revocado = TRUE WHERE id = $1', [id]);
             await q('DELETE FROM ayc_dispositivos WHERE nino_id = $1', [id]);
+            await auditar(q, quien, 'nino_revocar', id, n.alias);
             return { status: 200, body: { ok: true } };
         }
         case 'liberar': {
@@ -587,7 +705,7 @@ export async function admin({ q, env, req, body }) {
             return { status: 200, body: { ok: true } };
         }
         case 'borrar': {
-            await existe();
+            const n = await existe();
             await q('DELETE FROM ayc_intentos WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_lecturas WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_frases WHERE nino_id = $1', [id]);
@@ -595,7 +713,58 @@ export async function admin({ q, env, req, body }) {
             await q('DELETE FROM ayc_dispositivos WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_estado WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_ninos WHERE id = $1', [id]);
+            await auditar(q, quien, 'nino_borrar', id, n.alias);
             return { status: 200, body: { ok: true } };
+        }
+        /* ----- Solo admin: profesores, reasignar alumnos y registro ----- */
+        case 'profesores': {
+            const filas = await q(`SELECT p.id, p.nombre, p.clase, p.activo, p.creado,
+                (SELECT count(*)::int FROM ayc_ninos n WHERE n.profesor_id = p.id) AS alumnos
+                FROM ayc_profesores p ORDER BY lower(p.nombre)`);
+            const sinProfesor = Number((await q('SELECT count(*)::int AS n FROM ayc_ninos WHERE profesor_id IS NULL'))[0].n);
+            return { status: 200, body: { ok: true, sinProfesor, profesores: filas.map(d => ({ id: d.id, nombre: d.nombre, clase: d.clase, activo: d.activo, creado: Number(d.creado), alumnos: Number(d.alumnos) })) } };
+        }
+        case 'profesor_crear': {
+            const nombre = texto(body.nombre, 60), clase = texto(body.clase, 40);
+            if (!nombre) throw new ErrorHttp(400, 'nombre', 'Escribe el nombre del profesor.');
+            const nuevoId = 'p' + crypto.randomBytes(7).toString('hex');
+            const { c, h } = await claveDocenteNuevaUnica(q, env);
+            await q('INSERT INTO ayc_profesores (id, nombre, clase, clave_hash, creado) VALUES ($1, $2, $3, $4, $5)', [nuevoId, nombre, clase, h, Date.now()]);
+            await auditar(q, quien, 'profesor_crear', nuevoId, nombre + (clase ? ' – ' + clase : ''));
+            return { status: 200, body: { ok: true, id: nuevoId, nombre, clase, clave: formatoClaveDocente(c) } };
+        }
+        case 'profesor_regenerar': {
+            const d = await profesorExiste(texto(body.profesor, 40));
+            const { c, h } = await claveDocenteNuevaUnica(q, env);
+            await q('UPDATE ayc_profesores SET clave_hash = $2 WHERE id = $1', [d.id, h]); // cambia la huella: sus sesiones caen
+            await auditar(q, quien, 'profesor_regenerar', d.id, nombreProf(d));
+            return { status: 200, body: { ok: true, id: d.id, nombre: d.nombre, clase: d.clase, clave: formatoClaveDocente(c) } };
+        }
+        case 'profesor_activo': {
+            const d = await profesorExiste(texto(body.profesor, 40));
+            const activo = body.activo === true;
+            await q('UPDATE ayc_profesores SET activo = $2 WHERE id = $1', [d.id, activo]);
+            await auditar(q, quien, activo ? 'profesor_activar' : 'profesor_desactivar', d.id, nombreProf(d));
+            return { status: 200, body: { ok: true, activo } };
+        }
+        case 'profesor_borrar': {
+            const d = await profesorExiste(texto(body.profesor, 40));
+            // Sus alumnos NO se borran: pasan al administrador (profesor_id = NULL)
+            const r = await q('UPDATE ayc_ninos SET profesor_id = NULL WHERE profesor_id = $1 RETURNING id', [d.id]);
+            await q('DELETE FROM ayc_profesores WHERE id = $1', [d.id]);
+            await auditar(q, quien, 'profesor_borrar', d.id, nombreProf(d) + (r.length ? ` (${r.length} alumno(s) pasan al administrador)` : ''));
+            return { status: 200, body: { ok: true, alumnosMovidos: r.length } };
+        }
+        case 'reasignar': {
+            const n = await existe();
+            const destino = body.profesor ? await profesorExiste(texto(body.profesor, 40)) : null;
+            await q('UPDATE ayc_ninos SET profesor_id = $2 WHERE id = $1', [id, destino ? destino.id : null]);
+            await auditar(q, quien, 'nino_reasignar', id, `${n.alias} → ${destino ? nombreProf(destino) : 'Administrador'}`);
+            return { status: 200, body: { ok: true } };
+        }
+        case 'auditoria': {
+            const filas = await q('SELECT t, actor, actor_nombre, accion, objetivo, detalle FROM ayc_auditoria ORDER BY id DESC LIMIT 200');
+            return { status: 200, body: { ok: true, registro: filas.map(f => ({ t: Number(f.t), actor: f.actor, quien: f.actor_nombre, accion: f.accion, objetivo: f.objetivo, detalle: f.detalle })) } };
         }
         default: throw new ErrorHttp(400, 'accion', 'Acción desconocida.');
     }

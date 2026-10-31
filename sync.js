@@ -68,6 +68,7 @@ resetAll = function () { if (rolActual === 'nino') return cerrarSesion(); return
 
 /* ---------- Acceso obligatorio ---------- */
 let rolActual = null; // 'nino' | 'profe' | null (sin acceso: solo pantalla de acceso)
+let profeInfo = null; // { rol: 'admin' } | { rol: 'docente', id, nombre, clase } (lo dice el servidor; el servidor aplica el ámbito)
 function mostrarAcceso(modo, texto) {
     rolActual = modo === 'juego' ? rolActual : null;
     clearTimeout(_syncTimer);
@@ -126,6 +127,7 @@ async function _comprobarAcceso({ enSegundoPlano = false } = {}) {
     }
     if (d.profe) {
         rolActual = 'profe';
+        profeInfo = d.profesor || { rol: 'admin' };
         actualizarCuentaUI(); prepararPanelProfe();
         mostrarAcceso('juego');
         if (typeof actualizarBotonPegatinas === 'function') actualizarBotonPegatinas();
@@ -166,6 +168,19 @@ function prepararPanelProfe() {
     if (l) l.classList.add('hidden');
     if (p) p.classList.remove('hidden');
     if (s) s.classList.remove('hidden');
+    aplicarPapelProfe();
+}
+const nombreClase = p => p ? escS(p.nombre) + (p.clase ? ' – ' + escS(p.clase) : '') : '';
+const esAdminProfe = () => !profeInfo || profeInfo.rol === 'admin';
+// Admin: ve «Profesores», el registro y el filtro. Docente: solo «Claves de la clase» de su clase.
+function aplicarPapelProfe() {
+    const s = document.getElementById('admin-sesion-profe'), t = document.getElementById('admin-titulo'), b = document.getElementById('admin-profesores-bloque');
+    const admin = esAdminProfe();
+    if (s) s.innerHTML = admin
+        ? 'Has entrado como <strong>administrador</strong>: ves todas las clases (la sesión dura 8 horas).'
+        : `Has entrado como <strong>${nombreClase(profeInfo)}</strong>: solo ves a los alumnos de tu clase (la sesión dura 8 horas).`;
+    if (t) t.textContent = admin ? '🔑 Claves de la clase' : '🔑 Claves de la clase · ' + (profeInfo.clase || profeInfo.nombre);
+    if (b) { b.classList.toggle('hidden', !admin); if (admin) profCargar(); }
 }
 
 let _syncTimer = null;
@@ -386,7 +401,7 @@ function actualizarCuentaUI() {
     }
     const info = document.getElementById('cuenta-info');
     if (info && rolActual === 'profe') {
-        info.innerHTML = `<div>Has entrado como <strong class="text-white">profe</strong>. La sesión dura 8 horas.</div>
+        info.innerHTML = `<div>Has entrado como <strong class="text-white">${esAdminProfe() ? 'administrador' : nombreClase(profeInfo)}</strong>. La sesión dura 8 horas.</div>
           <div class="text-xs text-slate-400">Lo que pruebes en la app como profe se queda solo en este dispositivo (no se sincroniza). Las claves de los niños se gestionan en el Panel del profe.</div>`;
         const s = document.querySelector('#cuenta-modal button[onclick^="sincronizar"]'); if (s) s.classList.add('hidden');
     } else if (info && syncMeta.conectado) {
@@ -426,6 +441,8 @@ async function adminAbrir() {
     const r = await llamarAdmin('listar');
     if (r.status !== 200) { adminMensaje(r.datos.mensaje || 'No se pudo abrir.', 'error'); return; }
     document.getElementById('admin-clave').value = '';
+    profeInfo = r.datos.profesor || { rol: 'admin' };
+    aplicarPapelProfe();
     document.getElementById('admin-login').classList.add('hidden');
     document.getElementById('admin-panel').classList.remove('hidden');
     adminMensaje('');
@@ -436,6 +453,7 @@ function adminCerrarPanel() {
     _claveProfe = '';
     if (rolActual === 'profe') { document.getElementById('admin-codigo-nuevo').classList.add('hidden'); return; }
     document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('admin-profesores-bloque').classList.add('hidden');
     document.getElementById('admin-login').classList.remove('hidden');
     document.getElementById('admin-codigo-nuevo').classList.add('hidden');
     document.getElementById('admin-lista').innerHTML = '';
@@ -457,13 +475,29 @@ function adminMostrarCodigo(alias, codigo) {
 }
 function adminPintar(d) {
     const cont = document.getElementById('admin-lista');
+    if (!d) return;
+    cont._datos = d; cont._ninos = d.ninos;
     if (typeof pegBadge === 'function' && d.pegatinasPendientes != null) pegBadge(d.pegatinasPendientes);
-    if (!d.ninos.length) { cont.innerHTML = '<p class="text-xs text-slate-400">Todavía no hay niños con clave.</p>'; return; }
-    cont.innerHTML = d.ninos.map(n => `
+    // Solo el admin recibe «profesores»: filtro por clase, reasignar y elegir clase al crear
+    const admin = Array.isArray(d.profesores), profs = d.profesores || [];
+    const fb = document.getElementById('admin-filtro-bloque'), fs = document.getElementById('admin-filtro'), cs = document.getElementById('admin-crear-profesor');
+    const opciones = sel => `<option value="">Administrador (sin profesor)</option>` + profs.map(p => `<option value="${escS(p.id)}"${sel === p.id ? ' selected' : ''}>${nombreClase(p)}${p.activo ? '' : ' (desactivado)'}</option>`).join('');
+    if (fb) fb.classList.toggle('hidden', !admin || !profs.length);
+    if (cs) { cs.classList.toggle('hidden', !admin || !profs.length); if (admin) { const v = cs.value; cs.innerHTML = opciones(v); cs.value = profs.some(p => p.id === v) ? v : ''; } }
+    let filtro = '*';
+    if (fs && admin) {
+        const v = fs.value || '*';
+        fs.innerHTML = `<option value="*">Todas las clases (${d.ninos.length})</option><option value="_">Administrador (sin profesor) (${d.ninos.filter(n => !n.profesor).length})</option>`
+            + profs.map(p => `<option value="${escS(p.id)}">${nombreClase(p)} (${d.ninos.filter(n => n.profesor === p.id).length})</option>`).join('');
+        fs.value = [...fs.options].some(o => o.value === v) ? v : '*'; filtro = fs.value;
+    }
+    const lista = d.ninos.filter(n => filtro === '*' || (filtro === '_' ? !n.profesor : n.profesor === filtro));
+    if (!lista.length) { cont.innerHTML = `<p class="text-xs text-slate-400">${d.ninos.length ? 'No hay alumnos en esta clase.' : 'Todavía no hay niños con clave.'}</p>`; return; }
+    cont.innerHTML = lista.map(n => `
       <div class="bg-stadium-950 border border-slate-800 rounded-xl p-3" data-nino="${escS(n.id)}">
         <div class="flex justify-between items-start gap-2">
           <div>
-            <div class="font-bold text-white">${escS(n.alias)} ${n.revocado ? '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">clave anulada</span>' : ''}</div>
+            <div class="font-bold text-white">${escS(n.alias)} ${n.revocado ? '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">clave anulada</span>' : ''}${admin ? ` <span class="text-[10px] bg-sky-900 text-sky-200 px-1.5 py-0.5 rounded">${n.profesor ? nombreClase(profs.find(p => p.id === n.profesor)) : 'Administrador'}</span>` : ''}</div>
             <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · ${n.lecturas || 0} lecturas · ${n.frases || 0} frases${n.pegatinasPendientes ? ` · <span class="text-amber-300">🏅 ${n.pegatinasPendientes} por entregar</span>` : ''} · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
           </div>
         </div>
@@ -474,16 +508,17 @@ function adminPintar(d) {
           <button onclick="adminRegenerar('${escS(n.id)}')" class="text-[11px] bg-amber-500 text-stadium-950 font-bold px-2 py-1 rounded-lg">Nueva clave</button>
           ${n.revocado ? '' : `<button onclick="adminRevocar('${escS(n.id)}')" class="text-[11px] bg-stadium-800 border border-slate-700 text-slate-200 font-bold px-2 py-1 rounded-lg">Anular clave</button>`}
           <button onclick="adminBorrar('${escS(n.id)}')" class="text-[11px] bg-red-700 text-white font-bold px-2 py-1 rounded-lg">Borrar niño y datos</button>
+          ${admin && profs.length ? `<label class="text-[11px] text-slate-400 flex items-center gap-1">Clase: <select onchange="adminReasignar('${escS(n.id)}', this.value)" class="bg-stadium-800 border border-slate-700 rounded-lg px-1 py-1 text-white text-[11px]" aria-label="Pasar a otra clase">${opciones(n.profesor || '')}</select></label>` : ''}
         </div>
       </div>`).join('');
-    cont._ninos = d.ninos;
 }
 const aliasDe = id => ((document.getElementById('admin-lista')._ninos || []).find(n => n.id === id) || {}).alias || '';
 async function adminCrear() {
     const input = document.getElementById('admin-alias');
     const alias = input.value.trim();
     if (!alias) { adminMensaje('Escribe un nombre o apodo (sin apellidos).', 'error'); return; }
-    const r = await llamarAdmin('crear', { alias });
+    const cs = document.getElementById('admin-crear-profesor');
+    const r = await llamarAdmin('crear', { alias, profesor: (cs && !cs.classList.contains('hidden') && cs.value) || undefined });
     if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
     input.value = '';
     adminMostrarCodigo(r.datos.alias, r.datos.codigo);
@@ -515,6 +550,86 @@ async function adminBorrar(id) {
     const r = await llamarAdmin('borrar', { id });
     if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
     adminMensaje(`${alias} y sus datos se han borrado del servidor.`, 'ok'); adminRefrescar();
+}
+
+async function adminReasignar(id, profesor) {
+    const r = await llamarAdmin('reasignar', { id, profesor: profesor || null });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return adminRefrescar(); }
+    adminMensaje(`${aliasDe(id)} ha cambiado de clase.`, 'ok'); adminRefrescar(); profCargar();
+}
+
+/* ---------- Solo admin: profesores y registro de cambios ---------- */
+const profDe = id => ((document.getElementById('prof-lista')._profs || []).find(p => p.id === id)) || null;
+async function profCargar() {
+    if (!esAdminProfe()) return;
+    const r = await llamarAdmin('profesores');
+    const cont = document.getElementById('prof-lista');
+    if (!cont || r.status !== 200 || !Array.isArray(r.datos.profesores)) return;
+    cont._profs = r.datos.profesores;
+    cont.innerHTML = (r.datos.profesores.length ? r.datos.profesores.map(p => `
+      <div class="flex flex-wrap justify-between items-center gap-2 bg-stadium-950 border border-slate-800 rounded-lg px-2 py-1.5" data-profesor="${escS(p.id)}">
+        <div class="text-xs"><strong class="text-white">${nombreClase(p)}</strong>
+          <span class="text-slate-400">· ${p.alumnos} alumno(s)</span> ${p.activo ? '' : '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">desactivado</span>'}</div>
+        <div class="flex gap-1">
+          <button onclick="profRegenerar('${escS(p.id)}')" class="text-[11px] bg-amber-500 text-stadium-950 font-bold px-2 py-0.5 rounded-lg">Nueva clave</button>
+          <button onclick="profActivo('${escS(p.id)}', ${!p.activo})" class="text-[11px] bg-stadium-800 border border-slate-700 text-slate-200 font-bold px-2 py-0.5 rounded-lg">${p.activo ? 'Desactivar' : 'Activar'}</button>
+          <button onclick="profBorrar('${escS(p.id)}')" class="text-[11px] bg-red-700 text-white font-bold px-2 py-0.5 rounded-lg">Borrar</button>
+        </div>
+      </div>`).join('') : '<p class="text-xs text-slate-400">Todavía no hay profesores.</p>')
+      + `<p class="text-[11px] text-slate-500">${r.datos.sinProfesor} alumno(s) del administrador (sin profesor).</p>`;
+    const reg = document.getElementById('admin-auditoria'); if (reg && reg.open) auditoriaCargar();
+}
+function profMostrarClave(p, clave) {
+    const box = document.getElementById('prof-clave-nueva');
+    box.innerHTML = `<div class="text-xs text-slate-300">Clave personal de <strong class="text-white">${nombreClase(p)}</strong>:</div>
+      <div class="font-game text-2xl tracking-wider text-sky-300 my-1 select-all" id="prof-clave-texto">${escS(clave)}</div>
+      <div class="text-xs text-sky-200">✍️ Apúntala y dásela en mano. Con ella entra en «Soy el profe» y solo ve su clase. Por seguridad no se volverá a mostrar.</div>
+      <button onclick="this.parentElement.classList.add('hidden')" class="mt-2 text-xs underline text-slate-300">Ya la he apuntado</button>`;
+    box.classList.remove('hidden');
+}
+async function profCrear() {
+    const n = document.getElementById('prof-nombre'), c = document.getElementById('prof-clase');
+    if (!n.value.trim()) { adminMensaje('Escribe el nombre del profesor.', 'error'); return; }
+    const r = await llamarAdmin('profesor_crear', { nombre: n.value.trim(), clase: c.value.trim() });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    n.value = ''; c.value = '';
+    profMostrarClave(r.datos, r.datos.clave); adminMensaje('');
+    profCargar(); adminRefrescar();
+}
+async function profRegenerar(id) {
+    const p = profDe(id); if (!p) return;
+    if (!confirm(`¿Dar una clave nueva a ${p.nombre}?\n\nLa clave anterior dejará de funcionar y se cerrará su sesión. Sus alumnos no cambian.`)) return;
+    const r = await llamarAdmin('profesor_regenerar', { profesor: id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    profMostrarClave(r.datos, r.datos.clave); profCargar();
+}
+async function profActivo(id, activo) {
+    const p = profDe(id); if (!p) return;
+    if (!activo && !confirm(`¿Desactivar a ${p.nombre}?\n\nNo podrá entrar y su sesión se cierra ya. Sus alumnos y sus datos se conservan (los sigues viendo tú).`)) return;
+    const r = await llamarAdmin('profesor_activo', { profesor: id, activo });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminMensaje(activo ? `${p.nombre} vuelve a estar activo.` : `${p.nombre} está desactivado.`, 'ok'); profCargar(); adminRefrescar();
+}
+async function profBorrar(id) {
+    const p = profDe(id); if (!p) return;
+    if (!confirm(`¿Borrar al profesor ${p.nombre}?\n\nSus ${p.alumnos} alumno(s) NO se borran: pasan al administrador y puedes reasignarlos.`)) return;
+    const r = await llamarAdmin('profesor_borrar', { profesor: id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    document.getElementById('prof-clave-nueva').classList.add('hidden');
+    adminMensaje(`${p.nombre} se ha borrado.`, 'ok'); profCargar(); adminRefrescar();
+}
+const ACCIONES_REGISTRO = {
+    nino_crear: 'creó la clave de', nino_regenerar: 'dio clave nueva a', nino_revocar: 'anuló la clave de', nino_borrar: 'borró a', nino_reasignar: 'cambió de clase a',
+    profesor_crear: 'creó al profesor', profesor_regenerar: 'dio clave nueva al profesor', profesor_desactivar: 'desactivó al profesor', profesor_activar: 'activó al profesor', profesor_borrar: 'borró al profesor'
+};
+async function auditoriaCargar() {
+    const cont = document.getElementById('auditoria-lista');
+    const r = await llamarAdmin('auditoria');
+    if (!cont || r.status !== 200) return;
+    cont.innerHTML = r.datos.registro.length ? r.datos.registro.map(x => `<div class="text-[11px] text-slate-300 border-b border-slate-800 pb-1">
+        <span class="text-slate-500">${new Date(x.t).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</span>
+        <strong class="text-white">${escS(x.quien)}</strong> ${escS(ACCIONES_REGISTRO[x.accion] || x.accion)} <span class="text-amber-200">${escS(x.detalle)}</span></div>`).join('')
+        : '<p class="text-[11px] text-slate-400">Sin cambios todavía.</p>';
 }
 
 /* ---------- Arranque ---------- */

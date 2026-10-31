@@ -373,6 +373,163 @@ await prueba('entrar como profe también tiene límite de intentos (10 por IP �
     const r = await llamar('acceso', { accion: 'entrar_profe', clave: ENV.ALTOYCLARO_CLAVE }, { ip: '60.0.0.1' });
     assert.equal(r.status, 429); assert.equal(r.cookie, null);
 });
+/* ---------- Varios profesores: papeles y ámbito ---------- */
+const ent = (clave, ip) => llamar('acceso', { accion: 'entrar_profe', clave }, { ip });
+const como = (cookie, body) => llamar('admin', body, { cookie });
+let profA, profB, claveA, claveB, cA, cB, ninoA, ninoB, ninoAdm;
+await prueba('migración idempotente: una base antigua gana profesores/auditoría y los alumnos quedan del admin', async () => {
+    const vieja = new PGlite();
+    const qv = async (t, p = []) => (await vieja.query(t, p)).rows;
+    // base «de antes»: sin las sentencias nuevas
+    for (const s of ESQUEMA.filter(s => !/profesor|auditoria/.test(s))) await qv(s);
+    await qv("INSERT INTO ayc_ninos (id, alias, codigo_hash, creado) VALUES ('viejo1', 'Antiguo', 'h', 1)");
+    for (let i = 0; i < 3; i++) for (const s of ESQUEMA) await qv(s); // se puede ejecutar varias veces
+    const n = await qv("SELECT profesor_id FROM ayc_ninos WHERE id = 'viejo1'");
+    eq(n, [{ profesor_id: null }]);
+    eq((await qv("SELECT count(*)::int AS n FROM ayc_profesores"))[0].n, 0);
+    eq((await qv("SELECT count(*)::int AS n FROM ayc_auditoria"))[0].n, 0);
+    // schema.sql también se puede ejecutar dos veces sobre una base vacía
+    const fs = await import('node:fs');
+    const sql = fs.readFileSync(new URL('../schema.sql', import.meta.url), 'utf8');
+    const limpia = new PGlite();
+    await limpia.exec(sql); await limpia.exec(sql);
+    const cols = (await limpia.query("SELECT column_name FROM information_schema.columns WHERE table_name = 'ayc_ninos' AND column_name = 'profesor_id'")).rows;
+    eq(cols.length, 1);
+});
+await prueba('admin crea profesores: clave PROF- mostrada una vez y guardada solo con hash', async () => {
+    let r = await adm({ accion: 'profesor_crear', nombre: 'Laura', clase: '3.º B' });
+    assert.equal(r.status, 200);
+    assert.match(r.body.clave, /^PROF-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}-[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4}$/);
+    profA = r.body.id; claveA = r.body.clave;
+    r = await adm({ accion: 'profesor_crear', nombre: 'Marta', clase: '4.º A' });
+    profB = r.body.id; claveB = r.body.clave;
+    const filas = await globalThis.__aycQuery('SELECT * FROM ayc_profesores');
+    const plano = claveA.replace(/-/g, '').slice(4);
+    assert.ok(!JSON.stringify(filas).includes(plano), 'la clave del profesor no se guarda en claro');
+    const l = await adm({ accion: 'profesores' });
+    assert.ok(!JSON.stringify(l.body).includes(plano), 'listar profesores no devuelve la clave');
+    eq(l.body.profesores.map(p => [p.nombre, p.clase, p.activo, p.alumnos]), [['Laura', '3.º B', true, 0], ['Marta', '4.º A', true, 0]]);
+    r = await adm({ accion: 'profesor_crear', nombre: '  ' }); assert.equal(r.status, 400);
+    // la clave del profesor no es la del admin ni sirve como clave de niño
+    r = await entrar(claveA, 'dispositivo-prof-0001', { ip: '70.0.0.9' }); assert.notEqual(r.status, 200);
+});
+await prueba('profesor entra con su clave en la misma pantalla: papel «docente» con su nombre y clase', async () => {
+    let r = await ent(claveA.toLowerCase(), '70.0.0.1');
+    assert.equal(r.status, 200); eq(r.body.profesor, { rol: 'docente', id: profA, nombre: 'Laura', clase: '3.º B' });
+    assert.match(r.setCookie, /^ayc_profe=/); assert.match(r.setCookie, /HttpOnly/);
+    assert.ok(!r.setCookie.includes(claveA.replace(/-/g, '').slice(4)), 'la clave no va en la cookie');
+    cA = r.cookie;
+    cB = (await ent(claveB, '70.0.0.2')).cookie;
+    const s = await sesion({ cookie: cA });
+    assert.equal(s.body.profe, true); eq(s.body.profesor, { rol: 'docente', id: profA, nombre: 'Laura', clase: '3.º B' });
+    const sa = await sesion({ cookie: (await ent(ENV.ALTOYCLARO_CLAVE, '70.0.0.3')).cookie });
+    eq(sa.body.profesor, { rol: 'admin' });
+});
+await prueba('cada profesor crea claves en su clase y solo ve a sus alumnos; el admin ve a todos', async () => {
+    let r = await como(cA, { accion: 'crear', alias: 'Ana (A)', profesor: profB }); // «profesor» se ignora: siempre en su clase
+    assert.equal(r.status, 200); ninoA = r.body.id;
+    assert.match(r.body.codigo, /^[A-Z2-9]{4}-[A-Z2-9]{4}$/);
+    ninoB = (await como(cB, { accion: 'crear', alias: 'Bruno (B)' })).body.id;
+    ninoAdm = (await adm({ accion: 'crear', alias: 'Carla (admin)' })).body.id;
+    const la = await como(cA, { accion: 'listar' });
+    eq(la.body.ninos.map(n => n.alias), ['Ana (A)']);
+    assert.equal(la.body.profesores, undefined, 'el docente no recibe la lista de profesores');
+    eq((await como(cB, { accion: 'listar' })).body.ninos.map(n => n.alias), ['Bruno (B)']);
+    const todos = await adm({ accion: 'listar' });
+    const porId = Object.fromEntries(todos.body.ninos.map(n => [n.id, n.profesor]));
+    assert.equal(porId[ninoA], profA); assert.equal(porId[ninoB], profB); assert.equal(porId[ninoAdm], null);
+    assert.ok(todos.body.ninos.length >= 3); eq(todos.body.profesores.map(p => p.nombre), ['Laura', 'Marta']);
+    // el admin puede crear directamente en la clase de un profesor
+    r = await adm({ accion: 'crear', alias: 'Dani (A por admin)', profesor: profA });
+    eq((await como(cA, { accion: 'listar' })).body.ninos.map(n => n.alias).sort(), ['Ana (A)', 'Dani (A por admin)']);
+    await adm({ accion: 'borrar', id: r.body.id });
+});
+await prueba('el profesor A no puede leer ni tocar a los alumnos ni las pegatinas de B', async () => {
+    const e = await entrar((await como(cB, { accion: 'regenerar', id: ninoB })).body.codigo, 'dispositivo-b-00001', { ip: '70.0.0.4' });
+    assert.equal(e.status, 200);
+    await globalThis.__aycQuery("INSERT INTO ayc_pegatinas (nino_id, pegatina, t, nums) VALUES ($1, 'hola', $2, '[1]'), ($3, 'hola', $2, '[1]')", [ninoB, Date.now(), ninoA]);
+    for (const accion of ['regenerar', 'revocar', 'borrar', 'liberar', 'reasignar']) {
+        const r = await como(cA, { accion, id: ninoB, dispositivo: 'dispositivo-b-00001', pegatina: 'hola' });
+        assert.ok(r.status === 404 || r.status === 403, accion + ' → ' + r.status);
+    }
+    let r = await como(cA, { accion: 'entregar', id: ninoB, pegatina: 'hola' }); assert.equal(r.status, 404);
+    const pa = await como(cA, { accion: 'pegatinas' });
+    eq(pa.body.pendientes.map(p => p.alias), ['Ana (A)']);
+    assert.ok(!JSON.stringify(pa.body).includes('Bruno'));
+    // nada de B ha cambiado: sigue entrando, su dispositivo sigue y su pegatina está pendiente
+    eq((await como(cB, { accion: 'pegatinas' })).body.pendientes.map(p => p.alias), ['Bruno (B)']);
+    const lb = await como(cB, { accion: 'listar' });
+    eq(lb.body.ninos[0].dispositivos.length, 1); assert.equal(lb.body.ninos[0].revocado, false);
+    assert.equal((await llamar('sync', {}, { cookie: e.cookie })).status, 200);
+    // el admin ve las pegatinas de todos y puede entregarlas
+    const pAdm = await adm({ accion: 'pegatinas' });
+    assert.ok(['Ana (A)', 'Bruno (B)'].every(a => pAdm.body.pendientes.some(p => p.alias === a)));
+    r = await como(cA, { accion: 'entregar', id: ninoA, pegatina: 'hola' }); assert.equal(r.status, 200);
+});
+await prueba('el docente no puede gestionar profesores, reasignar ni ver el registro (403)', async () => {
+    for (const accion of ['profesores', 'profesor_crear', 'profesor_regenerar', 'profesor_activo', 'profesor_borrar', 'reasignar', 'auditoria']) {
+        const r = await como(cA, { accion, nombre: 'Intruso', profesor: profB, id: ninoA, activo: false });
+        assert.equal(r.status, 403, accion);
+    }
+    eq((await adm({ accion: 'profesores' })).body.profesores.map(p => p.nombre), ['Laura', 'Marta']);
+});
+await prueba('cabecera X-Clave-Profe con la clave de un profesor: mismo ámbito', async () => {
+    const r = await llamar('admin', { accion: 'listar' }, { profe: claveB, ip: '70.0.0.5' });
+    assert.equal(r.status, 200); eq(r.body.ninos.map(n => n.alias), ['Bruno (B)']);
+});
+await prueba('profesor desactivado: su sesión abierta se rechaza y no puede volver a entrar', async () => {
+    let r = await adm({ accion: 'profesor_activo', profesor: profA, activo: false }); assert.equal(r.status, 200);
+    r = await como(cA, { accion: 'listar' }); assert.equal(r.status, 401);
+    r = await sesion({ cookie: cA }); assert.equal(r.body.profe, false); assert.match(r.setCookie, /ayc_profe=;.*Max-Age=0/);
+    r = await ent(claveA, '70.0.0.6'); assert.equal(r.status, 403); assert.equal(r.cookie, null); assert.match(r.body.mensaje, /desactivada/);
+    r = await llamar('admin', { accion: 'listar' }, { profe: claveA, ip: '70.0.0.6' }); assert.equal(r.status, 403);
+    // sus alumnos siguen intactos y el admin los ve
+    assert.ok((await adm({ accion: 'listar' })).body.ninos.some(n => n.id === ninoA));
+    await adm({ accion: 'profesor_activo', profesor: profA, activo: true });
+    r = await ent(claveA, '70.0.0.6'); assert.equal(r.status, 200); cA = r.cookie;
+});
+await prueba('nueva clave de profesor: la vieja y sus sesiones dejan de valer', async () => {
+    const r = await adm({ accion: 'profesor_regenerar', profesor: profA });
+    assert.equal(r.status, 200); assert.notEqual(r.body.clave, claveA);
+    assert.equal((await como(cA, { accion: 'listar' })).status, 401);
+    assert.equal((await ent(claveA, '70.0.0.7')).status, 401);
+    claveA = r.body.clave; cA = (await ent(claveA, '70.0.0.7')).cookie;
+    eq((await como(cA, { accion: 'listar' })).body.ninos.map(n => n.alias), ['Ana (A)']);
+});
+await prueba('cookie de docente manipulada (otro id) → no vale', async () => {
+    const { firmarSesion } = await import('../api/_lib/core.js');
+    const falsa = firmarSesion(ENV, { profe: 1, rol: 'docente', pid: profB, k: 'x', iat: 1, exp: Date.now() + 1e6 }, 'firma-sesion-profe');
+    assert.equal((await como('ayc_profe=' + falsa, { accion: 'listar' })).status, 401);
+    const [cuerpo, firma] = cA.split('=')[1].split('.');
+    const d = JSON.parse(Buffer.from(cuerpo, 'base64url').toString()); d.rol = 'admin';
+    assert.equal((await como('ayc_profe=' + Buffer.from(JSON.stringify(d)).toString('base64url') + '.' + firma, { accion: 'profesores' })).status, 401);
+});
+await prueba('admin reasigna alumnos entre profesores', async () => {
+    let r = await adm({ accion: 'reasignar', id: ninoAdm, profesor: profB }); assert.equal(r.status, 200);
+    eq((await como(cB, { accion: 'listar' })).body.ninos.map(n => n.alias), ['Bruno (B)', 'Carla (admin)']);
+    r = await adm({ accion: 'reasignar', id: ninoAdm, profesor: null });
+    eq((await como(cB, { accion: 'listar' })).body.ninos.map(n => n.alias), ['Bruno (B)']);
+    r = await adm({ accion: 'reasignar', id: ninoAdm, profesor: 'pnoexiste' }); assert.equal(r.status, 404);
+});
+await prueba('registro de cambios: quién creó/borró claves y profesores (sin claves)', async () => {
+    const r = await adm({ accion: 'auditoria' });
+    assert.equal(r.status, 200);
+    const reg = r.body.registro;
+    assert.ok(reg.some(x => x.accion === 'profesor_crear' && x.actor === 'admin' && x.detalle === 'Laura – 3.º B'));
+    assert.ok(reg.some(x => x.accion === 'nino_crear' && x.actor === 'prof:' + profA && x.quien === 'Laura – 3.º B' && x.detalle === 'Ana (A)'));
+    assert.ok(reg.some(x => x.accion === 'nino_borrar' && x.detalle === 'Dani (A por admin)'));
+    assert.ok(reg.some(x => x.accion === 'profesor_desactivar') && reg.some(x => x.accion === 'profesor_regenerar') && reg.some(x => x.accion === 'nino_reasignar'));
+    const txt = JSON.stringify(reg);
+    assert.ok(!txt.includes(claveA) && !txt.includes(claveB.replace(/-/g, '').slice(4)), 'sin claves en el registro');
+});
+await prueba('borrar un profesor: sus alumnos pasan al admin y su sesión cae', async () => {
+    const r = await adm({ accion: 'profesor_borrar', profesor: profB });
+    assert.equal(r.status, 200); assert.equal(r.body.alumnosMovidos, 1);
+    assert.equal((await como(cB, { accion: 'listar' })).status, 401);
+    const n = (await adm({ accion: 'listar' })).body.ninos.find(x => x.id === ninoB);
+    assert.equal(n.profesor, null);
+    eq((await adm({ accion: 'profesores' })).body.profesores.map(p => p.nombre), ['Laura']);
+});
 await prueba('base de datos caída → 503 con mensaje claro (no deja entrar)', async () => {
     const guardado = globalThis.__aycQuery, listo = globalThis.__aycEsquemaListo;
     globalThis.__aycQuery = async () => { throw new Error('connect ECONNREFUSED'); };

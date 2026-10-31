@@ -16,7 +16,8 @@ página está oculto con `html.sin-acceso`):
   Cookie `ayc_sesion` HttpOnly firmada con la subclave `firma-sesion` (180 días).
   La primera vez, si el dispositivo tiene progreso de antes, se pregunta si añadirlo
   a la clave o borrarlo.
-- **«Soy el profe»** — la clave `ALTOYCLARO_CLAVE`. Crea la cookie `ayc_profe`
+- **«Soy el profe»** — la clave `ALTOYCLARO_CLAVE` (**administrador**) o la clave personal
+  de un **profesor** (`PROF-XXXX-XXXX-XXXX`); el servidor distingue cuál es (ver «Profesores»). Crea la cookie `ayc_profe`
   (HttpOnly, Secure, SameSite=Lax, **8 h**) firmada con otra subclave distinta
   (`firma-sesion-profe`); lleva una huella HMAC de la clave del profe, así que al
   cambiar `ALTOYCLARO_CLAVE` se cierran todas las sesiones de profe. Con ella el profe
@@ -26,6 +27,28 @@ página está oculto con `html.sin-acceso`):
   pestaña y en cada sincronización).
 - Si el servidor o la base de datos no responden (`503 {codigo:"bd"}`), se muestra un
   mensaje claro con «Reintentar» y **no se deja entrar**.
+
+### Profesores (varias cuentas de docente)
+
+- **Administrador** = quien entra con `ALTOYCLARO_CLAVE` (como hasta ahora). En el Panel del profe ve la
+  sección **«👩‍🏫 Profesores»**: crea un profesor con nombre y clase (p. ej. «Laura – 3.º B»); el servidor
+  genera su clave personal `PROF-XXXX-XXXX-XXXX`, **se muestra una sola vez** y se guarda solo como hash
+  HMAC (subclave `pimienta-profesores`, distinta de la de los niños). Puede darle clave nueva, desactivarlo,
+  activarlo o borrarlo (sus alumnos **no** se borran: pasan al administrador). Ve todas las clases y a todos
+  los alumnos (filtro «Ver alumnos de»), elige la clase al crear un alumno, cambia alumnos de clase y ve
+  el **📜 Registro de cambios** (`ayc_auditoria`: quién creó/borró/anuló claves de niños y quién
+  creó/desactivó/borró profesores; sin claves).
+- **Profesor** = entra con su clave en la misma pantalla «Soy el profe». Solo ve **sus** alumnos (progreso,
+  test, lecturas, frases, dispositivos y «Pegatinas por entregar») y solo puede crear, renovar, anular,
+  liberar o borrar los suyos. No ve las otras clases ni puede gestionar profesores.
+- Todo el ámbito se aplica **en el servidor** (`WHERE profesor_id = …` en cada consulta de `/api/admin`;
+  un alumno de otra clase responde 404, como si no existiera; las acciones de admin responden 403).
+- Cookie `ayc_profe` con `rol` (`admin`/`docente`), id del profesor y una huella de su clave: al darle
+  clave nueva sus sesiones caen; desactivarlo o borrarlo se comprueba en la base de datos en cada petición.
+  Mismo límite de intentos que la clave del profe (10 por IP cada 15 min).
+- Alumnos que ya existían: `profesor_id = NULL` → son del administrador hasta que los reasigne.
+- Migración automática e idempotente en la primera petición: `CREATE TABLE IF NOT EXISTS ayc_profesores`,
+  `ayc_auditoria` y `ALTER TABLE ayc_ninos ADD COLUMN IF NOT EXISTS profesor_id` (también en `schema.sql`).
 
 Variables de entorno (Vercel), sin valores por defecto: `ALTOYCLARO_CLAVE`,
 `ALTOYCLARO_SECRETO` (de él se derivan subclaves distintas para cada firma) y
@@ -215,6 +238,7 @@ NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # ac
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-lectura.cjs    # leo en voz alta y temas (reconocimiento simulado)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-frases.cjs     # frases cotidianas y pegatinas (servidor recién arrancado)
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-profesores.cjs # admin y profesores: ámbito por clase (servidor recién arrancado)
 ```
 
 Los tests de navegador usan `test/servidor-local.mjs` (arrancarlo antes, con
