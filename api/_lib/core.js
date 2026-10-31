@@ -1,8 +1,9 @@
 // Me gusta hablar Alto y claro · backend de claves de acceso y sincronización
 // - Funciones serverless de Vercel (Node). Base de datos: Postgres (Neon).
-// - Las grabaciones de voz NUNCA llegan aquí: solo texto (perfil, lista de intentos y puntuaciones de lectura).
+// - Las grabaciones de voz NUNCA llegan aquí: solo texto (perfil, lista de intentos, puntuaciones de lectura y de frases, pegatinas).
 import crypto from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
+import { evaluarPegatinas, PEGATINAS_IDS } from './pegatinas.js';
 
 export const ALFABETO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // sin 0/O, 1/I/L
 export const LONGITUD_CODIGO = 8;
@@ -18,6 +19,7 @@ const LIMITE_PROFE = 10;    // intentos fallidos de clave de profe por IP en 15 
 const MAX_LOTE = 500;
 const MAX_INTENTOS_NINO = 5000;
 const MAX_LECTURAS_NINO = 2000;
+const MAX_FRASES_NINO = 3000;
 
 export class ErrorHttp extends Error {
     constructor(status, codigo, mensaje) { super(mensaje); this.status = status; this.codigo = codigo; }
@@ -142,6 +144,24 @@ export const ESQUEMA = [
         datos JSONB NOT NULL,
         PRIMARY KEY (nino_id, id))`,
     `CREATE INDEX IF NOT EXISTS ayc_lecturas_recibido ON ayc_lecturas (nino_id, recibido)`,
+    // Frases cotidianas: solo qué frase/actividad, puntuación y si salió bien (nunca lo que se oyó)
+    `CREATE TABLE IF NOT EXISTS ayc_frases (
+        nino_id TEXT NOT NULL REFERENCES ayc_ninos(id) ON DELETE CASCADE,
+        id TEXT NOT NULL,
+        t BIGINT NOT NULL,
+        recibido BIGINT NOT NULL,
+        datos JSONB NOT NULL,
+        PRIMARY KEY (nino_id, id))`,
+    `CREATE INDEX IF NOT EXISTS ayc_frases_recibido ON ayc_frases (nino_id, recibido)`,
+    // Pegatinas conseguidas: id de pegatina, fecha, si el profe la entregó y los números del motivo
+    `CREATE TABLE IF NOT EXISTS ayc_pegatinas (
+        nino_id TEXT NOT NULL REFERENCES ayc_ninos(id) ON DELETE CASCADE,
+        pegatina TEXT NOT NULL,
+        t BIGINT NOT NULL,
+        entregada BOOLEAN NOT NULL DEFAULT FALSE,
+        entregada_t BIGINT,
+        nums JSONB,
+        PRIMARY KEY (nino_id, pegatina))`,
     `CREATE TABLE IF NOT EXISTS ayc_limite (clave TEXT NOT NULL, t BIGINT NOT NULL)`,
     `CREATE INDEX IF NOT EXISTS ayc_limite_idx ON ayc_limite (clave, t)`
 ];
@@ -253,6 +273,21 @@ function limpiarLectura(x) {
         }
     };
 }
+// Frases cotidianas: lista blanca (id de frase, situación, actividad, puntuación, bien/mal y quién valoró)
+const SITUACIONES_FRASES = ['llegar', 'companero', 'profe', 'patio', 'gracias', 'adios'];
+const ACTIVIDADES_FRASES = ['repetir', 'dirias', 'dialogo'];
+function limpiarFrase(x) {
+    if (!x || typeof x !== 'object') return null;
+    const id = texto(x.id, 40);
+    const t = Math.round(numero(x.t, 0, Date.now() + 864e5, 0));
+    const fid = typeof x.fid === 'string' && /^[fqd][0-9]{2}$/.test(x.fid) ? x.fid : '';
+    if (!id || !t || !fid || !SITUACIONES_FRASES.includes(x.sit) || !ACTIVIDADES_FRASES.includes(x.act)) return null;
+    return { id, t, datos: { fid, sit: x.sit, act: x.act, score: Math.round(numero(x.score, 0, 100, 0)), ok: x.ok === true, metodo: x.metodo === 'adulto' ? 'adulto' : 'auto' } };
+}
+const datosDe = f => Object.assign({ id: f.id, t: Number(f.t) }, typeof f.datos === 'string' ? JSON.parse(f.datos) : f.datos);
+const numsDe = v => (Array.isArray(v) ? v : typeof v === 'string' ? JSON.parse(v) : []).slice(0, 4).map(n => Math.round(numero(n, -1, 100000, 0)));
+const pegatinaFila = f => ({ id: f.pegatina, t: Number(f.t), entregada: !!f.entregada, entregadaT: f.entregada_t == null ? null : Number(f.entregada_t), nums: numsDe(f.nums) });
+
 const dispositivoValido = d => typeof d === 'string' && /^[A-Za-z0-9-]{8,64}$/.test(d);
 
 /* ---------- Sesión del niño ---------- */
@@ -357,18 +392,22 @@ export async function sync({ q, env, req, body }) {
     if (body.borrarIntentos === true) {
         await q('DELETE FROM ayc_intentos WHERE nino_id = $1', [id]);
         await q('DELETE FROM ayc_lecturas WHERE nino_id = $1', [id]);
+        await q('DELETE FROM ayc_frases WHERE nino_id = $1', [id]);
+        // Las pegatinas ya entregadas por el profe se conservan (están en el papel); las pendientes se borran
+        await q('DELETE FROM ayc_pegatinas WHERE nino_id = $1 AND entregada = FALSE', [id]);
         await q('UPDATE ayc_estado SET borrado_t = $2 WHERE nino_id = $1', [id, ahora]);
     }
     const est = (await q('SELECT perfil, perfil_t, borrado_t FROM ayc_estado WHERE nino_id = $1', [id]))[0];
     const borradoT = Number(est.borrado_t);
     let perfilT = Number(est.perfil_t);
     let perfil = est.perfil;
+    let perfilCambiado = false;
     // Perfil (XP, nivel...): gana el cambio más reciente
     const perfilNuevo = limpiarPerfil(body.perfil);
     const tNuevo = Math.round(numero(body.perfilT, 0, ahora + 60000, 0));
     if (perfilNuevo && tNuevo > perfilT) {
         await q('UPDATE ayc_estado SET perfil = $2::jsonb, perfil_t = $3 WHERE nino_id = $1', [id, JSON.stringify(perfilNuevo), tNuevo]);
-        perfil = perfilNuevo; perfilT = tNuevo;
+        perfil = perfilNuevo; perfilT = tNuevo; perfilCambiado = true;
     }
     // Intentos: se juntan por id (nunca se duplican)
     const lote = (Array.isArray(body.intentos) ? body.intentos : []).slice(0, MAX_LOTE).map(limpiarIntento).filter(i => i && i.t > borradoT);
@@ -394,13 +433,44 @@ export async function sync({ q, env, req, body }) {
                 SELECT id FROM ayc_lecturas WHERE nino_id = $1 ORDER BY t ASC LIMIT $2)`, [id, total - MAX_LECTURAS_NINO]);
         }
     }
+    // Frases cotidianas (solo puntuaciones): igual que los intentos
+    const loteF = (Array.isArray(body.frases) ? body.frases : []).slice(0, MAX_LOTE).map(limpiarFrase).filter(i => i && i.t > borradoT);
+    if (loteF.length) {
+        await q(`INSERT INTO ayc_frases (nino_id, id, t, recibido, datos)
+            SELECT $1, x.id, x.t, $2, x.datos FROM jsonb_to_recordset($3::jsonb) AS x(id text, t bigint, datos jsonb)
+            ON CONFLICT (nino_id, id) DO NOTHING`, [id, ahora, JSON.stringify(loteF)]);
+        const total = Number((await q('SELECT count(*)::int AS n FROM ayc_frases WHERE nino_id = $1', [id]))[0].n);
+        if (total > MAX_FRASES_NINO) {
+            await q(`DELETE FROM ayc_frases WHERE nino_id = $1 AND id IN (
+                SELECT id FROM ayc_frases WHERE nino_id = $1 ORDER BY t ASC LIMIT $2)`, [id, total - MAX_FRASES_NINO]);
+        }
+    }
+    // Pegatinas: se recalculan cuando llega algo nuevo (o si se pide expresamente)
+    let pegFilas = await q('SELECT pegatina, t, entregada, entregada_t, nums FROM ayc_pegatinas WHERE nino_id = $1', [id]);
+    const pegatinasNuevas = [];
+    if ((lote.length || loteL.length || loteF.length || perfilCambiado || body.revisarPegatinas === true) && pegFilas.length < PEGATINAS_IDS.length) {
+        const todo = async tabla => (await q(`SELECT id, t, datos FROM ${tabla} WHERE nino_id = $1`, [id])).map(datosDe);
+        const p = perfil ? (typeof perfil === 'string' ? JSON.parse(perfil) : perfil) : null;
+        const cumplidas = evaluarPegatinas({ intentos: await todo('ayc_intentos'), lecturas: await todo('ayc_lecturas'), frases: await todo('ayc_frases'), pruebas: p && Array.isArray(p.pruebas) ? p.pruebas : [] });
+        const ya = new Set(pegFilas.map(f => f.pegatina));
+        for (const [peg, nums] of Object.entries(cumplidas)) {
+            if (ya.has(peg) || !PEGATINAS_IDS.includes(peg)) continue;
+            const r = await q(`INSERT INTO ayc_pegatinas (nino_id, pegatina, t, nums) VALUES ($1, $2, $3, $4::jsonb)
+                ON CONFLICT (nino_id, pegatina) DO NOTHING RETURNING pegatina`, [id, peg, ahora, JSON.stringify(numsDe(nums))]);
+            if (r.length) pegatinasNuevas.push(peg);
+        }
+        if (pegatinasNuevas.length) pegFilas = await q('SELECT pegatina, t, entregada, entregada_t, nums FROM ayc_pegatinas WHERE nino_id = $1', [id]);
+    }
     const cursor = Math.max(0, Math.round(numero(body.cursor, 0, ahora, 0)) - 60000); // margen de 1 min
     const filas = await q(`SELECT id, t, recibido, datos FROM ayc_intentos WHERE nino_id = $1 AND recibido > $2 ORDER BY recibido ASC LIMIT ${MAX_INTENTOS_NINO}`, [id, cursor]);
     const filasL = await q(`SELECT id, t, datos FROM ayc_lecturas WHERE nino_id = $1 AND recibido > $2 ORDER BY recibido ASC LIMIT ${MAX_LECTURAS_NINO}`, [id, cursor]);
+    const filasF = await q(`SELECT id, t, datos FROM ayc_frases WHERE nino_id = $1 AND recibido > $2 ORDER BY recibido ASC LIMIT ${MAX_FRASES_NINO}`, [id, cursor]);
     return {
         status: 200, body: {
             ok: true, alias: nino.alias, perfil: perfil ? limpiarPerfil(typeof perfil === 'string' ? JSON.parse(perfil) : perfil) : null, perfilT, borradoT, cursor: ahora,
-            recibidos: lote.map(i => i.id), lecturasRecibidas: loteL.map(i => i.id),
+            recibidos: lote.map(i => i.id), lecturasRecibidas: loteL.map(i => i.id), frasesRecibidas: loteF.map(i => i.id),
+            frases: filasF.map(datosDe),
+            pegatinas: pegFilas.map(pegatinaFila).sort((a, b) => a.t - b.t), pegatinasNuevas,
             lecturas: filasL.map(f => Object.assign({ id: f.id, t: Number(f.t) }, typeof f.datos === 'string' ? JSON.parse(f.datos) : f.datos)),
             intentos: filas.map(f => Object.assign({ id: f.id, t: Number(f.t) }, typeof f.datos === 'string' ? JSON.parse(f.datos) : f.datos))
         }
@@ -447,15 +517,17 @@ export async function admin({ q, env, req, body }) {
         case 'listar': {
             const ninos = await q(`SELECT n.id, n.alias, n.revocado, n.creado, e.perfil, e.perfil_t,
                 (SELECT count(*)::int FROM ayc_intentos i WHERE i.nino_id = n.id) AS intentos,
-                (SELECT count(*)::int FROM ayc_lecturas l WHERE l.nino_id = n.id) AS lecturas
+                (SELECT count(*)::int FROM ayc_lecturas l WHERE l.nino_id = n.id) AS lecturas,
+                (SELECT count(*)::int FROM ayc_frases f WHERE f.nino_id = n.id) AS frases,
+                (SELECT count(*)::int FROM ayc_pegatinas g WHERE g.nino_id = n.id AND g.entregada = FALSE) AS pegatinas_pendientes
                 FROM ayc_ninos n LEFT JOIN ayc_estado e ON e.nino_id = n.id ORDER BY lower(n.alias)`);
             const disp = await q('SELECT nino_id, dispositivo_id, nombre, creado, ultimo FROM ayc_dispositivos ORDER BY creado');
             return {
                 status: 200, body: {
-                    ok: true, maxDispositivos: MAX_DISPOSITIVOS, ninos: ninos.map(n => {
+                    ok: true, maxDispositivos: MAX_DISPOSITIVOS, pegatinasPendientes: ninos.reduce((a, n) => a + Number(n.pegatinas_pendientes || 0), 0), ninos: ninos.map(n => {
                         const p = typeof n.perfil === 'string' ? JSON.parse(n.perfil) : n.perfil;
                         return {
-                            id: n.id, alias: n.alias, revocado: n.revocado, creado: Number(n.creado), intentos: Number(n.intentos), lecturas: Number(n.lecturas || 0),
+                            id: n.id, alias: n.alias, revocado: n.revocado, creado: Number(n.creado), intentos: Number(n.intentos), lecturas: Number(n.lecturas || 0), frases: Number(n.frases || 0), pegatinasPendientes: Number(n.pegatinas_pendientes || 0),
                             xp: p ? p.xp : null, nivel: p ? p.level : null,
                             test: p && Array.isArray(p.pruebas) && p.pruebas.length ? (({ t, nivel, comp, voc, conv }) => ({ t, nivel, comp, voc, conv }))(p.pruebas[p.pruebas.length - 1]) : null,
                             dispositivos: disp.filter(d => d.nino_id === n.id).map(d => ({ id: d.dispositivo_id, nombre: d.nombre, creado: Number(d.creado), ultimo: Number(d.ultimo) }))
@@ -463,6 +535,29 @@ export async function admin({ q, env, req, body }) {
                     })
                 }
             };
+        }
+        case 'pegatinas': {
+            const filas = await q(`SELECT g.nino_id, n.alias, g.pegatina, g.t, g.entregada, g.entregada_t, g.nums
+                FROM ayc_pegatinas g JOIN ayc_ninos n ON n.id = g.nino_id ORDER BY g.t DESC LIMIT 2000`);
+            const f = x => Object.assign({ nino: x.nino_id, alias: x.alias }, pegatinaFila(x));
+            return {
+                status: 200, body: {
+                    ok: true, pendientes: filas.filter(x => !x.entregada).map(f).sort((a, b) => a.t - b.t),
+                    entregadas: filas.filter(x => x.entregada).map(f).sort((a, b) => b.entregadaT - a.entregadaT).slice(0, 300)
+                }
+            };
+        }
+        case 'entregar': {
+            await existe();
+            const peg = texto(body.pegatina, 20);
+            if (!PEGATINAS_IDS.includes(peg)) throw new ErrorHttp(400, 'pegatina', 'Esa pegatina no existe.');
+            const r = await q('UPDATE ayc_pegatinas SET entregada = TRUE, entregada_t = $3 WHERE nino_id = $1 AND pegatina = $2 AND entregada = FALSE RETURNING pegatina',
+                [id, peg, Date.now()]);
+            if (!r.length) {
+                const hay = await q('SELECT 1 FROM ayc_pegatinas WHERE nino_id = $1 AND pegatina = $2', [id, peg]);
+                if (!hay.length) throw new ErrorHttp(404, 'no_existe', 'Ese niño no tiene esa pegatina.');
+            }
+            return { status: 200, body: { ok: true } };
         }
         case 'crear': {
             const alias = texto(body.alias, 40);
@@ -495,6 +590,8 @@ export async function admin({ q, env, req, body }) {
             await existe();
             await q('DELETE FROM ayc_intentos WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_lecturas WHERE nino_id = $1', [id]);
+            await q('DELETE FROM ayc_frases WHERE nino_id = $1', [id]);
+            await q('DELETE FROM ayc_pegatinas WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_dispositivos WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_estado WHERE nino_id = $1', [id]);
             await q('DELETE FROM ayc_ninos WHERE id = $1', [id]);

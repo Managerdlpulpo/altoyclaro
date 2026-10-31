@@ -79,7 +79,7 @@ function mostrarAcceso(modo, texto) {
     if (modo === 'formulario') {
         const m = document.getElementById('acceso-motivo');
         m.textContent = texto || ''; m.classList.toggle('hidden', !texto);
-        const hayLocal = !!localStorage.getItem('ligaHablaVisual') || !!localStorage.getItem('ligaHablaVoz') || !!localStorage.getItem('ligaHablaLectura');
+        const hayLocal = !!localStorage.getItem('ligaHablaVisual') || !!localStorage.getItem('ligaHablaVoz') || !!localStorage.getItem('ligaHablaLectura') || !!localStorage.getItem('ligaHablaFrases');
         document.getElementById('acceso-borrar-local').classList.toggle('hidden', !hayLocal);
         document.getElementById('login-boton').disabled = false;
         setTimeout(() => { const i = document.getElementById('login-codigo'); if (i && !document.getElementById('acceso-formulario').classList.contains('hidden')) i.focus(); }, 50);
@@ -128,6 +128,8 @@ async function _comprobarAcceso({ enSegundoPlano = false } = {}) {
         rolActual = 'profe';
         actualizarCuentaUI(); prepararPanelProfe();
         mostrarAcceso('juego');
+        if (typeof actualizarBotonPegatinas === 'function') actualizarBotonPegatinas();
+        if (typeof cargarPegatinasProfe === 'function') cargarPegatinasProfe({ aviso: !enSegundoPlano });
         return;
     }
     mostrarAcceso('formulario', d.motivo || (syncMeta.bloqueado ? syncMeta.motivo : ''));
@@ -135,12 +137,14 @@ async function _comprobarAcceso({ enSegundoPlano = false } = {}) {
 // Al entrar por primera vez con una clave en un dispositivo que ya tenía progreso sin clave
 async function prepararDatosLocales(alias) {
     const hayLocal = !!localStorage.getItem('ligaHablaVisual') || (typeof hablaData !== 'undefined' && hablaData.intentos.length > 0)
-        || (typeof lecturaData !== 'undefined' && lecturaData.lecturas.length > 0);
+        || (typeof lecturaData !== 'undefined' && lecturaData.lecturas.length > 0)
+        || (typeof frasesData !== 'undefined' && frasesData.registros.length > 0);
     if (!hayLocal) return;
     const juntar = confirm(`Este dispositivo ya tiene progreso guardado sin clave.\n\n¿Es de ${alias}?\nAceptar = añadirlo a ${alias}.\nCancelar = borrarlo de este dispositivo.`);
     if (juntar) {
         if (typeof hablaData !== 'undefined') { hablaData.intentos.forEach(i => { delete i.s; }); guardarHabla(); }
         if (typeof lecturaData !== 'undefined') { lecturaData.lecturas.forEach(i => { delete i.s; }); guardarLecturas(); }
+        if (typeof frasesData !== 'undefined') { frasesData.registros.forEach(i => { delete i.s; }); guardarFrases(); }
         syncMeta._juntar = true; // perfilT = 1: si el servidor ya tiene perfil, manda el del servidor
     } else await borrarDatosLocales();
 }
@@ -197,16 +201,21 @@ async function _sincronizarUnaVez(opciones) {
     const pendientes = hablaData.intentos.filter(i => !i.s).slice(0, SYNC_LOTE);
     const hayLect = typeof lecturaData !== 'undefined';
     const pendLect = hayLect ? lecturaData.lecturas.filter(i => !i.s).slice(0, SYNC_LOTE) : [];
+    const hayFr = typeof frasesData !== 'undefined';
+    const pendFr = hayFr ? frasesData.registros.filter(i => !i.s).slice(0, SYNC_LOTE) : [];
     const cuerpo = {
         cursor: syncMeta.cursor || 0,
         intentos: pendientes.map(({ s, audioId, ...resto }) => resto), // el audio no se envía nunca
         // Lecturas en voz alta: solo las puntuaciones (lecturaParaServidor deja fuera audio y cualquier texto oído)
         lecturas: pendLect.map(lecturaParaServidor),
+        // Frases cotidianas: solo qué frase, actividad, puntuación y si salió bien
+        frases: hayFr ? pendFr.map(frParaServidor) : [],
         perfil: gameState && gameState.name ? gameState : null,
         perfilT: syncMeta.perfilT || 0
     };
     const borrar = syncMeta.borrarPendiente;
     if (borrar) cuerpo.borrarIntentos = true;
+    if (typeof pegatinasHayQueRevisar === 'function' && pegatinasHayQueRevisar()) cuerpo.revisarPegatinas = true;
     const r = await llamarApi('sync', cuerpo, { keepalive: opciones.keepalive });
     if (r.status === 401) { bloquearDispositivo(r.datos.mensaje); return false; }
     if (r.status !== 200 || !r.datos.ok) { syncEstado = r.datos.mensaje || 'No se pudo sincronizar.'; return false; }
@@ -217,6 +226,8 @@ async function _sincronizarUnaVez(opciones) {
         hablaData.intentos.forEach(i => { if (recibidos.has(i.id)) i.s = 1; });
         const recibidasL = new Set(d.lecturasRecibidas || []);
         if (hayLect) lecturaData.lecturas.forEach(i => { if (recibidasL.has(i.id)) i.s = 1; });
+        const recibidasF = new Set(d.frasesRecibidas || []);
+        if (hayFr) frasesData.registros.forEach(i => { if (recibidasF.has(i.id)) i.s = 1; });
         if (borrar) syncMeta.borrarPendiente = false;
         // Historial borrado (aquí o en el otro dispositivo): quitar intentos y grabaciones antiguos
         if (d.borradoT && d.borradoT > (syncMeta.borradoT || 0)) {
@@ -227,6 +238,7 @@ async function _sincronizarUnaVez(opciones) {
                 lecturaData.lecturas.filter(i => i.t <= d.borradoT).forEach(i => { if (i.audioId) audios.push(i.audioId); });
                 lecturaData.lecturas = lecturaData.lecturas.filter(i => i.t > d.borradoT);
             }
+            if (hayFr) frasesData.registros = frasesData.registros.filter(i => i.t > d.borradoT);
             if (audios.length && typeof audioDelete === 'function') audioDelete(audios).catch(() => { });
             syncMeta.borradoT = d.borradoT;
         }
@@ -242,6 +254,13 @@ async function _sincronizarUnaVez(opciones) {
             lecturaData.lecturas.sort((a, b) => a.t - b.t);
             guardarLecturas();
         }
+        if (hayFr) {
+            const idsF = new Set(frasesData.registros.map(i => i.id));
+            (d.frases || []).forEach(i => { if (!idsF.has(i.id)) { frasesData.registros.push(Object.assign({}, i, { s: 1 })); idsF.add(i.id); nuevos++; } });
+            frasesData.registros.sort((a, b) => a.t - b.t);
+            try { localStorage.setItem(FRASES_KEY, JSON.stringify(frasesData)); } catch (e) { }
+        }
+        if (Array.isArray(d.pegatinas) && typeof aplicarPegatinasServidor === 'function') aplicarPegatinasServidor(d.pegatinas);
         // Perfil: gana el cambio más reciente
         if (d.perfil && d.perfilT > (syncMeta.perfilT || 0)) {
             gameState = limpiarPerfilLocal(Object.assign({}, gameState, d.perfil));
@@ -259,9 +278,11 @@ async function _sincronizarUnaVez(opciones) {
         const tabProg = document.getElementById('tab-progreso');
         const tabLect = document.getElementById('tab-lectura');
         if ((nuevos || d.borradoT) && tabLect && !tabLect.classList.contains('hidden') && typeof renderLectura === 'function' && typeof lecturaOcupada === 'function' && !lecturaOcupada()) renderLectura();
+        const tabFr = document.getElementById('tab-frases');
+        if ((nuevos || d.borradoT) && tabFr && !tabFr.classList.contains('hidden') && typeof renderFrases === 'function' && typeof frasesOcupada === 'function' && !frasesOcupada() && frVista.modo === 'inicio') renderFrases();
         if ((nuevos || d.borradoT) && tabProg && !tabProg.classList.contains('hidden') && typeof renderProgresoHabla === 'function') renderProgresoHabla();
     } finally { aplicandoRemoto = false; }
-    if (hablaData.intentos.some(i => !i.s) || (hayLect && lecturaData.lecturas.some(i => !i.s))) _syncOtraVez = true;
+    if (hablaData.intentos.some(i => !i.s) || (hayLect && lecturaData.lecturas.some(i => !i.s)) || (hayFr && frasesData.registros.some(i => !i.s))) _syncOtraVez = true;
     return true;
 }
 let syncEstado = '';
@@ -272,6 +293,8 @@ async function borrarDatosLocales() {
     localStorage.removeItem('ligaHablaVoz');
     localStorage.removeItem('ligaHablaTestTextos');
     localStorage.removeItem('ligaHablaLectura');
+    localStorage.removeItem('ligaHablaFrases');
+    localStorage.removeItem('ligaHablaPegatinas');
     localStorage.removeItem(SYNC_KEY);
     try { if (typeof audioClear === 'function') await audioClear(); } catch (e) { }
 }
@@ -299,6 +322,7 @@ async function entrarConClave() {
     guardarSyncMeta();
     if (typeof hablaData !== 'undefined') hablaData = cargarHabla();
     if (typeof lecturaData !== 'undefined') lecturaData = cargarLecturas();
+    if (typeof frasesData !== 'undefined') frasesData = cargarFrases();
     try { gameState = limpiarPerfilLocal(JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState); } catch (e) { }
     msg.textContent = 'Sincronizando…';
     rolActual = 'nino';
@@ -367,22 +391,25 @@ function actualizarCuentaUI() {
         const s = document.querySelector('#cuenta-modal button[onclick^="sincronizar"]'); if (s) s.classList.add('hidden');
     } else if (info && syncMeta.conectado) {
         const pend = ((typeof hablaData !== 'undefined') ? hablaData.intentos.filter(i => !i.s).length : 0)
-            + ((typeof lecturaData !== 'undefined') ? lecturaData.lecturas.filter(i => !i.s).length : 0);
+            + ((typeof lecturaData !== 'undefined') ? lecturaData.lecturas.filter(i => !i.s).length : 0)
+            + ((typeof frasesData !== 'undefined') ? frasesData.registros.filter(i => !i.s).length : 0);
         info.innerHTML = `<div>Has entrado como <strong class="text-white">${escS(syncMeta.alias)}</strong>.</div>
           <div>Última sincronización: ${syncMeta.ultima ? new Date(syncMeta.ultima).toLocaleString('es-ES') : 'todavía no'}</div>
           <div>${pend ? `⏳ ${pend} intento(s) por enviar` : '✅ Todo enviado'}</div>
           ${syncEstado ? `<div class="text-amber-300">${escS(syncEstado)}</div>` : ''}
-          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP, puntuaciones del test de nivel, intentos (texto) y puntuaciones de lectura (sin lo que se oyó). Las grabaciones y las respuestas libres del test se quedan en este dispositivo.</div>`;
+          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP, puntuaciones del test de nivel, intentos (texto), puntuaciones de lectura y de frases cotidianas (sin lo que se oyó) y las pegatinas conseguidas. Las grabaciones y las respuestas libres del test se quedan en este dispositivo.</div>`;
     }
 }
 
 /* ---------- Panel del profe: claves de la clase ---------- */
 let _claveProfe = ''; // solo en memoria: se olvida al recargar
+let _ultimo401Profe = 0;
 async function llamarAdmin(accion, extra = {}) {
     const r = await llamarApi('admin', Object.assign({ accion }, extra), { headers: { 'X-Clave-Profe': _claveProfe } });
     if (r.status === 401) {
         _claveProfe = '';
-        if (rolActual === 'profe') { comprobarAcceso(); } // la sesión del profe caducó: vuelta a la pantalla de acceso
+        // la sesión del profe caducó: vuelta a la pantalla de acceso (como mucho una vez cada 15 s, para no entrar en bucle)
+        if (rolActual === 'profe' && Date.now() - _ultimo401Profe > 15000) { _ultimo401Profe = Date.now(); comprobarAcceso(); }
     }
     return r;
 }
@@ -403,6 +430,7 @@ async function adminAbrir() {
     document.getElementById('admin-panel').classList.remove('hidden');
     adminMensaje('');
     adminPintar(r.datos);
+    if (typeof cargarPegatinasProfe === 'function') cargarPegatinasProfe();
 }
 function adminCerrarPanel() {
     _claveProfe = '';
@@ -417,6 +445,7 @@ async function adminRefrescar() {
     if (r.status === 401) { adminCerrarPanel(); adminMensaje(r.datos.mensaje, 'error'); return; }
     if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
     adminPintar(r.datos);
+    if (typeof cargarPegatinasProfe === 'function') cargarPegatinasProfe();
 }
 function adminMostrarCodigo(alias, codigo) {
     const box = document.getElementById('admin-codigo-nuevo');
@@ -428,13 +457,14 @@ function adminMostrarCodigo(alias, codigo) {
 }
 function adminPintar(d) {
     const cont = document.getElementById('admin-lista');
+    if (typeof pegBadge === 'function' && d.pegatinasPendientes != null) pegBadge(d.pegatinasPendientes);
     if (!d.ninos.length) { cont.innerHTML = '<p class="text-xs text-slate-400">Todavía no hay niños con clave.</p>'; return; }
     cont.innerHTML = d.ninos.map(n => `
       <div class="bg-stadium-950 border border-slate-800 rounded-xl p-3" data-nino="${escS(n.id)}">
         <div class="flex justify-between items-start gap-2">
           <div>
             <div class="font-bold text-white">${escS(n.alias)} ${n.revocado ? '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">clave anulada</span>' : ''}</div>
-            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · ${n.lecturas || 0} lecturas · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
+            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · ${n.lecturas || 0} lecturas · ${n.frases || 0} frases${n.pegatinasPendientes ? ` · <span class="text-amber-300">🏅 ${n.pegatinasPendientes} por entregar</span>` : ''} · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
           </div>
         </div>
         ${n.dispositivos.map(x => `<div class="flex justify-between items-center text-[11px] text-slate-300 mt-1 bg-stadium-800 rounded-lg px-2 py-1">
@@ -481,7 +511,7 @@ async function adminLiberar(id, dispositivo) {
 }
 async function adminBorrar(id) {
     const alias = aliasDe(id);
-    if (!confirm(`¿Borrar a ${alias} y TODOS sus datos del servidor (perfil, intentos, lecturas, dispositivos y clave)?\n\nNo se puede deshacer.`)) return;
+    if (!confirm(`¿Borrar a ${alias} y TODOS sus datos del servidor (perfil, intentos, lecturas, frases, pegatinas, dispositivos y clave)?\n\nNo se puede deshacer.`)) return;
     const r = await llamarAdmin('borrar', { id });
     if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
     adminMensaje(`${alias} y sus datos se han borrado del servidor.`, 'ok'); adminRefrescar();

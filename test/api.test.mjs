@@ -180,10 +180,70 @@ await prueba('lecturas en voz alta: solo puntuaciones (lista blanca), fusionadas
     const l = await adm({ accion: 'listar' }); assert.equal(l.body.ninos[0].lecturas, 2);
 });
 
+await prueba('frases cotidianas: solo puntuaciones (lista blanca), sin texto ni audio, fusionadas por id', async () => {
+    const t = Date.now();
+    const fr = (id, fid, sit, act = 'repetir', ok = true, score = 90) => ({ id, t: t + id.length, fid, sit, act, score, ok, metodo: 'auto' });
+    const lote = [fr('fr-a', 'f01', 'llegar'), fr('fr-b', 'f02', 'llegar'), fr('fr-c', 'f02', 'llegar'),
+        { ...fr('fr-d', 'f03', 'llegar'), oido: 'buenos días profe', transcripcion: 'x', audio: 'data:audio/webm;base64,AAAA' },
+        fr('fr-e', 'x99', 'llegar'), fr('fr-f', 'f04', 'cocina'), fr('fr-g', 'f05', 'llegar', 'cantar'), 'basura',
+        { ...fr('fr-h', 'f06', 'llegar'), ok: 'true', score: 900 }];
+    let r = await llamar('sync', { frases: lote }, { cookie: c1 });
+    assert.equal(r.status, 200); eq(r.body.frasesRecibidas, ['fr-a', 'fr-b', 'fr-c', 'fr-d', 'fr-h']);
+    r = await llamar('sync', { frases: [lote[0]], cursor: 0 }, { cookie: c2 }); // repetida desde otro dispositivo: no se duplica
+    assert.equal(r.body.frases.length, 5);
+    const d = r.body.frases.find(x => x.id === 'fr-d');
+    eq(Object.keys(d).sort(), ['act', 'fid', 'id', 'metodo', 'ok', 'score', 'sit', 't']);
+    assert.ok(!JSON.stringify(r.body.frases).includes('buenos') && !JSON.stringify(r.body.frases).includes('base64'));
+    const h = r.body.frases.find(x => x.id === 'fr-h'); assert.equal(h.ok, false); assert.equal(h.score, 100);
+    const l = await adm({ accion: 'listar' }); assert.equal(l.body.ninos[0].frases, 5);
+});
+
+await prueba('pegatinas: se calculan en el servidor con las puntuaciones y guardan solo números', async () => {
+    // En la prueba anterior: f01, f02, f03 bien en «Llegar a clase» → pegatina «hola»; la lectura L1 (auto, completa) → «lector»
+    let r = await llamar('sync', { cursor: 0, revisarPegatinas: true }, { cookie: c1 });
+    const ids = r.body.pegatinas.map(p => p.id);
+    assert.ok(ids.includes('hola') && ids.includes('lector'), ids.join(','));
+    const hola = r.body.pegatinas.find(p => p.id === 'hola');
+    eq(Object.keys(hola).sort(), ['entregada', 'entregadaT', 'id', 'nums', 't']);
+    eq(hola.nums, [3]); assert.equal(hola.entregada, false);
+    eq(r.body.pegatinas.find(p => p.id === 'lector').nums, [37, 100]);
+    // pegatinasNuevas solo cuando se consigue por primera vez
+    const t = Date.now();
+    r = await llamar('sync', { frases: ['f13', 'f09', 'f10', 'f11'].map((fid, i) => ({ id: 'fc' + i, t: t + i, fid, sit: 'companero', act: 'repetir', score: 85, ok: true })) }, { cookie: c1 });
+    eq(r.body.pegatinasNuevas, ['companero']);
+    r = await llamar('sync', { frases: [{ id: 'fc9', t: t + 9, fid: 'f12', sit: 'companero', act: 'repetir', score: 85, ok: true }] }, { cookie: c1 });
+    eq(r.body.pegatinasNuevas, []);
+    // la fila guardada en la base: niño, pegatina, fecha, entregada y números (nada de texto)
+    const fila = (await globalThis.__aycQuery('SELECT * FROM ayc_pegatinas WHERE nino_id = $1 AND pegatina = $2', [nino, 'hola']))[0];
+    eq(Object.keys(fila).sort(), ['entregada', 'entregada_t', 'nino_id', 'nums', 'pegatina', 't']);
+});
+
+await prueba('profe: pegatinas por entregar (con aviso en la lista) y «Entregada»', async () => {
+    let l = await adm({ accion: 'listar' });
+    assert.equal(l.body.pegatinasPendientes, 3); assert.equal(l.body.ninos[0].pegatinasPendientes, 3);
+    let r = await adm({ accion: 'pegatinas' });
+    assert.equal(r.status, 200); assert.equal(r.body.pendientes.length, 3); assert.equal(r.body.entregadas.length, 0);
+    const p = r.body.pendientes.find(x => x.id === 'hola');
+    assert.equal(p.nino, nino); assert.ok(p.alias); eq(p.nums, [3]);
+    r = await adm({ accion: 'entregar', id: nino, pegatina: 'hola' }); assert.equal(r.status, 200);
+    r = await adm({ accion: 'entregar', id: nino, pegatina: 'hola' }); assert.equal(r.status, 200, 'repetir no falla');
+    r = await adm({ accion: 'entregar', id: nino, pegatina: 'racha7' }); assert.equal(r.status, 404, 'no la tiene');
+    r = await adm({ accion: 'entregar', id: nino, pegatina: '<x>' }); assert.equal(r.status, 400);
+    r = await llamar('admin', { accion: 'entregar', id: nino, pegatina: 'lector' }, { cookie: c1 }); assert.equal(r.status, 401, 'un niño no puede marcarla');
+    r = await adm({ accion: 'pegatinas' });
+    assert.equal(r.body.pendientes.length, 2); assert.equal(r.body.entregadas.length, 1);
+    assert.ok(r.body.entregadas[0].entregadaT > 0);
+    l = await adm({ accion: 'listar' }); assert.equal(l.body.pegatinasPendientes, 2);
+    const s = await llamar('sync', {}, { cookie: c2 });
+    assert.equal(s.body.pegatinas.find(x => x.id === 'hola').entregada, true, 'el niño ve que ya la tiene en papel');
+});
+
 await prueba('borrar historial se propaga (y no reaparece desde otro dispositivo)', async () => {
     let r = await llamar('sync', { borrarIntentos: true }, { cookie: c1 });
     assert.equal(r.body.intentos.length, 0); assert.ok(r.body.borradoT > 0);
     assert.equal(r.body.lecturas.length, 0, 'borrar el progreso también borra las lecturas');
+    assert.equal(r.body.frases.length, 0, 'y las frases');
+    eq(r.body.pegatinas.map(p => p.id), ['hola'], 'se conservan solo las pegatinas ya entregadas');
     r = await llamar('sync', { intentos: [{ id: 'a1', t: Date.now() - 50000, palabra: 'perro', score: 100, resultado: 'perfecto' }], cursor: 0 }, { cookie: c2 });
     assert.equal(r.body.intentos.length, 0, 'intento antiguo no vuelve');
     r = await llamar('sync', { intentos: [{ id: 'b1', t: Date.now() + 5, palabra: 'sol', score: 100, resultado: 'perfecto' }], cursor: 0 }, { cookie: c2 });
@@ -224,10 +284,11 @@ await prueba('revocar: nadie puede entrar ni sincronizar', async () => {
 await prueba('borrar niño elimina todos sus datos del servidor', async () => {
     const r = await adm({ accion: 'crear', alias: 'Omar' });
     const e = await entrar(r.body.codigo, D1, { ip: '10.0.0.4' });
-    await llamar('sync', { perfil: { name: 'Omar', xp: 10 }, perfilT: Date.now(), intentos: [{ id: 'z', t: Date.now(), palabra: 'luna', score: 100, resultado: 'perfecto' }], lecturas: [{ id: 'zl', t: Date.now(), cuento: 'l0-gato', prec: 80 }] }, { cookie: e.cookie });
+    await llamar('sync', { perfil: { name: 'Omar', xp: 10 }, perfilT: Date.now(), intentos: [{ id: 'z', t: Date.now(), palabra: 'luna', score: 100, resultado: 'perfecto' }], lecturas: [{ id: 'zl', t: Date.now(), cuento: 'l0-gato', prec: 80, compl: 100, metodo: 'auto', ppm: 30 }], frases: [{ id: 'zf', t: Date.now(), fid: 'f01', sit: 'llegar', act: 'repetir', score: 90, ok: true }] }, { cookie: e.cookie });
+    assert.ok((await globalThis.__aycQuery('SELECT count(*)::int AS n FROM ayc_pegatinas WHERE nino_id = $1', [r.body.id]))[0].n > 0);
     await adm({ accion: 'borrar', id: r.body.id });
     const q = globalThis.__aycQuery;
-    for (const t of ['ayc_ninos WHERE id', 'ayc_estado WHERE nino_id', 'ayc_intentos WHERE nino_id', 'ayc_lecturas WHERE nino_id', 'ayc_dispositivos WHERE nino_id']) {
+    for (const t of ['ayc_ninos WHERE id', 'ayc_estado WHERE nino_id', 'ayc_intentos WHERE nino_id', 'ayc_lecturas WHERE nino_id', 'ayc_frases WHERE nino_id', 'ayc_pegatinas WHERE nino_id', 'ayc_dispositivos WHERE nino_id']) {
         assert.equal((await q(`SELECT count(*)::int AS n FROM ${t} = $1`, [r.body.id]))[0].n, 0, t);
     }
     const s = await llamar('sync', {}, { cookie: e.cookie }); assert.equal(s.status, 401);

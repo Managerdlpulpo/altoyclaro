@@ -786,8 +786,8 @@ async function borrarGrabaciones() {
 async function borrarHistorialHabla() {
     const conClave = typeof syncMeta !== 'undefined' && syncMeta.conectado;
     const pregunta = conClave
-        ? '¿Borrar TODO el progreso al hablar y leer?\n\nSe borrarán los intentos y las lecturas guardados con tu clave (también en tu otro dispositivo) y las grabaciones de este dispositivo.'
-        : '¿Borrar TODO el progreso al hablar y leer (intentos, lecturas y grabaciones) de este dispositivo?';
+        ? '¿Borrar TODO el progreso al hablar y leer?\n\nSe borrarán los intentos, las lecturas y las frases guardados con tu clave (también en tu otro dispositivo) y las grabaciones de este dispositivo.'
+        : '¿Borrar TODO el progreso al hablar y leer (intentos, lecturas, frases y grabaciones) de este dispositivo?';
     if (!confirm(pregunta)) return;
     try { await audioClear(); } catch (e) { console.warn(e); }
     const soloManual = hablaData.soloManual;
@@ -795,6 +795,7 @@ async function borrarHistorialHabla() {
     hablaData.soloManual = soloManual;
     guardarHabla();
     if (typeof lecturaData !== 'undefined') { lecturaData = lecturaVacia(); guardarLecturas(); }
+    if (typeof frasesData !== 'undefined') { frasesData = frasesVacias(); guardarFrases(); }
     if (typeof syncHistorialBorrado === 'function') syncHistorialBorrado();
     renderProgresoHabla();
 }

@@ -179,6 +179,33 @@ categoría en Identificar, Hablar («Todas») y «Dime una frase», al chip del 
 y al cuento recomendado. No cambia el test de nivel. Se guarda en el perfil
 sincronizado (el servidor solo acepta los temas de la lista).
 
+## Frases cotidianas (`frases.js`)
+
+Pestaña «💬 Frases cotidianas»: frases útiles del cole en 6 situaciones (Llegar a clase 8, Con un compañero 8,
+Con el profe 10, En el patio 13, Dar las gracias 6, Despedirse 6 = 51 frases), cada una con 3 actividades:
+
+- **Escucha y repite**: suena la frase (MP3 pregrabado) y el niño la repite; se marcan las palabras dichas en verde.
+- **¿Qué dirías si…?** (19 situaciones): el niño contesta con sus palabras; vale cualquier respuesta adecuada.
+- **Diálogo** (uno por situación, 3 turnos): conversación por turnos con la app.
+
+Sin reconocimiento de voz, un adulto valora con «✅ Bien / 🔁 Otra vez». Se guarda el progreso por situación.
+Al servidor solo van ids y puntuaciones (`act, fid, id, metodo, ok, score, sit, t`); lo oído nunca sale del dispositivo.
+
+## Pegatinas (`pegatinas.js`, `api/_lib/pegatinas.js`)
+
+19 pegatinas redondas originales en SVG (5 cm al imprimir). **Las calcula el servidor** a partir de las puntuaciones
+sincronizadas (frases, palabras de «Hablar», lecturas, test de nivel y días seguidos en hora de Madrid), así que no
+se pueden «falsear» desde el navegador.
+
+- Niño: botón 🏅 con el álbum «Mis pegatinas» (conseguidas, bloqueadas con lo que falta, «Ya la tienes en papel»)
+  y una celebración cuando consigue una nueva (espera a que termine el ejercicio).
+- Profe: aviso al entrar, número en el botón del panel y bloque «Pegatinas por entregar» con alias, motivo concreto
+  y fecha; «✅ Entregada» la pasa al historial.
+- Imprimir: hoja A4 con las pendientes (con el nombre debajo) o con todas, 3 por fila.
+- Si se borran los intentos de un niño, se borran sus pegatinas no entregadas; las entregadas se conservan.
+
+Las tablas `ayc_frases` y `ayc_pegatinas` se crean solas (`CREATE TABLE IF NOT EXISTS`) la primera vez que se usa la API.
+
 ## Pruebas
 
 ```bash
@@ -187,6 +214,7 @@ NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-voz.cjs        # vo
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # acceso con clave (niño, profe, anular, servidor caído)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-lectura.cjs    # leo en voz alta y temas (reconocimiento simulado)
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-frases.cjs     # frases cotidianas y pegatinas (servidor recién arrancado)
 ```
 
 Los tests de navegador usan `test/servidor-local.mjs` (arrancarlo antes, con

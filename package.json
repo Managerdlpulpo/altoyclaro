@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Me gusta hablar Alto y claro: web estática + funciones /api (claves de acceso y sincronización)",
   "scripts": {
-    "test": "node test/api.test.mjs && node test/plan.test.mjs && node test/lectura.test.mjs"
+    "test": "node test/api.test.mjs && node test/plan.test.mjs && node test/lectura.test.mjs && node test/frases.test.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2"
