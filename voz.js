@@ -18,7 +18,11 @@ const FRASES_VOZ = {
     gol: '¡Gol! ¡Muy bien!',
     respuestaEs: 'La respuesta es:',
     buenaLectura: '¡Qué bien has leído!',
-    sigueAsi: '¡Sigue practicando, lo haces cada vez mejor!'
+    sigueAsi: '¡Sigue practicando, lo haces cada vez mejor!',
+    escuchaRepite: 'Escucha y repite.',
+    podriasDecir: 'Podrías decir:',
+    dialogoBien: '¡Qué bien has hablado!',
+    pegatina: '¡Has conseguido una pegatina nueva!'
 };
 // FIN FRASES_VOZ
 

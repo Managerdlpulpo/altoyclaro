@@ -832,6 +832,26 @@
    "v": "66aa937d",
    "h": "cbcd0c590682"
   },
+  "Escucha y repite.": {
+   "f": "escucha-y-repite.mp3",
+   "v": "95890c45",
+   "h": "098d63716aa2"
+  },
+  "Podrías decir:": {
+   "f": "podrias-decir.mp3",
+   "v": "2938f704",
+   "h": "b2da16b23418"
+  },
+  "¡Qué bien has hablado!": {
+   "f": "que-bien-has-hablado.mp3",
+   "v": "5bac88ac",
+   "h": "b61052f5b204"
+  },
+  "¡Has conseguido una pegatina nueva!": {
+   "f": "has-conseguido-una-pegatina-nueva.mp3",
+   "v": "4a8817b4",
+   "h": "0be530e03656"
+  },
   "¡Vamos a jugar un ratito! Escucha y responde. Si no sabes algo, no pasa nada.": {
    "f": "vamos-a-jugar-un-ratito-escucha-y-responde-si-no-sabes-algo.mp3",
    "v": "49f0f4d3",
@@ -2771,6 +2791,561 @@
    "f": "pi-pi-genial.mp3",
    "v": "43a21be7",
    "h": "6197cda2f659"
+  },
+  "¡Hola!": {
+   "f": "hola.mp3",
+   "v": "fa8aae2b",
+   "h": "e2dd7b0761b0"
+  },
+  "¡Buenos días!": {
+   "f": "buenos-dias.mp3",
+   "v": "70157347",
+   "h": "7f53724931d6"
+  },
+  "Buenos días, profe.": {
+   "f": "buenos-dias-profe.mp3",
+   "v": "e3729a40",
+   "h": "7e129228a04c"
+  },
+  "¿Qué tal estás?": {
+   "f": "que-tal-estas.mp3",
+   "v": "882d7082",
+   "h": "c86f0c3c2416"
+  },
+  "Estoy bien, gracias.": {
+   "f": "estoy-bien-gracias.mp3",
+   "v": "40b1a025",
+   "h": "5b694bdedb84"
+  },
+  "¿Dónde dejo la mochila?": {
+   "f": "donde-dejo-la-mochila.mp3",
+   "v": "b1699420",
+   "h": "592f3fe8ea27"
+  },
+  "Perdón por llegar tarde.": {
+   "f": "perdon-por-llegar-tarde.mp3",
+   "v": "fc9b2139",
+   "h": "47f8418448d6"
+  },
+  "¿Me puedo sentar aquí?": {
+   "f": "me-puedo-sentar-aqui.mp3",
+   "v": "580cfeb6",
+   "h": "a9900756c5e0"
+  },
+  "¿Me dejas un lápiz?": {
+   "f": "me-dejas-un-lapiz.mp3",
+   "v": "bc1c6eb4",
+   "h": "1875ef674a60"
+  },
+  "¿Me dejas la goma?": {
+   "f": "me-dejas-la-goma.mp3",
+   "v": "a10d1109",
+   "h": "671a24bd76c9"
+  },
+  "¿Me prestas la regla, por favor?": {
+   "f": "me-prestas-la-regla-por-favor.mp3",
+   "v": "214b5845",
+   "h": "3df4f7532ffa"
+  },
+  "¿Quieres ser mi pareja?": {
+   "f": "quieres-ser-mi-pareja.mp3",
+   "v": "012d26b6",
+   "h": "5c62e4f96374"
+  },
+  "¿En qué página estamos?": {
+   "f": "en-que-pagina-estamos.mp3",
+   "v": "d1c50a2b",
+   "h": "73284fb578a4"
+  },
+  "¿Me ayudas con este ejercicio?": {
+   "f": "me-ayudas-con-este-ejercicio.mp3",
+   "v": "958b42f2",
+   "h": "688a11bd1743"
+  },
+  "Te lo devuelvo ahora mismo.": {
+   "f": "te-lo-devuelvo-ahora-mismo.mp3",
+   "v": "9ca71a2a",
+   "h": "01d69676c87a"
+  },
+  "¿Hacemos el trabajo juntos?": {
+   "f": "hacemos-el-trabajo-juntos.mp3",
+   "v": "47bfb14c",
+   "h": "29c4185d1760"
+  },
+  "¿Puedo beber agua?": {
+   "f": "puedo-beber-agua.mp3",
+   "v": "df3c76e7",
+   "h": "864afea92be3"
+  },
+  "No lo entiendo.": {
+   "f": "no-lo-entiendo.mp3",
+   "v": "af978209",
+   "h": "930456502ff0"
+  },
+  "¿Me lo puedes repetir?": {
+   "f": "me-lo-puedes-repetir.mp3",
+   "v": "ce7b95b7",
+   "h": "6c18afcb26c3"
+  },
+  "¿Puedes hablar más despacio?": {
+   "f": "puedes-hablar-mas-despacio.mp3",
+   "v": "d16caba4",
+   "h": "8e7041bb1871"
+  },
+  "¿Está bien así?": {
+   "f": "esta-bien-asi.mp3",
+   "v": "e15b92f1",
+   "h": "34b346c78226"
+  },
+  "¿Cómo se escribe?": {
+   "f": "como-se-escribe.mp3",
+   "v": "0f8222c5",
+   "h": "7093e20a734e"
+  },
+  "¿Qué significa esta palabra?": {
+   "f": "que-significa-esta-palabra.mp3",
+   "v": "0164d3c7",
+   "h": "7277445abed8"
+  },
+  "Me duele la cabeza.": {
+   "f": "me-duele-la-cabeza.mp3",
+   "v": "a116bf4f",
+   "h": "096317265566"
+  },
+  "Ya he terminado. ¿Qué hago ahora?": {
+   "f": "ya-he-terminado-que-hago-ahora.mp3",
+   "v": "cdc76315",
+   "h": "aa3549df4032"
+  },
+  "¿Jugamos?": {
+   "f": "jugamos.mp3",
+   "v": "0e97b4ee",
+   "h": "de1e4157c8af"
+  },
+  "¡Me toca!": {
+   "f": "me-toca.mp3",
+   "v": "240c1d72",
+   "h": "0bab6499f024"
+  },
+  "¡Vale!": {
+   "f": "vale.mp3",
+   "v": "1618449f",
+   "h": "aec6e786afb6"
+  },
+  "¿Puedo jugar?": {
+   "f": "puedo-jugar.mp3",
+   "v": "ad282399",
+   "h": "968b07adf7ca"
+  },
+  "¿Me dejas el balón?": {
+   "f": "me-dejas-el-balon.mp3",
+   "v": "448a06a6",
+   "h": "f21b07ead5a2"
+  },
+  "¿Quieres jugar conmigo?": {
+   "f": "quieres-jugar-conmigo.mp3",
+   "v": "20baff99",
+   "h": "77730ebf56db"
+  },
+  "Ahora te toca a ti.": {
+   "f": "ahora-te-toca-a-ti.mp3",
+   "v": "d7feaaae",
+   "h": "084e749e42b2"
+  },
+  "Lo siento.": {
+   "f": "lo-siento.mp3",
+   "v": "15bc489c",
+   "h": "1346d6901973"
+  },
+  "No pasa nada.": {
+   "f": "no-pasa-nada.mp3",
+   "v": "54051947",
+   "h": "a1637a31126c"
+  },
+  "¿Jugamos al pilla-pilla?": {
+   "f": "jugamos-al-pilla-pilla.mp3",
+   "v": "4494b210",
+   "h": "f728d079ef08"
+  },
+  "¿Juegas con nosotros?": {
+   "f": "juegas-con-nosotros.mp3",
+   "v": "a077370e",
+   "h": "3e6661038693"
+  },
+  "Para, por favor. No me gusta.": {
+   "f": "para-por-favor-no-me-gusta.mp3",
+   "v": "0400470d",
+   "h": "cbb020cfb6b8"
+  },
+  "¿Estás bien? ¿Te has hecho daño?": {
+   "f": "estas-bien-te-has-hecho-dano.mp3",
+   "v": "b148a863",
+   "h": "ade89bf14cd6"
+  },
+  "Gracias.": {
+   "f": "gracias-2.mp3",
+   "v": "a16f9f93",
+   "h": "9136c6ed0b23"
+  },
+  "Gracias por ayudarme.": {
+   "f": "gracias-por-ayudarme.mp3",
+   "v": "82a45629",
+   "h": "c0dbcc23c2f3"
+  },
+  "De nada.": {
+   "f": "de-nada.mp3",
+   "v": "c40d6f92",
+   "h": "df07e5cc7cbf"
+  },
+  "Gracias por dejarme el lápiz.": {
+   "f": "gracias-por-dejarme-el-lapiz.mp3",
+   "v": "96c4cab2",
+   "h": "0d403456eb78"
+  },
+  "¡Qué bonito! Muchas gracias.": {
+   "f": "que-bonito-muchas-gracias.mp3",
+   "v": "83c76ce3",
+   "h": "75245e965a8e"
+  },
+  "¡Adiós!": {
+   "f": "adios.mp3",
+   "v": "2a78f31b",
+   "h": "792e5658fe72"
+  },
+  "¡Hasta mañana!": {
+   "f": "hasta-manana.mp3",
+   "v": "c9952811",
+   "h": "2699082e1cad"
+  },
+  "Adiós, profe. ¡Hasta mañana!": {
+   "f": "adios-profe-hasta-manana.mp3",
+   "v": "be09bcb0",
+   "h": "959c734e75ce"
+  },
+  "Me voy a casa.": {
+   "f": "me-voy-a-casa.mp3",
+   "v": "eeb1628c",
+   "h": "da0f970b4eeb"
+  },
+  "¡Que tengas un buen fin de semana!": {
+   "f": "que-tengas-un-buen-fin-de-semana.mp3",
+   "v": "281fac76",
+   "h": "54a0eced34f3"
+  },
+  "Nos vemos el lunes.": {
+   "f": "nos-vemos-el-lunes.mp3",
+   "v": "1cf3de10",
+   "h": "1a3d4bc91b09"
+  },
+  "Llegas al cole por la mañana y ves a tu profe. ¿Qué le dices?": {
+   "f": "llegas-al-cole-por-la-manana-y-ves-a-tu-profe-que-le-dices.mp3",
+   "v": "2ce5c09b",
+   "h": "f10363142491"
+  },
+  "¡Buenos días, profe!": {
+   "f": "buenos-dias-profe-2.mp3",
+   "v": "af1f1c8d",
+   "h": "9ee44da39e99"
+  },
+  "Un compañero te pregunta qué tal estás. ¿Qué le contestas?": {
+   "f": "un-companero-te-pregunta-que-tal-estas-que-le-contestas.mp3",
+   "v": "facde205",
+   "h": "37b204a84d9c"
+  },
+  "Llegas tarde a clase. ¿Qué dices al entrar?": {
+   "f": "llegas-tarde-a-clase-que-dices-al-entrar.mp3",
+   "v": "4734d234",
+   "h": "ee05756a1f40"
+  },
+  "No tienes lápiz. ¿Qué le dices a tu compañero?": {
+   "f": "no-tienes-lapiz-que-le-dices-a-tu-companero.mp3",
+   "v": "b2df9f0a",
+   "h": "8ae49bd15221"
+  },
+  "¿Me dejas un lápiz, por favor?": {
+   "f": "me-dejas-un-lapiz-por-favor.mp3",
+   "v": "ea08e6e3",
+   "h": "1465a74bdfe6"
+  },
+  "No sabes en qué página estáis. ¿Qué le preguntas a tu compañero?": {
+   "f": "no-sabes-en-que-pagina-estais-que-le-preguntas-a-tu-companer.mp3",
+   "v": "86e9a302",
+   "h": "0a8f7a98410c"
+  },
+  "Quieres hacer el trabajo con un amigo. ¿Qué le dices?": {
+   "f": "quieres-hacer-el-trabajo-con-un-amigo-que-le-dices.mp3",
+   "v": "73cd1167",
+   "h": "5478a70c60b1"
+  },
+  "Tienes que ir al baño. ¿Qué le dices a la profe?": {
+   "f": "tienes-que-ir-al-bano-que-le-dices-a-la-profe.mp3",
+   "v": "a8200119",
+   "h": "3dc54fc36444"
+  },
+  "¿Puedo ir al baño, por favor?": {
+   "f": "puedo-ir-al-bano-por-favor.mp3",
+   "v": "e4c41b5f",
+   "h": "78ae3c92436a"
+  },
+  "La profe ha hablado muy deprisa y no lo has entendido. ¿Qué le dices?": {
+   "f": "la-profe-ha-hablado-muy-deprisa-y-no-lo-has-entendido-que-le.mp3",
+   "v": "bc788ca6",
+   "h": "36ba348b0978"
+  },
+  "Tienes mucha sed. ¿Qué le preguntas a la profe?": {
+   "f": "tienes-mucha-sed-que-le-preguntas-a-la-profe.mp3",
+   "v": "2eefae6a",
+   "h": "a22cc044fb6b"
+  },
+  "Has terminado la ficha. ¿Qué le dices a la profe?": {
+   "f": "has-terminado-la-ficha-que-le-dices-a-la-profe.mp3",
+   "v": "ca5ca909",
+   "h": "87f95e10f6a4"
+  },
+  "En el patio, unos niños juegan al fútbol y tú quieres jugar. ¿Qué les dices?": {
+   "f": "en-el-patio-unos-ninos-juegan-al-futbol-y-tu-quieres-jugar-q.mp3",
+   "v": "182f6047",
+   "h": "ab7e0bd8ab29"
+  },
+  "¿Puedo jugar con vosotros?": {
+   "f": "puedo-jugar-con-vosotros.mp3",
+   "v": "0b577cfd",
+   "h": "2eaa4b1d93a3"
+  },
+  "Estáis jugando y ahora es tu turno. ¿Qué dices?": {
+   "f": "estais-jugando-y-ahora-es-tu-turno-que-dices.mp3",
+   "v": "89390db6",
+   "h": "8eed8f19193f"
+  },
+  "Sin querer, le das un golpe a un compañero. ¿Qué le dices?": {
+   "f": "sin-querer-le-das-un-golpe-a-un-companero-que-le-dices.mp3",
+   "v": "261ac3d1",
+   "h": "8da260c4a2a1"
+  },
+  "Lo siento. ¿Estás bien?": {
+   "f": "lo-siento-estas-bien.mp3",
+   "v": "01d11871",
+   "h": "58d0339d3236"
+  },
+  "Un niño te pide perdón porque te ha pisado sin querer. ¿Qué le contestas?": {
+   "f": "un-nino-te-pide-perdon-porque-te-ha-pisado-sin-querer-que-le.mp3",
+   "v": "b73ed737",
+   "h": "c7053f3fee54"
+  },
+  "Quieres el balón un momento. ¿Qué le dices a tu amigo?": {
+   "f": "quieres-el-balon-un-momento-que-le-dices-a-tu-amigo.mp3",
+   "v": "afb416ea",
+   "h": "82ec366abb2e"
+  },
+  "¿Me dejas el balón, por favor?": {
+   "f": "me-dejas-el-balon-por-favor.mp3",
+   "v": "5b0f87d9",
+   "h": "a31fc76970e0"
+  },
+  "Un compañero te ayuda a recoger los lápices. ¿Qué le dices?": {
+   "f": "un-companero-te-ayuda-a-recoger-los-lapices-que-le-dices.mp3",
+   "v": "1a6a3293",
+   "h": "c5976a27353d"
+  },
+  "Tu amigo te dice gracias. ¿Qué le contestas?": {
+   "f": "tu-amigo-te-dice-gracias-que-le-contestas.mp3",
+   "v": "5d96bc96",
+   "h": "b2f45c9aa7b6"
+  },
+  "Se acaban las clases y te vas a casa. ¿Qué le dices a la profe?": {
+   "f": "se-acaban-las-clases-y-te-vas-a-casa-que-le-dices-a-la-profe.mp3",
+   "v": "e685a451",
+   "h": "b29261761046"
+  },
+  "¡Adiós, profe! ¡Hasta mañana!": {
+   "f": "adios-profe-hasta-manana-2.mp3",
+   "v": "eff1c24a",
+   "h": "8479992d4b78"
+  },
+  "Es viernes y te despides de tus amigos. ¿Qué les dices?": {
+   "f": "es-viernes-y-te-despides-de-tus-amigos-que-les-dices.mp3",
+   "v": "a8bd8ada",
+   "h": "0fe9532288ea"
+  },
+  "¡Hasta el lunes!": {
+   "f": "hasta-el-lunes.mp3",
+   "v": "e3633a2c",
+   "h": "b1d212065394"
+  },
+  "¡Buenos días! ¿Qué tal estás?": {
+   "f": "buenos-dias-que-tal-estas.mp3",
+   "v": "9d3596d6",
+   "h": "28e696f9c522"
+  },
+  "Muy bien, gracias. ¿Y tú?": {
+   "f": "muy-bien-gracias-y-tu.mp3",
+   "v": "351ac86e",
+   "h": "83b7d812db61"
+  },
+  "Muy bien. Deja la mochila en la percha, por favor.": {
+   "f": "muy-bien-deja-la-mochila-en-la-percha-por-favor.mp3",
+   "v": "e9c16f39",
+   "h": "484707e44d94"
+  },
+  "Vale. ¿Dónde me siento?": {
+   "f": "vale-donde-me-siento.mp3",
+   "v": "25c7b9a9",
+   "h": "ccb54efd97b6"
+  },
+  "Siéntate aquí, al lado de Lucía.": {
+   "f": "sientate-aqui-al-lado-de-lucia.mp3",
+   "v": "0f80a031",
+   "h": "1fe4c8eaf920"
+  },
+  "Gracias, profe.": {
+   "f": "gracias-profe.mp3",
+   "v": "4d1c7df1",
+   "h": "e7827ddf2a1b"
+  },
+  "Hola. ¿Qué te pasa?": {
+   "f": "hola-que-te-pasa.mp3",
+   "v": "dd384642",
+   "h": "e05158970699"
+  },
+  "No tengo lápiz. ¿Me dejas uno?": {
+   "f": "no-tengo-lapiz-me-dejas-uno.mp3",
+   "v": "1eeb5f05",
+   "h": "e6c7497c99ac"
+  },
+  "Sí, toma. Aquí tienes.": {
+   "f": "si-toma-aqui-tienes.mp3",
+   "v": "89febb10",
+   "h": "19050c690660"
+  },
+  "Gracias. Te lo devuelvo luego.": {
+   "f": "gracias-te-lo-devuelvo-luego.mp3",
+   "v": "2254ba75",
+   "h": "e83ab86345df"
+  },
+  "De nada. ¿Hacemos el ejercicio juntos?": {
+   "f": "de-nada-hacemos-el-ejercicio-juntos.mp3",
+   "v": "0a87caa5",
+   "h": "62d7328b09cc"
+  },
+  "¡Vale! Lo hacemos juntos.": {
+   "f": "vale-lo-hacemos-juntos.mp3",
+   "v": "be1d640a",
+   "h": "ec4c846fa54c"
+  },
+  "Abrid el libro por la página doce y haced el ejercicio tres.": {
+   "f": "abrid-el-libro-por-la-pagina-doce-y-haced-el-ejercicio-tres.mp3",
+   "v": "77fc7015",
+   "h": "b1ec3113a5a5"
+  },
+  "Perdón, no lo entiendo. ¿Me lo puedes repetir?": {
+   "f": "perdon-no-lo-entiendo-me-lo-puedes-repetir.mp3",
+   "v": "5b4bfb59",
+   "h": "136945c9b392"
+  },
+  "Claro. Página doce, ejercicio tres.": {
+   "f": "claro-pagina-doce-ejercicio-tres.mp3",
+   "v": "0a67b6d1",
+   "h": "4a2e9d9d7a93"
+  },
+  "Vale, gracias.": {
+   "f": "vale-gracias.mp3",
+   "v": "cbb46268",
+   "h": "034ecb107f2d"
+  },
+  "¿Necesitas algo más?": {
+   "f": "necesitas-algo-mas.mp3",
+   "v": "49a4ce72",
+   "h": "5efc68b9ac1b"
+  },
+  "Sí. ¿Puedo ir al baño, por favor?": {
+   "f": "si-puedo-ir-al-bano-por-favor.mp3",
+   "v": "3ba3000a",
+   "h": "f5edcfe7e27c"
+  },
+  "¡Hola! Estamos jugando al pilla-pilla.": {
+   "f": "hola-estamos-jugando-al-pilla-pilla.mp3",
+   "v": "4295ab4e",
+   "h": "bc7e5ac3dc80"
+  },
+  "¡Claro! Tú la llevas. ¡Corre!": {
+   "f": "claro-tu-la-llevas-corre.mp3",
+   "v": "f1735547",
+   "h": "370df413ee81"
+  },
+  "¡Vale! ¡Voy a pillarte!": {
+   "f": "vale-voy-a-pillarte.mp3",
+   "v": "958f8396",
+   "h": "5b7b085df5b5"
+  },
+  "¡Ay! Me he caído.": {
+   "f": "ay-me-he-caido.mp3",
+   "v": "9de29982",
+   "h": "b134707f4d56"
+  },
+  "¿Estás bien? Lo siento.": {
+   "f": "estas-bien-lo-siento.mp3",
+   "v": "f71de017",
+   "h": "b326991cc244"
+  },
+  "Sí, no pasa nada. ¡Seguimos jugando!": {
+   "f": "si-no-pasa-nada-seguimos-jugando.mp3",
+   "v": "3b67aa99",
+   "h": "7708a78af047"
+  },
+  "¡Vale! ¡Ahora me toca a mí!": {
+   "f": "vale-ahora-me-toca-a-mi.mp3",
+   "v": "3c8adb32",
+   "h": "53fe108ab9dc"
+  },
+  "Mira, se te ha caído el estuche. Toma.": {
+   "f": "mira-se-te-ha-caido-el-estuche-toma.mp3",
+   "v": "1bab5436",
+   "h": "49a4b7780ced"
+  },
+  "De nada. ¿Te ayudo a recoger los lápices?": {
+   "f": "de-nada-te-ayudo-a-recoger-los-lapices.mp3",
+   "v": "adbd8247",
+   "h": "3a4db6b798af"
+  },
+  "Sí, gracias por ayudarme.": {
+   "f": "si-gracias-por-ayudarme.mp3",
+   "v": "08c93b12",
+   "h": "dbae351bbe43"
+  },
+  "¡Ya está todo recogido!": {
+   "f": "ya-esta-todo-recogido.mp3",
+   "v": "d0059575",
+   "h": "9d2523112b96"
+  },
+  "Eres muy amable. ¡Gracias!": {
+   "f": "eres-muy-amable-gracias.mp3",
+   "v": "6e242927",
+   "h": "29cfcd6c6c51"
+  },
+  "Se ha acabado la clase. ¡Recoged las cosas!": {
+   "f": "se-ha-acabado-la-clase-recoged-las-cosas.mp3",
+   "v": "59e85855",
+   "h": "c21e9372e026"
+  },
+  "Vale, ya lo recojo.": {
+   "f": "vale-ya-lo-recojo.mp3",
+   "v": "ca2ee520",
+   "h": "541dcb76e36f"
+  },
+  "¡Adiós a todos! ¡Hasta mañana!": {
+   "f": "adios-a-todos-hasta-manana.mp3",
+   "v": "36264cd1",
+   "h": "854923f4a470"
+  },
+  "¡Que tengas una buena tarde!": {
+   "f": "que-tengas-una-buena-tarde.mp3",
+   "v": "82d6c3f8",
+   "h": "a9bbef81e45f"
+  },
+  "Igualmente. ¡Hasta mañana!": {
+   "f": "igualmente-hasta-manana.mp3",
+   "v": "f8da4106",
+   "h": "f3e458f0ee9d"
   }
  }
 }

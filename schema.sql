@@ -46,6 +46,27 @@ CREATE TABLE IF NOT EXISTS ayc_lecturas (
 
 CREATE INDEX IF NOT EXISTS ayc_lecturas_recibido ON ayc_lecturas (nino_id, recibido);
 
+-- Frases cotidianas: solo qué frase y actividad, puntuación y si salió bien. Nunca lo que se oyó ni audio.
+CREATE TABLE IF NOT EXISTS ayc_frases (
+    nino_id TEXT NOT NULL REFERENCES ayc_ninos(id) ON DELETE CASCADE,
+    id TEXT NOT NULL,
+    t BIGINT NOT NULL,
+    recibido BIGINT NOT NULL,
+    datos JSONB NOT NULL,
+    PRIMARY KEY (nino_id, id));
+
+CREATE INDEX IF NOT EXISTS ayc_frases_recibido ON ayc_frases (nino_id, recibido);
+
+-- Pegatinas conseguidas: id de pegatina, fecha, si el profe la entregó y los números del motivo (p. ej. [32, 48]).
+CREATE TABLE IF NOT EXISTS ayc_pegatinas (
+    nino_id TEXT NOT NULL REFERENCES ayc_ninos(id) ON DELETE CASCADE,
+    pegatina TEXT NOT NULL,
+    t BIGINT NOT NULL,
+    entregada BOOLEAN NOT NULL DEFAULT FALSE,
+    entregada_t BIGINT,
+    nums JSONB,
+    PRIMARY KEY (nino_id, pegatina));
+
 CREATE TABLE IF NOT EXISTS ayc_limite (clave TEXT NOT NULL, t BIGINT NOT NULL);
 
 CREATE INDEX IF NOT EXISTS ayc_limite_idx ON ayc_limite (clave, t);

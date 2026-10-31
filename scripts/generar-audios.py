@@ -91,6 +91,12 @@ def textos_fijos():
     for linea in m.group(1).splitlines():
         if re.search(r"\bfrases\s*:", linea):
             textos.extend(literales(linea))
+    # Frases cotidianas (frases.js): frases para repetir, «¿Qué dirías si…?» y diálogos
+    m = re.search(r"const FRASES_KEY.*?// FIN FRASES", leer('frases.js'), re.S)
+    if not m:
+        sys.exit('No encuentro FRASES en frases.js')
+    for mm in re.finditer(r"\b(t|p|r|app|nino)\s*:\s*(['\"])((?:\\.|(?!\2).)*)\2", m.group(0)):
+        textos.append(re.sub(r"\\(.)", r"\1", mm.group(3)))
     vistos, unicos = set(), []
     for t in textos:
         t = unicodedata.normalize('NFC', re.sub(r'\s+', ' ', t.strip()))

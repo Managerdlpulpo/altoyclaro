@@ -59,6 +59,25 @@
         .lec-adulto .lec-w { cursor: pointer; }
         .lec-adulto .lec-w:hover { outline: 2px dashed #94a3b8; }
         .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1 1 0; min-width: 22px; }
+        /* Pegatinas */
+        .pegatina-pop { animation: pegPop .6s cubic-bezier(.2,1.6,.4,1) both; }
+        @keyframes pegPop { from { transform: scale(.2) rotate(-25deg); opacity: 0; } to { transform: none; opacity: 1; } }
+        #hoja-pegatinas { position: fixed; inset: 0; z-index: 200; background: #fff; color: #111; overflow: auto; padding: 12px; }
+        #hoja-pegatinas .hoja-barra { font: 14px system-ui, sans-serif; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 10px; padding: 8px 12px; margin-bottom: 12px; }
+        #hoja-pegatinas .hoja-barra button { margin-left: 8px; padding: 4px 10px; border-radius: 8px; border: 1px solid #b45309; background: #fff; font-weight: 700; }
+        #hoja-pegatinas .hoja-rejilla { display: grid; grid-template-columns: repeat(3, 50mm); gap: 8mm 10mm; justify-content: center; }
+        #hoja-pegatinas .hoja-item { width: 50mm; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+        #hoja-pegatinas .hoja-item svg { width: 50mm; height: 50mm; display: block; }
+        #hoja-pegatinas .hoja-nombre { font: 700 11pt system-ui, sans-serif; margin-top: 1.5mm; }
+        @media print {
+            @page { size: A4; margin: 10mm; }
+            html.imprimiendo-pegatinas body > *:not(#hoja-pegatinas) { display: none !important; }
+            html.imprimiendo-pegatinas, html.imprimiendo-pegatinas body { background: #fff !important; }
+            html.imprimiendo-pegatinas #hoja-pegatinas { position: static; padding: 0; overflow: visible; }
+            #hoja-pegatinas .no-print { display: none !important; }
+            #hoja-pegatinas .hoja-rejilla { gap: 6mm 10mm; }
+            #hoja-pegatinas svg { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased pb-12">
@@ -152,12 +171,14 @@
                 </div>
                 <button id="tema-btn" onclick="abrirTemas()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-pitch-600/60 text-xs text-slate-200 font-bold flex items-center gap-1" title="Mi tema (cambiar)" aria-label="Mi tema (cambiar)"><span aria-hidden="true">🌈</span><span class="hidden sm:inline">Mi tema</span></button>
                 <button id="cuenta-btn" onclick="abrirCuenta()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-slate-700 text-xs text-slate-200 font-bold flex items-center gap-1" title="Entrar con mi clave" aria-label="Entrar con mi clave"><span aria-hidden="true">🔑</span><span class="hidden sm:inline">Entrar</span></button>
-                <button onclick="toggleTeacherModal()" class="bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs" title="Panel del profe"><i class="fa-solid fa-user-gear text-amber-400"></i></button>
+                <button id="pegatinas-btn" onclick="abrirPegatinas()" class="bg-stadium-800 hover:bg-slate-700 px-3 py-2 rounded-xl border border-amber-500/50 text-xs text-amber-300 font-bold flex items-center gap-1" title="Mis pegatinas" aria-label="Mis pegatinas"><span aria-hidden="true">🏅</span><span id="pegatinas-cuenta">0</span></button>
+                <button id="profe-btn" onclick="toggleTeacherModal()" class="relative bg-stadium-800 hover:bg-slate-700 p-2.5 rounded-xl border border-slate-700 text-xs" title="Panel del profe" aria-label="Panel del profe"><i class="fa-solid fa-user-gear text-amber-400"></i><span id="badge-pegatinas" class="hidden absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-rose-600 text-white text-[10px] font-bold leading-5 text-center" aria-label="Pegatinas por entregar">0</span></button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-6 flex-1 w-full">
+        <div id="aviso-pegatinas" class="hidden bg-amber-500/15 border border-amber-500/60 text-amber-100 text-sm rounded-2xl px-4 py-3 mb-4" role="status"></div>
         <div class="bg-gradient-to-r from-pitch-900 to-stadium-900 border border-pitch-600/40 rounded-2xl p-4 mb-6 card-glow">
             <h2 class="font-game font-bold text-white" id="welcome-title">¡Identifica las fotos!</h2>
             <p id="welcome-tema" class="text-xs text-slate-200 mt-1"></p>
@@ -170,6 +191,7 @@
             <button onclick="switchTab('pictionary')" id="tab-btn-pictionary" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-images text-blue-400 mr-1"></i> Diccionario Visual</button>
             <button onclick="switchTab('penalty')" id="tab-btn-penalty" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300"><i class="fa-solid fa-bullseye text-amber-400 mr-1"></i> Penalty</button>
             <button onclick="switchTab('lectura')" id="tab-btn-lectura" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><span aria-hidden="true">📖</span> Leo en voz alta</button>
+            <button onclick="switchTab('frases')" id="tab-btn-frases" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><span aria-hidden="true">💬</span> Frases cotidianas</button>
             <button onclick="switchTab('progreso')" id="tab-btn-progreso" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-700 bg-stadium-800 text-slate-300 whitespace-nowrap"><i class="fa-solid fa-chart-line text-sky-400 mr-1"></i> Mi progreso al hablar</button>
         </div>
 
@@ -235,6 +257,7 @@
                 <div id="prog-resumen" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"></div>
                 <div id="prog-tendencia" class="text-sm mb-4"></div>
                 <div id="prog-lectura" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4"></div>
+                <div id="prog-frases" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4"></div>
                 <div id="prog-test-card" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 mb-4">
                     <h4 class="font-bold text-sm text-white mb-2"><i class="fa-solid fa-compass text-amber-400 mr-1"></i> Test de nivel (escuchar, palabras y conversación)</h4>
                     <div id="prog-test"></div>
@@ -311,6 +334,11 @@
         <section id="tab-lectura" class="tab-content hidden space-y-6">
             <div id="lectura-app" class="bg-stadium-900 border border-slate-800 rounded-3xl p-4 sm:p-6 card-glow"></div>
         </section>
+
+        <!-- FRASES COTIDIANAS (frases.js) -->
+        <section id="tab-frases" class="tab-content hidden space-y-6">
+            <div id="frases-app" class="bg-stadium-900 border border-slate-800 rounded-3xl p-4 sm:p-6 card-glow"></div>
+        </section>
     </main>
 
     <!-- Mi tema (temas.js) -->
@@ -371,6 +399,11 @@
                             <button onclick="adminCrear()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs">Crear clave</button>
                         </div>
                         <div id="admin-codigo-nuevo" class="hidden bg-amber-500/10 border border-amber-500 rounded-xl p-3 text-center"></div>
+                        <div id="admin-pegatinas-bloque" class="bg-stadium-800 border border-amber-500/40 rounded-xl p-3">
+                            <h4 class="font-game text-white mb-1">🏅 Pegatinas por entregar</h4>
+                            <p class="text-[11px] text-slate-400 mb-2">Las consigue cada niño con su práctica (se calculan con las puntuaciones). Imprímelas, dáselas y pulsa «Entregada».</p>
+                            <div id="admin-pegatinas"><p class="text-xs text-slate-400">Cargando…</p></div>
+                        </div>
                         <div id="admin-lista" class="space-y-2"></div>
                         <div class="flex justify-between">
                             <button onclick="adminRefrescar()" class="text-xs text-sky-300 underline">Actualizar lista</button>
@@ -648,11 +681,15 @@
             if (id === 'progreso' && typeof renderProgresoHabla === 'function') renderProgresoHabla();
             if (id !== 'lectura' && typeof lecSalir === 'function') lecSalir();
             if (id === 'lectura' && typeof renderLectura === 'function') renderLectura();
+            if (id !== 'frases' && typeof frSalir === 'function') frSalir();
+            if (id === 'frases' && typeof renderFrases === 'function') renderFrases();
         }
         function toggleTeacherModal() {
             const m = document.getElementById('teacher-modal');
             m.classList.toggle('hidden');
             if (!m.classList.contains('hidden') && typeof renderSelectorVoz === 'function') renderSelectorVoz();
+            // Profe con sesión: al abrir el panel se cargan la lista de claves y las pegatinas por entregar
+            if (!m.classList.contains('hidden') && typeof rolActual !== 'undefined' && (rolActual === 'profe' || _claveProfe) && typeof adminRefrescar === 'function') adminRefrescar();
         }
         function overrideLevel() {
             gameState.level = +document.getElementById('override-level').value;
@@ -664,6 +701,8 @@
                 localStorage.removeItem('ligaHablaVoz');
                 localStorage.removeItem('ligaHablaTestTextos');
                 localStorage.removeItem('ligaHablaLectura');
+                localStorage.removeItem('ligaHablaFrases');
+                localStorage.removeItem('ligaHablaPegatinas');
                 const limpiar = (typeof audioClear === 'function') ? audioClear() : Promise.resolve();
                 limpiar.catch(() => {}).finally(() => location.reload());
             }
@@ -676,6 +715,8 @@
     <script src="hablar.js"></script>
     <script src="test-nivel.js"></script>
     <script src="lectura.js"></script>
+    <script src="frases.js"></script>
+    <script src="pegatinas.js"></script>
     <script src="sync.js"></script>
 </body>
 </html>
