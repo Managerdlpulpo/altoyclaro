@@ -107,7 +107,7 @@
                     <button id="acceso-soy-profe" onclick="document.getElementById('acceso-profe').classList.toggle('hidden'); document.getElementById('acceso-clave-profe').focus()" class="text-xs text-slate-400 underline">Soy el profe</button>
                     <div id="acceso-profe" class="hidden mt-2">
                         <div class="flex gap-2">
-                            <input id="acceso-clave-profe" type="password" autocomplete="current-password" placeholder="Clave del profe" aria-label="Clave del profe"
+                            <input id="acceso-clave-profe" type="password" autocomplete="current-password" placeholder="Clave del profe o PROF-…" aria-label="Clave del profe o clave personal de profesor"
                                 class="flex-1 min-w-0 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-sm" onkeydown="if(event.key==='Enter') entrarComoProfe()">
                             <button id="acceso-profe-boton" onclick="entrarComoProfe()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">Entrar</button>
                         </div>
@@ -386,7 +386,7 @@
 
                 <!-- Claves de la clase (necesita la clave del profe; se comprueba en el servidor) -->
                 <div class="border-t border-slate-700 pt-4 mt-2">
-                    <h4 class="font-game text-white mb-1">🔑 Claves de la clase</h4>
+                    <h4 id="admin-titulo" class="font-game text-white mb-1">🔑 Claves de la clase</h4>
                     <p class="text-[11px] text-slate-400 mb-2">Crea una clave para cada niño (solo un nombre o apodo, sin apellidos). Con ella su progreso se guarda y se puede usar en 2 dispositivos. Las grabaciones de voz nunca salen del dispositivo.</p>
                     <p id="admin-sesion-profe" class="hidden text-[11px] text-emerald-300 mb-2">Has entrado como profe (la sesión dura 8 horas).</p>
                     <div id="admin-login" class="flex gap-2">
@@ -394,8 +394,25 @@
                         <button onclick="adminAbrir()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs">Abrir</button>
                     </div>
                     <div id="admin-panel" class="hidden space-y-3">
+                        <!-- Solo el administrador: profesores y registro de cambios (el servidor lo comprueba) -->
+                        <div id="admin-profesores-bloque" class="hidden bg-stadium-800 border border-sky-500/40 rounded-xl p-3 space-y-2">
+                            <h4 class="font-game text-white">👩‍🏫 Profesores</h4>
+                            <p class="text-[11px] text-slate-400">Cada profesor entra con su clave personal en «Soy el profe» y solo ve a los alumnos de su clase. Los alumnos sin profesor son del administrador.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <input id="prof-nombre" type="text" maxlength="60" placeholder="Nombre (p. ej. Laura)" class="flex-1 min-w-[7rem] bg-stadium-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs">
+                                <input id="prof-clase" type="text" maxlength="40" placeholder="Clase (3.º B)" class="w-28 bg-stadium-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs" onkeydown="if(event.key==='Enter') profCrear()">
+                                <button id="prof-crear" onclick="profCrear()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-2 rounded-xl text-xs">Crear profesor</button>
+                            </div>
+                            <div id="prof-clave-nueva" class="hidden bg-sky-500/10 border border-sky-400 rounded-xl p-3 text-center"></div>
+                            <div id="prof-lista" class="space-y-1"></div>
+                            <details id="admin-auditoria" class="text-xs" ontoggle="if(this.open) auditoriaCargar()">
+                                <summary class="cursor-pointer text-slate-300">📜 Registro de cambios</summary>
+                                <div id="auditoria-lista" class="mt-2 max-h-56 overflow-y-auto space-y-1"></div>
+                            </details>
+                        </div>
                         <div class="flex gap-2">
-                            <input id="admin-alias" type="text" maxlength="40" placeholder="Nombre o apodo del niño" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminCrear()">
+                            <input id="admin-alias" type="text" maxlength="40" placeholder="Nombre o apodo del niño" class="flex-1 min-w-0 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminCrear()">
+                            <select id="admin-crear-profesor" class="hidden w-32 bg-stadium-800 border border-slate-700 rounded-xl px-2 py-2 text-white text-xs" aria-label="Clase del niño nuevo"></select>
                             <button onclick="adminCrear()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs">Crear clave</button>
                         </div>
                         <div id="admin-codigo-nuevo" class="hidden bg-amber-500/10 border border-amber-500 rounded-xl p-3 text-center"></div>
@@ -403,6 +420,10 @@
                             <h4 class="font-game text-white mb-1">🏅 Pegatinas por entregar</h4>
                             <p class="text-[11px] text-slate-400 mb-2">Las consigue cada niño con su práctica (se calculan con las puntuaciones). Imprímelas, dáselas y pulsa «Entregada».</p>
                             <div id="admin-pegatinas"><p class="text-xs text-slate-400">Cargando…</p></div>
+                        </div>
+                        <div id="admin-filtro-bloque" class="hidden flex items-center gap-2 text-xs text-slate-300">
+                            <label for="admin-filtro">Ver alumnos de:</label>
+                            <select id="admin-filtro" onchange="adminPintar(document.getElementById('admin-lista')._datos)" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-2 py-1 text-white text-xs"></select>
                         </div>
                         <div id="admin-lista" class="space-y-2"></div>
                         <div class="flex justify-between">
