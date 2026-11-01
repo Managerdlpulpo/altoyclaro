@@ -176,7 +176,7 @@ async function decir(partes, opciones = {}) {
 }
 function speakSpanish(text) { decir(text); }
 
-/* ---------- Selector de voz (Panel del Profesor) ---------- */
+/* ---------- Selector de voz («Mi clave y ajustes»: ajuste del dispositivo) ---------- */
 async function renderSelectorVoz() {
     const sel = document.getElementById('voz-select');
     const chk = document.getElementById('voz-grabada');
@@ -198,7 +198,7 @@ function probarVoz() { decir('Hola, soy la voz de este dispositivo. ¡Vamos a ju
 function probarVozGrabada() { decir(['¡Hola! ¿Qué tal estás?', 'Me gusta el fútbol.']); }
 if (window.speechSynthesis && speechSynthesis.addEventListener) {
     speechSynthesis.addEventListener('voiceschanged', () => {
-        const m = document.getElementById('teacher-modal');
+        const m = document.getElementById('cuenta-modal');
         if (m && !m.classList.contains('hidden')) renderSelectorVoz();
     });
 }
