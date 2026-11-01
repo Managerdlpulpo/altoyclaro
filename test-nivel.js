@@ -479,6 +479,7 @@ function iniciarTestNivel({ repeticion = false, semilla = null } = {}) {
 // Repetir el test desde el panel del profe (el perfil ya existe; no se pide otra vez).
 function repetirTestNivel() {
     if (!gameState || !gameState.name) return;
+    if (typeof panelProfeDesbloqueado === 'function' && !panelProfeDesbloqueado()) return; // lo decide el profe (panel con clave)
     if (!confirm('¿Repetir el test de nivel? Dura unos 5 minutos.\nEl nivel se actualizará con el nuevo resultado (luego puedes cambiarlo a mano). Los puntos (XP) no bajan.')) return;
     const tm = tnEl('teacher-modal'); if (tm && !tm.classList.contains('hidden')) toggleTeacherModal();
     tnEl('setup-modal').classList.remove('hidden');

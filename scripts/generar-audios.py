@@ -48,9 +48,10 @@ def literales(trozo):
 
 def textos_fijos():
     textos = []
-    html = leer('index.html')
-    for m in re.finditer(r"""\bes\s*:\s*(['"])((?:\\.|(?!\1).)*)\1""", html):
-        textos.append(re.sub(r"\\(.)", r"\1", m.group(2)))
+    # Vocabulario (index.html) y frases propias del penalty (penalty.js → PEN_EXTRA)
+    for archivo in ('index.html', 'penalty.js'):
+        for m in re.finditer(r"""\bes\s*:\s*(['"])((?:\\.|(?!\1).)*)\1""", leer(archivo)):
+            textos.append(re.sub(r"\\(.)", r"\1", m.group(2)))
     hab = leer('hablar.js')
     m = re.search(r"const ejemplosFrase = \{(.*?)\n\};", hab, re.S)
     if not m:

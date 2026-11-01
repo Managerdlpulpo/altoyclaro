@@ -530,6 +530,28 @@ await prueba('borrar un profesor: sus alumnos pasan al admin y su sesión cae', 
     assert.equal(n.profesor, null);
     eq((await adm({ accion: 'profesores' })).body.profesores.map(p => p.nombre), ['Laura']);
 });
+await prueba('sesión de alumno: no abre nada del profe (todas las acciones de /api/admin → 401; sesion dice profe:false)', async () => {
+    const c = await adm({ accion: 'crear', alias: 'Nury' });
+    const e = await entrar(c.body.codigo, 'dispositivo-alumno-0001', { ip: '10.7.7.7' });
+    assert.equal(e.status, 200);
+    const cookie = e.cookie;
+    const s = await llamar('acceso', { accion: 'sesion' }, { cookie });
+    assert.equal(s.body.profe, false); assert.equal(s.body.nino.alias, 'Nury'); assert.ok(!s.body.profesor);
+    for (const accion of ['comprobar', 'listar', 'pegatinas', 'entregar', 'crear', 'regenerar', 'revocar', 'liberar', 'borrar', 'profesores', 'profesor_crear', 'reasignar', 'auditoria']) {
+        const r = await llamar('admin', { accion, id: c.body.id, alias: 'X', nombre: 'X', pegatina: 'primera' }, { cookie, ip: '10.7.7.7' });
+        assert.equal(r.status, 401, accion + ' con sesión de alumno');
+    }
+    // una cabecera vacía no cuenta como clave del profe
+    const r = await llamar('admin', { accion: 'listar' }, { cookie, profe: '', ip: '10.7.7.7' });
+    assert.equal(r.status, 401);
+    // el alumno sigue igual (no se ha cambiado ni borrado nada) y su sincronización funciona
+    const l = await adm({ accion: 'listar' });
+    assert.ok(l.body.ninos.some(n => n.id === c.body.id && n.alias === 'Nury'));
+    const y = await llamar('sync', { cursor: 0, intentos: [], perfil: null, perfilT: 0 }, { cookie });
+    assert.equal(y.status, 200);
+    await adm({ accion: 'borrar', id: c.body.id });
+});
+
 await prueba('base de datos caída → 503 con mensaje claro (no deja entrar)', async () => {
     const guardado = globalThis.__aycQuery, listo = globalThis.__aycEsquemaListo;
     globalThis.__aycQuery = async () => { throw new Error('connect ECONNREFUSED'); };

@@ -70,8 +70,8 @@ Variables de entorno (Vercel), sin valores por defecto: `ALTOYCLARO_CLAVE`,
    Premium/Siri, Google español, Mónica, Paulina…; se evitan eSpeak y compactas),
    con velocidad 0.9 y tono 1.05.
 
-En el **panel del profesor → 🔊 Voz** se puede desactivar la voz grabada y elegir
-manualmente la voz del navegador (se guarda en `localStorage`).
+En **☁️ Mi clave y ajustes → 🔊 Voz** (también para el alumno) se puede desactivar la voz
+grabada y elegir manualmente la voz del navegador (se guarda en `localStorage`).
 
 Las grabaciones de los niños **nunca salen del dispositivo**. Las voces "online"
 del navegador (p. ej. Edge Natural o Google) pueden enviar el *texto del juego* a su
@@ -244,3 +244,23 @@ NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-profesores.cjs # ad
 Los tests de navegador usan `test/servidor-local.mjs` (arrancarlo antes, con
 `ALTOYCLARO_CLAVE=profe-local-prueba` y un `ALTOYCLARO_SECRETO` cualquiera) y Chrome headless.
 `e2e-voz` y `e2e-test-nivel` simulan la sesión (`/api/acceso`) para probar solo el juego.
+
+## Panel del profesor (solo con sesión de profe)
+
+El botón del profe (⚙) abre el «Panel del Profesor» **solo con una sesión de profe** (administrador o
+docente, según `/api/acceso` → `sesion`). Con la sesión de un alumno solo se ve un candado y el campo
+«Clave del profe»: nada más (ni cambiar nivel, ni repetir test, ni resultados, ni reiniciar, ni claves)
+hasta que el servidor acepte la clave; al cerrar el panel la clave se olvida. Lo que el alumno sí
+necesita (voz y cerrar sesión) está en «☁️ Mi clave y ajustes». En el servidor, `/api/admin` exige
+la sesión o la clave del profe (con la cookie de un alumno → 401); `/api/sync` solo guarda el perfil
+y el progreso del propio alumno.
+
+## Juego de penalty
+
+Las preguntas salen de un banco por nivel (`penalty.js`): nivel 0 = las palabras del vocabulario;
+nivel 1 = palabras y frases cortas; niveles 2–3 = frases de ejemplo y del modo Frases. Se recorren
+en una «bolsa» barajada (con más peso para el tema elegido), sin repetir nunca la anterior y dejando
+al final las 12 últimas vistas (guardadas en `localStorage`, `ligaHablaPenalty`). Todas tienen audio
+grabado. Tras acertar, los botones se bloquean (no se puede sumar XP repetido). Pruebas:
+`node test/penalty.test.mjs` y `node test/e2e-panel-alumno.cjs`.
+

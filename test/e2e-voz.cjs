@@ -91,14 +91,14 @@ function vocesFalsas() {
   const orden = await p.evaluate(() => vocesEspanolasOrdenadas(speechSynthesis.getVoices()).map(v => v.name));
   ok(orden[orden.length - 1] === 'eSpeak Spanish' && orden[orden.length - 2] === 'Mónica (compact)' && !orden.includes('Google US English'), 'ranking: ' + orden.join(' > '));
 
-  // 5) Selector del profe: lista voces en español, recuerda la elegida y la usa
-  await p.click('text=Profe').catch(() => p.evaluate(() => toggleTeacherModal()));
+  // 5) Selector de voz (en «Mi clave y ajustes», también para el alumno): lista voces en español, recuerda la elegida y la usa
+  await p.evaluate(() => abrirCuenta());
   await p.waitForTimeout(300);
-  if (await p.locator('#teacher-modal').evaluate(e => e.classList.contains('hidden'))) await p.evaluate(() => toggleTeacherModal());
+  ok(await p.locator('#cuenta-modal #voz-select').isVisible() && !(await p.locator('#teacher-modal #voz-select').count()), 'el selector de voz está en «Mi clave y ajustes», no en el panel del profe');
   const opciones = await p.locator('#voz-select option').allTextContents();
   ok(opciones.length === 6 && /^Automática \(Microsoft Elvira/.test(opciones[0]), 'selector: ' + opciones.join(' | '));
   await p.selectOption('#voz-select', 'Google español');
-  await p.click('text=Probar');
+  await p.click('#cuenta-modal >> text=Probar');
   ok(await esperar(p, () => window.__dichos.length === 2), 'botón Probar habla');
   d = await p.evaluate(() => window.__dichos[1]);
   ok(d.voz === 'Google español', 'Probar usa la voz elegida: ' + d.voz);

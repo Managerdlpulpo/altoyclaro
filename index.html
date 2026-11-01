@@ -361,6 +361,13 @@
                 <button onclick="toggleTeacherModal()" class="text-slate-400">✕</button>
             </div>
             <div class="space-y-3 text-sm">
+                <!-- Candado: un alumno (o sin sesión de profe) solo ve esto hasta que se compruebe la clave del profe en el servidor -->
+                <div id="teacher-bloqueo" class="bg-stadium-800 border border-amber-500/50 rounded-xl p-3 text-center">
+                    <div class="text-2xl" aria-hidden="true">🔒</div>
+                    <p class="text-sm text-white font-bold">Esta zona es solo para el profe.</p>
+                    <p class="text-[11px] text-slate-300">Para entrar, escribe la clave del profe. Si eres alumno, tus ajustes (voz y cerrar sesión) están en el botón de tu clave ☁️.</p>
+                </div>
+                <div id="teacher-controles" class="hidden space-y-3">
                 <div id="teacher-info" class="bg-stadium-800 p-3 rounded-xl"></div>
                 <select id="override-level" class="w-full bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2">
                     <option value="0">Nivel 0</option><option value="1">Nivel 1</option><option value="2">Nivel 2</option><option value="3">Nivel 3</option>
@@ -371,23 +378,13 @@
                     <button id="btn-ver-test" onclick="verUltimoTest()" class="bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-white font-bold py-2 rounded-xl text-xs">📋 Resultados del test</button>
                 </div>
                 <button onclick="toggleTeacherModal(); switchTab('progreso')" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-xs"><i class="fa-solid fa-chart-line mr-1"></i> Ver progreso al hablar</button>
-                <!-- Voz de la app -->
-                <div class="bg-stadium-800 p-3 rounded-xl space-y-2">
-                    <h4 class="font-game text-white">🔊 Voz</h4>
-                    <label class="flex items-start gap-2 text-xs text-slate-200"><input id="voz-grabada" type="checkbox" checked onchange="cambiarVozGrabada(this.checked)" class="mt-0.5"> Usar la voz grabada natural para palabras y frases del juego (recomendado)</label>
-                    <label class="block text-xs text-slate-400" for="voz-select">Voz del dispositivo para el resto de textos:</label>
-                    <div class="flex gap-2">
-                        <select id="voz-select" onchange="cambiarVoz(this.value)" class="flex-1 min-w-0 bg-stadium-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white"><option value="">Automática</option></select>
-                        <button onclick="probarVoz()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i> Probar</button>
-                    </div>
-                    <p id="voz-info" class="text-[11px] text-slate-400"></p>
-                </div>
                 <button onclick="resetAll()" class="w-full bg-red-600 text-white font-bold py-2 rounded-xl text-xs mt-2">Reiniciar</button>
+                </div>
 
                 <!-- Claves de la clase (necesita la clave del profe; se comprueba en el servidor) -->
                 <div class="border-t border-slate-700 pt-4 mt-2">
-                    <h4 id="admin-titulo" class="font-game text-white mb-1">🔑 Claves de la clase</h4>
-                    <p class="text-[11px] text-slate-400 mb-2">Crea una clave para cada niño (solo un nombre o apodo, sin apellidos). Con ella su progreso se guarda y se puede usar en 2 dispositivos. Las grabaciones de voz nunca salen del dispositivo.</p>
+                    <h4 id="admin-titulo" class="hidden font-game text-white mb-1">🔑 Claves de la clase</h4>
+                    <p id="admin-intro" class="hidden text-[11px] text-slate-400 mb-2">Crea una clave para cada niño (solo un nombre o apodo, sin apellidos). Con ella su progreso se guarda y se puede usar en 2 dispositivos. Las grabaciones de voz nunca salen del dispositivo.</p>
                     <p id="admin-sesion-profe" class="hidden text-[11px] text-emerald-300 mb-2">Has entrado como profe (la sesión dura 8 horas).</p>
                     <div id="admin-login" class="flex gap-2">
                         <input id="admin-clave" type="password" autocomplete="current-password" placeholder="Clave del profe" class="flex-1 bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-white" onkeydown="if(event.key==='Enter') adminAbrir()">
@@ -491,20 +488,7 @@
             { es: 'el avión', img: 'img/vocab/avion.jpg', cat: 'Transporte', uk: 'літак', ar: 'الطائرة' }
         ];
 
-        const contentByLevel = {
-            1: { penalty: [
-                {es:"¡Pasa la pelota!", options:["¡Pasa la pelota!","¡Buen gol!","¡Tengo hambre!"], correct:0},
-                {es:"¿Puedo ir al baño?", options:["¿Puedo ir al baño?","No entiendo","Gracias"], correct:0}
-            ]},
-            2: { penalty: [
-                {es:"Me gusta el fútbol.", options:["Me gusta el fútbol","Tengo hambre","¿Qué página?"], correct:0},
-                {es:"¡Buen partido!", options:["Hola","¡Buen partido!","Abre el libro"], correct:1}
-            ]},
-            3: { penalty: [
-                {es:"¿Cuándo es tu cumpleaños?", options:["¿Cuándo es tu cumpleaños?","¿Qué hora es?","Adiós"], correct:0},
-                {es:"¿Dónde vives?", options:["¿Dónde vives?","Me llamo","Tengo hambre"], correct:0}
-            ]}
-        };
+        // Preguntas del juego de penalty: penalty.js (banco por nivel y tema, sin repetir seguidas)
 
         function loadState() {
             const saved = localStorage.getItem('ligaHablaVisual');
@@ -646,44 +630,6 @@
             });
         }
 
-        // Penalty
-        let currentPenaltyIndex = 0;
-        function renderPenalty() {
-            const content = contentByLevel[gameState.level] || contentByLevel[1];
-            const q = content.penalty[currentPenaltyIndex % content.penalty.length];
-            document.getElementById('penalty-spanish-text').innerText = q.es;
-            document.getElementById('goal-result-box').classList.add('hidden');
-            const grid = document.getElementById('penalty-options-grid');
-            grid.innerHTML = '';
-
-            // Mezclar opciones y guardar cuál es la correcta
-            const indexed = q.options.map((opt, i) => ({ opt, isCorrect: i === q.correct }));
-            const shuffled = shuffle(indexed);
-
-            shuffled.forEach(item => {
-                const b = document.createElement('button');
-                b.className = 'bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3.5 rounded-xl border border-slate-700';
-                b.innerText = item.opt;
-                b.onclick = () => {
-                    if (item.isCorrect) {
-                        document.getElementById('goal-result-box').classList.remove('hidden');
-                        addXP(20);
-                        decir(typeof temaCelebracion === 'function' ? temaCelebracion() : FRASES_VOZ.gol);
-                    } else {
-                        b.classList.add('wrong');
-                        setTimeout(() => b.classList.remove('wrong'), 800);
-                    }
-                };
-                grid.appendChild(b);
-            });
-        }
-        function nextPenalty() { currentPenaltyIndex++; renderPenalty(); }
-        function playCurrentTTS() {
-            const content = contentByLevel[gameState.level] || contentByLevel[1];
-            const q = content.penalty[currentPenaltyIndex % content.penalty.length];
-            speakSpanish(q.es);
-        }
-
         function renderAll() {
             renderIdentificar();
             renderPictionaryCategories();
@@ -708,11 +654,19 @@
         function toggleTeacherModal() {
             const m = document.getElementById('teacher-modal');
             m.classList.toggle('hidden');
-            if (!m.classList.contains('hidden') && typeof renderSelectorVoz === 'function') renderSelectorVoz();
+            const abierto = !m.classList.contains('hidden');
+            // Al cerrar (o al abrirlo un alumno) se olvida la clave del profe: el panel vuelve a quedar con candado
+            if (typeof adminCerrarPanel === 'function' && typeof rolActual !== 'undefined' && rolActual !== 'profe') adminCerrarPanel();
+            if (typeof aplicarCandadoPanel === 'function') aplicarCandadoPanel();
+            if (abierto && !(typeof panelProfeDesbloqueado === 'function' && panelProfeDesbloqueado())) {
+                setTimeout(() => { const i = document.getElementById('admin-clave'); if (i) i.focus(); }, 50);
+                return;
+            }
             // Profe con sesión: al abrir el panel se cargan la lista de claves y las pegatinas por entregar
-            if (!m.classList.contains('hidden') && typeof rolActual !== 'undefined' && (rolActual === 'profe' || _claveProfe) && typeof adminRefrescar === 'function') adminRefrescar();
+            if (abierto && rolActual === 'profe' && typeof adminRefrescar === 'function') adminRefrescar();
         }
         function overrideLevel() {
+            if (typeof panelProfeDesbloqueado !== 'function' || !panelProfeDesbloqueado()) return; // solo el profe
             gameState.level = +document.getElementById('override-level').value;
             saveState(); updateHUD(); renderAll();
         }
@@ -724,6 +678,7 @@
                 localStorage.removeItem('ligaHablaLectura');
                 localStorage.removeItem('ligaHablaFrases');
                 localStorage.removeItem('ligaHablaPegatinas');
+                localStorage.removeItem('ligaHablaPenalty');
                 const limpiar = (typeof audioClear === 'function') ? audioClear() : Promise.resolve();
                 limpiar.catch(() => {}).finally(() => location.reload());
             }
@@ -737,6 +692,7 @@
     <script src="test-nivel.js"></script>
     <script src="lectura.js"></script>
     <script src="frases.js"></script>
+    <script src="penalty.js"></script>
     <script src="pegatinas.js"></script>
     <script src="sync.js"></script>
 </body>

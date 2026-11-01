@@ -64,7 +64,11 @@ saveState = function () {
     if (syncMeta.conectado && !aplicandoRemoto) { syncMeta.perfilT = Date.now(); guardarSyncMeta(); programarSync(); }
 };
 const _resetAllOriginal = resetAll;
-resetAll = function () { if (rolActual === 'nino') return cerrarSesion(); return _resetAllOriginal(); };
+resetAll = function () {
+    if (!panelProfeDesbloqueado()) return; // «Reiniciar» está en el panel del profe: nunca sin la clave del profe
+    if (rolActual === 'nino') return cerrarSesion();
+    return _resetAllOriginal();
+};
 
 /* ---------- Acceso obligatorio ---------- */
 let rolActual = null; // 'nino' | 'profe' | null (sin acceso: solo pantalla de acceso)
@@ -168,6 +172,7 @@ function prepararPanelProfe() {
     if (l) l.classList.add('hidden');
     if (p) p.classList.remove('hidden');
     if (s) s.classList.remove('hidden');
+    aplicarCandadoPanel();
     aplicarPapelProfe();
 }
 const nombreClase = p => p ? escS(p.nombre) + (p.clase ? ' – ' + escS(p.clase) : '') : '';
@@ -310,6 +315,7 @@ async function borrarDatosLocales() {
     localStorage.removeItem('ligaHablaLectura');
     localStorage.removeItem('ligaHablaFrases');
     localStorage.removeItem('ligaHablaPegatinas');
+    localStorage.removeItem('ligaHablaPenalty');
     localStorage.removeItem(SYNC_KEY);
     try { if (typeof audioClear === 'function') await audioClear(); } catch (e) { }
 }
@@ -372,12 +378,23 @@ function bloquearDispositivo(mensaje) {
 function crearModalesSync() {
     const html = `
     <div id="cuenta-modal" class="modal hidden" style="z-index:110">
-      <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full mx-4">
+      <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-3">
-          <h3 class="font-game text-xl text-white">☁️ Mi clave</h3>
+          <h3 class="font-game text-xl text-white">☁️ Mi clave y ajustes</h3>
           <button onclick="document.getElementById('cuenta-modal').classList.add('hidden')" class="text-slate-400" aria-label="Cerrar">✕</button>
         </div>
         <div id="cuenta-info" class="text-sm text-slate-300 space-y-1 mb-4"></div>
+      <!-- Voz de la app (ajuste del dispositivo: lo puede cambiar también el alumno) -->
+      <div id="ajustes-voz" class="bg-stadium-800 p-3 rounded-xl space-y-2 mb-4">
+      <h4 class="font-game text-white">🔊 Voz</h4>
+      <label class="flex items-start gap-2 text-xs text-slate-200"><input id="voz-grabada" type="checkbox" checked onchange="cambiarVozGrabada(this.checked)" class="mt-0.5"> Usar la voz grabada natural para palabras y frases del juego (recomendado)</label>
+      <label class="block text-xs text-slate-400" for="voz-select">Voz del dispositivo para el resto de textos:</label>
+      <div class="flex gap-2">
+      <select id="voz-select" onchange="cambiarVoz(this.value)" class="flex-1 min-w-0 bg-stadium-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white"><option value="">Automática</option></select>
+      <button onclick="probarVoz()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i> Probar</button>
+      </div>
+      <p id="voz-info" class="text-[11px] text-slate-400"></p>
+      </div>
         <div class="grid gap-2">
           <button onclick="sincronizar().then(actualizarCuentaUI)" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-sm"><i class="fa-solid fa-rotate mr-1"></i> Sincronizar ahora</button>
           <button onclick="cerrarSesion()" class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 rounded-xl text-sm"><i class="fa-solid fa-right-from-bracket mr-1"></i> Cerrar sesión</button>
@@ -389,6 +406,7 @@ function crearModalesSync() {
 }
 function abrirCuenta() {
     actualizarCuentaUI();
+    if (typeof renderSelectorVoz === 'function') renderSelectorVoz();
     document.getElementById('cuenta-modal').classList.remove('hidden');
 }
 function actualizarCuentaUI() {
@@ -418,11 +436,23 @@ function actualizarCuentaUI() {
 
 /* ---------- Panel del profe: claves de la clase ---------- */
 let _claveProfe = ''; // solo en memoria: se olvida al recargar
+let _claveProfeOk = false; // true solo cuando el servidor ha aceptado esa clave (para abrir el panel en la sesión de un alumno)
 let _ultimo401Profe = 0;
+// El panel del profe (nivel, test, reiniciar, claves) solo se abre con sesión de profe o con la clave del profe comprobada
+function panelProfeDesbloqueado() { return rolActual === 'profe' || (_claveProfeOk && !!_claveProfe); }
+function aplicarCandadoPanel() {
+    const abierto = panelProfeDesbloqueado();
+    const ver = (id, si) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', !si); };
+    ver('teacher-bloqueo', !abierto);
+    ver('teacher-controles', abierto);
+    ver('admin-titulo', abierto);
+    ver('admin-intro', abierto);
+    const m = document.getElementById('teacher-modal'); if (m) m.classList.toggle('bloqueado', !abierto);
+}
 async function llamarAdmin(accion, extra = {}) {
     const r = await llamarApi('admin', Object.assign({ accion }, extra), { headers: { 'X-Clave-Profe': _claveProfe } });
-    if (r.status === 401) {
-        _claveProfe = '';
+    if (r.status === 401 || r.status === 403 && accion === 'listar') {
+        _claveProfe = ''; _claveProfeOk = false; aplicarCandadoPanel();
         // la sesión del profe caducó: vuelta a la pantalla de acceso (como mucho una vez cada 15 s, para no entrar en bucle)
         if (rolActual === 'profe' && Date.now() - _ultimo401Profe > 15000) { _ultimo401Profe = Date.now(); comprobarAcceso(); }
     }
@@ -439,8 +469,10 @@ async function adminAbrir() {
     if (!_claveProfe) { adminMensaje('Escribe la clave del profe.', 'error'); return; }
     adminMensaje('Comprobando…');
     const r = await llamarAdmin('listar');
-    if (r.status !== 200) { adminMensaje(r.datos.mensaje || 'No se pudo abrir.', 'error'); return; }
+    if (r.status !== 200) { _claveProfe = ''; _claveProfeOk = false; aplicarCandadoPanel(); adminMensaje(r.datos.mensaje || 'No se pudo abrir.', 'error'); return; }
     document.getElementById('admin-clave').value = '';
+    _claveProfeOk = true;
+    aplicarCandadoPanel();
     profeInfo = r.datos.profesor || { rol: 'admin' };
     aplicarPapelProfe();
     document.getElementById('admin-login').classList.add('hidden');
@@ -450,7 +482,8 @@ async function adminAbrir() {
     if (typeof cargarPegatinasProfe === 'function') cargarPegatinasProfe();
 }
 function adminCerrarPanel() {
-    _claveProfe = '';
+    _claveProfe = ''; _claveProfeOk = false;
+    aplicarCandadoPanel();
     if (rolActual === 'profe') { document.getElementById('admin-codigo-nuevo').classList.add('hidden'); return; }
     document.getElementById('admin-panel').classList.add('hidden');
     document.getElementById('admin-profesores-bloque').classList.add('hidden');
