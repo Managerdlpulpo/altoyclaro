@@ -173,11 +173,35 @@ await prueba('lecturas en voz alta: solo puntuaciones (lista blanca), fusionadas
     r = await llamar('sync', { lecturas: [lec], cursor: 0 }, { cookie: c2 }); // repetida desde otro dispositivo: no se duplica
     assert.equal(r.body.lecturas.length, 2);
     const l1 = r.body.lecturas.find(x => x.id === 'L1');
-    eq(Object.keys(l1).sort(), ['autoc', 'comp', 'compN', 'compl', 'cuento', 'dur', 'e', 'esc', 'est', 'id', 'metodo', 'n', 'nivel', 'pausas', 'ppm', 'prec', 'pron', 't']);
+    eq(Object.keys(l1).sort(), ['autoc', 'comp', 'compN', 'compl', 'cuento', 'dur', 'e', 'esc', 'est', 'id', 'metodo', 'n', 'nivel', 'pausas', 'ppm', 'prec', 'pron', 'qv', 't']);
     assert.equal(l1.prec, 92); assert.equal(l1.e, lec.e);
     assert.ok(!JSON.stringify(r.body.lecturas).includes('gato duerme') && !JSON.stringify(r.body.lecturas).includes('base64'));
     const l3 = r.body.lecturas.find(x => x.id === 'L3'); assert.equal(l3.e, ''); assert.equal(l3.ppm, 400); assert.equal(l3.pausas, null);
     const l = await adm({ accion: 'listar' }); assert.equal(l.body.ninos[0].lecturas, 2);
+});
+await prueba('lecturas: palabras practicadas (pw) solo números válidos; se pueden ampliar después pero no encoger ni cambiar lo demás', async () => {
+    const t = Date.now();
+    const base = { id: 'LP', t, cuento: 'l0-gato', prec: 70, est: 2, e: 'bmbsbbbbbbbbbbbbbbbbbbbb', comp: 67, compN: 3, qv: 2 };
+    let r = await llamar('sync', { lecturas: [{ ...base, pw: [3, 'gato', -1, 3, 999, 1.5] }] }, { cookie: c1 });
+    eq(r.body.lecturasRecibidas, ['LP']);
+    let fila = (await globalThis.__aycQuery("SELECT datos FROM ayc_lecturas WHERE id = 'LP'"))[0].datos;
+    eq(fila.pw, [3]); assert.equal(fila.qv, 2); assert.equal(fila.comp, 67);
+    const cur = (await llamar('sync', { cursor: 0 }, { cookie: c2 })).body.cursor;
+    // practicó otra palabra más tarde: se amplía (y el otro dispositivo la recibe)
+    r = await llamar('sync', { lecturas: [{ ...base, pw: [1, 3], prec: 5, comp: 0, e: 'bbbb' }] }, { cookie: c1 });
+    eq(r.body.lecturasRecibidas, ['LP']);
+    fila = (await globalThis.__aycQuery("SELECT datos FROM ayc_lecturas WHERE id = 'LP'"))[0].datos;
+    eq(fila.pw, [1, 3]); assert.equal(fila.prec, 70, 'lo demás no cambia'); assert.equal(fila.comp, 67); assert.equal(fila.e, base.e);
+    r = await llamar('sync', { cursor: cur }, { cookie: c2 });
+    eq(r.body.lecturas.find(x => x.id === 'LP').pw, [1, 3]);
+    // una copia vieja (menos palabras o sin pw) no la encoge
+    await llamar('sync', { lecturas: [{ ...base, pw: [3] }, base] }, { cookie: c2 });
+    eq((await globalThis.__aycQuery("SELECT datos FROM ayc_lecturas WHERE id = 'LP'"))[0].datos.pw, [1, 3]);
+    assert.equal(Number((await globalThis.__aycQuery("SELECT count(*)::int AS n FROM ayc_lecturas WHERE id = 'LP'"))[0].n), 1);
+    // sin palabras practicadas no se guarda pw
+    await llamar('sync', { lecturas: [{ ...base, id: 'LQ', pw: [] }] }, { cookie: c1 });
+    assert.equal((await globalThis.__aycQuery("SELECT datos FROM ayc_lecturas WHERE id = 'LQ'"))[0].datos.pw, undefined);
+    await globalThis.__aycQuery("DELETE FROM ayc_lecturas WHERE id IN ('LP', 'LQ')");
 });
 
 await prueba('frases cotidianas: solo puntuaciones (lista blanca), sin texto ni audio, fusionadas por id', async () => {
@@ -453,6 +477,16 @@ await prueba('el profesor A no puede leer ni tocar a los alumnos ni las pegatina
         assert.ok(r.status === 404 || r.status === 403, accion + ' → ' + r.status);
     }
     let r = await como(cA, { accion: 'entregar', id: ninoB, pegatina: 'hola' }); assert.equal(r.status, 404);
+    // Lecturas (palabras que le cuestan y comprensión): cada docente solo las de sus alumnos; el admin, de todos
+    await llamar('sync', { lecturas: [{ id: 'LB1', t: Date.now(), cuento: 'l0-gato', e: 'bmbb', comp: 67, compN: 3, qv: 2, pw: [1], oido: 'no debe salir' }] }, { cookie: e.cookie });
+    r = await como(cA, { accion: 'lecturas', id: ninoB }); assert.equal(r.status, 404);
+    assert.ok(!JSON.stringify(r.body).includes('l0-gato'));
+    r = await como(cA, { accion: 'lecturas', id: 'no-existe' }); assert.equal(r.status, 404);
+    r = await como(cB, { accion: 'lecturas', id: ninoB }); assert.equal(r.status, 200);
+    eq(r.body.lecturas.map(x => [x.id, x.cuento, x.e, x.comp, x.compN, x.qv, x.pw]), [['LB1', 'l0-gato', 'bmbb', 67, 3, 2, [1]]]);
+    assert.ok(!JSON.stringify(r.body).includes('no debe salir'));
+    r = await adm({ accion: 'lecturas', id: ninoB }); assert.equal(r.status, 200); assert.equal(r.body.lecturas.length, 1);
+    r = await como(cA, { accion: 'lecturas', id: ninoA }); assert.equal(r.status, 200); eq(r.body.lecturas, []);
     const pa = await como(cA, { accion: 'pegatinas' });
     eq(pa.body.pendientes.map(p => p.alias), ['Ana (A)']);
     assert.ok(!JSON.stringify(pa.body).includes('Bruno'));
@@ -537,7 +571,7 @@ await prueba('sesión de alumno: no abre nada del profe (todas las acciones de /
     const cookie = e.cookie;
     const s = await llamar('acceso', { accion: 'sesion' }, { cookie });
     assert.equal(s.body.profe, false); assert.equal(s.body.nino.alias, 'Nury'); assert.ok(!s.body.profesor);
-    for (const accion of ['comprobar', 'listar', 'pegatinas', 'entregar', 'crear', 'regenerar', 'revocar', 'liberar', 'borrar', 'profesores', 'profesor_crear', 'reasignar', 'auditoria']) {
+    for (const accion of ['comprobar', 'listar', 'lecturas', 'pegatinas', 'entregar', 'crear', 'regenerar', 'revocar', 'liberar', 'borrar', 'profesores', 'profesor_crear', 'reasignar', 'auditoria']) {
         const r = await llamar('admin', { accion, id: c.body.id, alias: 'X', nombre: 'X', pegatina: 'primera' }, { cookie, ip: '10.7.7.7' });
         assert.equal(r.status, 401, accion + ' con sesión de alumno');
     }

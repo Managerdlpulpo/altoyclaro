@@ -270,7 +270,12 @@ async function _sincronizarUnaVez(opciones) {
         guardarHabla();
         if (hayLect) {
             const idsL = new Set(lecturaData.lecturas.map(i => i.id));
-            (d.lecturas || []).forEach(i => { if (!idsL.has(i.id)) { lecturaData.lecturas.push(Object.assign({}, i, { audioId: null, s: 1 })); idsL.add(i.id); nuevos++; } });
+            (d.lecturas || []).forEach(i => {
+                if (!idsL.has(i.id)) { lecturaData.lecturas.push(Object.assign({}, i, { audioId: null, s: 1 })); idsL.add(i.id); nuevos++; return; }
+                // Ya la teníamos: solo puede crecer la lista de palabras practicadas (pw) desde otro dispositivo
+                const loc = lecturaData.lecturas.find(x => x.id === i.id);
+                if (loc && Array.isArray(i.pw) && i.pw.length > (Array.isArray(loc.pw) ? loc.pw.length : 0)) { loc.pw = i.pw.slice(); nuevos++; }
+            });
             lecturaData.lecturas.sort((a, b) => a.t - b.t);
             guardarLecturas();
         }
@@ -540,10 +545,25 @@ function adminPintar(d) {
         <div class="flex flex-wrap gap-2 mt-2">
           <button onclick="adminRegenerar('${escS(n.id)}')" class="text-[11px] bg-amber-500 text-stadium-950 font-bold px-2 py-1 rounded-lg">Nueva clave</button>
           ${n.revocado ? '' : `<button onclick="adminRevocar('${escS(n.id)}')" class="text-[11px] bg-stadium-800 border border-slate-700 text-slate-200 font-bold px-2 py-1 rounded-lg">Anular clave</button>`}
+          <button onclick="adminLectura('${escS(n.id)}')" class="admin-lectura-btn text-[11px] bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-2 py-1 rounded-lg" aria-expanded="false">📖 Lectura</button>
           <button onclick="adminBorrar('${escS(n.id)}')" class="text-[11px] bg-red-700 text-white font-bold px-2 py-1 rounded-lg">Borrar niño y datos</button>
           ${admin && profs.length ? `<label class="text-[11px] text-slate-400 flex items-center gap-1">Clase: <select onchange="adminReasignar('${escS(n.id)}', this.value)" class="bg-stadium-800 border border-slate-700 rounded-lg px-1 py-1 text-white text-[11px]" aria-label="Pasar a otra clase">${opciones(n.profesor || '')}</select></label>` : ''}
         </div>
+        <div class="admin-lectura hidden mt-3 border-t border-slate-800 pt-3"></div>
       </div>`).join('');
+}
+// Lectura de un alumno: palabras que le cuestan y comprensión por cuento (el servidor aplica el ámbito del profe)
+async function adminLectura(id) {
+    const fila = [...document.querySelectorAll('#admin-lista [data-nino]')].find(x => x.dataset.nino === id);
+    if (!fila) return;
+    const box = fila.querySelector('.admin-lectura'), btn = fila.querySelector('.admin-lectura-btn');
+    if (!box.classList.contains('hidden')) { box.classList.add('hidden'); if (btn) btn.setAttribute('aria-expanded', 'false'); return; }
+    box.classList.remove('hidden'); if (btn) btn.setAttribute('aria-expanded', 'true');
+    box.innerHTML = '<p class="text-xs text-slate-400">Cargando…</p>';
+    const r = await llamarAdmin('lecturas', { id });
+    if (r.status !== 200) { box.innerHTML = `<p class="text-xs text-red-300">${escS((r.datos && r.datos.mensaje) || 'No se pudo cargar.')}</p>`; return; }
+    box.innerHTML = `<div class="text-xs font-bold text-white mb-2">📖 Leo en voz alta · ${escS(aliasDe(id))}</div>`
+        + (typeof lecResumenProfeHTML === 'function' ? lecResumenProfeHTML(r.datos.lecturas || []) : '');
 }
 const aliasDe = id => ((document.getElementById('admin-lista')._ninos || []).find(n => n.id === id) || {}).alias || '';
 async function adminCrear() {

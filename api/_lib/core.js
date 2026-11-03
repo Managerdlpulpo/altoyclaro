@@ -324,6 +324,7 @@ function limpiarIntento(i) {
 }
 // Lectura en voz alta: lista blanca de puntuaciones. Nada de transcripciones ni audio: lo demás se descarta.
 // e = resultado de cada palabra del cuento, en orden (b bien, d con dudas, m no se entendió, s saltada, n no leída).
+// pw = posiciones (números) de las palabras difíciles que luego practicó y dijo bien; qv = versión de las preguntas.
 const ID_CUENTO = /^[a-z0-9-]{1,30}$/;
 function limpiarLectura(x) {
     if (!x || typeof x !== 'object') return null;
@@ -333,13 +334,15 @@ function limpiarLectura(x) {
     if (!id || !t || !cuento) return null;
     const ent = (v, max) => Math.round(numero(v, 0, max, 0));
     const opc = (v, max) => (v == null || v === '' || !Number.isFinite(Number(v)) ? null : ent(v, max));
+    const pw = Array.isArray(x.pw) ? [...new Set(x.pw.filter(k => Number.isInteger(k) && k >= 0 && k < 400))].sort((a, b) => a - b).slice(0, 60) : [];
     return {
         id, t, datos: {
             cuento, nivel: ent(x.nivel, 3), metodo: x.metodo === 'adulto' ? 'adulto' : 'auto',
             prec: ent(x.prec, 100), ppm: ent(x.ppm, 400), compl: ent(x.compl, 100), est: ent(x.est, 3),
             pausas: opc(x.pausas, 99), autoc: opc(x.autoc, 99), pron: opc(x.pron, 100),
             comp: opc(x.comp, 100), compN: ent(x.compN, 5), dur: ent(x.dur, 1800), n: ent(x.n, 400), esc: x.esc === true,
-            e: typeof x.e === 'string' && /^[bdmsn]{0,400}$/.test(x.e) ? x.e : ''
+            e: typeof x.e === 'string' && /^[bdmsn]{0,400}$/.test(x.e) ? x.e : '',
+            ...(pw.length ? { pw } : {}), qv: ent(x.qv, 9)
         }
     };
 }
@@ -495,12 +498,15 @@ export async function sync({ q, env, req, body }) {
                 SELECT id FROM ayc_intentos WHERE nino_id = $1 ORDER BY t ASC LIMIT $2)`, [id, total - MAX_INTENTOS_NINO]);
         }
     }
-    // Lecturas en voz alta (solo puntuaciones): igual que los intentos
+    // Lecturas en voz alta (solo puntuaciones): igual que los intentos. Lo único que puede cambiar después es «pw»
+    // (palabras que practicó bien más tarde): solo se acepta si trae más palabras que las guardadas.
     const loteL = (Array.isArray(body.lecturas) ? body.lecturas : []).slice(0, MAX_LOTE).map(limpiarLectura).filter(i => i && i.t > borradoT);
     if (loteL.length) {
-        await q(`INSERT INTO ayc_lecturas (nino_id, id, t, recibido, datos)
+        await q(`INSERT INTO ayc_lecturas AS l (nino_id, id, t, recibido, datos)
             SELECT $1, x.id, x.t, $2, x.datos FROM jsonb_to_recordset($3::jsonb) AS x(id text, t bigint, datos jsonb)
-            ON CONFLICT (nino_id, id) DO NOTHING`, [id, ahora, JSON.stringify(loteL)]);
+            ON CONFLICT (nino_id, id) DO UPDATE SET datos = jsonb_set(l.datos, '{pw}', EXCLUDED.datos->'pw'), recibido = EXCLUDED.recibido
+            WHERE jsonb_typeof(EXCLUDED.datos->'pw') = 'array'
+              AND jsonb_array_length(EXCLUDED.datos->'pw') > COALESCE(jsonb_array_length(CASE WHEN jsonb_typeof(l.datos->'pw') = 'array' THEN l.datos->'pw' END), 0)`, [id, ahora, JSON.stringify(loteL)]);
         const total = Number((await q('SELECT count(*)::int AS n FROM ayc_lecturas WHERE nino_id = $1', [id]))[0].n);
         if (total > MAX_LECTURAS_NINO) {
             await q(`DELETE FROM ayc_lecturas WHERE nino_id = $1 AND id IN (
@@ -645,6 +651,22 @@ export async function admin({ q, env, req, body }) {
                             dispositivos: disp.filter(d => d.nino_id === n.id).map(d => ({ id: d.dispositivo_id, nombre: d.nombre, creado: Number(d.creado), ultimo: Number(d.ultimo) }))
                         };
                     })
+                }
+            };
+        }
+        case 'lecturas': {
+            // Lecturas de UN alumno para el panel (palabras que le cuestan y comprensión). Con ámbito: otro docente → 404.
+            await existe();
+            const filas = await q(`SELECT id, t, datos FROM ayc_lecturas WHERE nino_id = $1 ORDER BY t DESC LIMIT 500`, [id]);
+            const campos = ['cuento', 'est', 'prec', 'ppm', 'comp', 'compN', 'qv', 'e', 'pw', 'metodo'];
+            return {
+                status: 200, body: {
+                    ok: true, lecturas: filas.map(f => {
+                        const d = typeof f.datos === 'string' ? JSON.parse(f.datos) : (f.datos || {});
+                        const r = { id: f.id, t: Number(f.t) };
+                        campos.forEach(k => { if (d[k] !== undefined) r[k] = d[k]; });
+                        return r;
+                    }).reverse()
                 }
             };
         }

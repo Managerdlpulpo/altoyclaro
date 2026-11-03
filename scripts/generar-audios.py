@@ -67,7 +67,7 @@ def textos_fijos():
             lit = literales(linea)
             if lit:
                 textos.append(lit[-1])
-    # Leo en voz alta (lectura.js): títulos, frases de los cuentos, preguntas, opciones y respuestas
+    # Leo en voz alta (lectura.js): títulos, frases de los cuentos, preguntas, opciones, respuestas y explicaciones (x)
     m = re.search(r"const CUENTOS = \[(.*?)// FIN CUENTOS", leer('lectura.js'), re.S)
     if not m:
         sys.exit('No encuentro CUENTOS en lectura.js')
@@ -78,7 +78,7 @@ def textos_fijos():
             continue
         if l[0] in "'\"":
             textos.append(lit[0])                     # una frase del cuento por línea
-        for campo in ('titulo', 'p', 'r'):
+        for campo in ('titulo', 'p', 'r', 'x'):
             mm = re.search(r"\b" + campo + r"\s*:\s*(['\"])((?:\\.|(?!\1).)*)\1", linea)
             if mm:
                 textos.append(re.sub(r"\\(.)", r"\1", mm.group(2)))

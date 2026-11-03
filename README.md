@@ -39,7 +39,7 @@ página está oculto con `html.sin-acceso`):
   el **📜 Registro de cambios** (`ayc_auditoria`: quién creó/borró/anuló claves de niños y quién
   creó/desactivó/borró profesores; sin claves).
 - **Profesor** = entra con su clave en la misma pantalla «Soy el profe». Solo ve **sus** alumnos (progreso,
-  test, lecturas, frases, dispositivos y «Pegatinas por entregar») y solo puede crear, renovar, anular,
+  test, lecturas con «📖 Lectura»: palabras que le cuestan y comprensión por cuento, frases, dispositivos y «Pegatinas por entregar») y solo puede crear, renovar, anular,
   liberar o borrar los suyos. No ve las otras clases ni puede gestionar profesores.
 - Todo el ámbito se aplica **en el servidor** (`WHERE profesor_id = …` en cada consulta de `/api/admin`;
   un alumno de otra clase responde 404, como si no existiera; las acciones de admin responden 403).
@@ -171,8 +171,8 @@ dijo el niño se queda en el dispositivo. No se graba audio en el test.
 
 ## Leo en voz alta (`lectura.js`)
 
-19 cuentos originales en 4 niveles (0: ~25 palabras, 1: ~42, 2: ~70, 3: ~100), cada uno
-con 2-4 preguntas de comprensión (elegir o responder en voz alta). El niño lee en voz alta
+26 cuentos originales en 4 niveles (0: ~25 palabras, 1: ~42, 2: ~70, 3: ~100; 7 de ellos son de los
+temas de países), cada uno con 3 preguntas de comprensión (elegir entre 3 opciones). El niño lee en voz alta
 y el reconocimiento de voz del navegador (modo continuo) se alinea palabra a palabra con
 el texto: en directo se marca por dónde va y al terminar cada palabra sale de color
 (verde bien, amarillo con dudas, rojo mal, gris saltada).
@@ -194,6 +194,20 @@ anterior. Solo se sincronizan las puntuaciones; lo que entendió el reconocedor 
 grabación opcional («Guardar mi lectura», para comparar la primera y la última) se
 quedan en el dispositivo. Gráficas de PCPM y precisión en «Mi progreso».
 
+**💪 Palabras para practicar.** Al terminar se muestran las palabras «con dudas», mal o saltadas
+(sin repetir), cada una con 🔊 (voz Piper si existe, si no la del dispositivo) y «🎙️ Probar»: el niño
+puede decirla sola y, si se parece lo bastante, sale «✅ ¡Conseguido!». Lo oído no se guarda ni se envía:
+solo la posición de la palabra (`pw`, números) en la lectura. Con los códigos por palabra (`e`) y `pw` se
+calcula la lista acumulada «Palabras que me cuestan» (×n lecturas; ✅ si la practicó bien después) en
+Mi progreso y en el Panel del profe.
+
+**🧠 Comprensión.** Después, las preguntas de una en una (3 opciones, la respuesta está en el texto):
+al contestar se bloquea, se marca la correcta y sale «📖 Lo dice el cuento: …» con la frase. +2 XP por
+acierto solo la primera vez que contesta las preguntas de ese cuento (luego son «de repaso», sin XP);
+`comp` (%), `compN` y `qv` (versión de las preguntas) se sincronizan. En el Panel del profe, «📖 Lectura»
+en cada alumno pide `accion: 'lecturas'` a `/api/admin` (con ámbito: otro docente recibe 404) y
+enseña las palabras que le cuestan y la comprensión por cuento (última, mejor y veces).
+
 ## Tema favorito (`temas.js`)
 
 Botón del tema arriba (y en la primera pantalla). Cambia colores, fondo, mascota y la
@@ -201,6 +215,16 @@ celebración hablada, y da prioridad (1 de cada 3) a las palabras con foto de su
 categoría en Identificar, Hablar («Todas») y «Dime una frase», al chip del Diccionario
 y al cuento recomendado. No cambia el test de nivel. Se guarda en el perfil
 sincronizado (el servidor solo acepta los temas de la lista).
+
+**🌍 Países del mundo** (7 temas, debajo de los 6 de siempre): 🇪🇸 España, 🇨🇳 China, 🇺🇦 Ucrania,
+🇷🇺 Rusia, 🇲🇦 Marruecos, 🇷🇴 Rumanía y 🇨🇴 Colombia. Cada uno tiene 5 palabras con foto real (monumentos,
+ciudades, paisajes y animales; p. ej. la Gran Muralla, el oso panda, los girasoles, el lago Baikal, el
+dromedario, el castillo de Bran, el colibrí), con artículo y traducción, 3 frases de ejemplo cada una
+para «Dime una frase» y el penalty, su mascota, colores, celebraciones y un cuento con 3 preguntas.
+Contenido neutro (viajes, cartas y visitas del cole; sin política). Fotos de Wikimedia Commons
+(autores y licencias en `img/CREDITOS.md`) y audio Piper como el resto. Para añadir un país: entrada en
+`TEMAS` con `pais: true` y `cat`, 5 palabras con esa `cat` en `visualVocab`, sus `ejemplosFrase`, un
+cuento con `tema` y `python3 scripts/generar-audios.py`.
 
 ## Frases cotidianas (`frases.js`)
 
@@ -236,7 +260,8 @@ npm test                                            # API, sorteo del test, lect
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-voz.cjs        # voz
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-navegador.cjs  # acceso con clave (niño, profe, anular, servidor caído)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-test-nivel.cjs  # test de nivel (respuestas simuladas)
-NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-lectura.cjs    # leo en voz alta y temas (reconocimiento simulado)
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-lectura.cjs    # leo en voz alta, palabras, comprensión y temas (reconocimiento simulado)
+NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-lectura-profe.cjs # lectura en el panel del profe: palabras y comprensión, ámbito por clase
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-frases.cjs     # frases cotidianas y pegatinas (servidor recién arrancado)
 NODE_PATH=/ruta/a/playwright-core/node_modules node test/e2e-profesores.cjs # admin y profesores: ámbito por clase (servidor recién arrancado)
 ```
