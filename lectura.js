@@ -17,8 +17,12 @@ const CUENTOS = [
             'Ana quiere mucho a Bigotes.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿De qué color es Bigotes?', ops: ['Gris', 'Negro', 'Blanco'], ok: 0 },
-            { tipo: 'decir', p: '¿Dónde duerme Bigotes?', claves: ['cama'], r: 'En la cama de Ana.' },
+            { tipo: 'elegir', p: '¿De qué color es Bigotes?', ops: ['Gris', 'Negro', 'Blanco'], ok: 0,
+                x: 'Bigotes es un gato gris.' },
+            { tipo: 'elegir', p: '¿Dónde duerme Bigotes?', ops: ['En la cama de Ana', 'En el sofá', 'En el jardín'], ok: 0,
+                x: 'Bigotes duerme en la cama de Ana.' },
+            { tipo: 'elegir', p: '¿Con qué juega Bigotes?', ops: ['Con una pelota', 'Con un ratón', 'Con una caja'], ok: 0,
+                x: 'Por la mañana, Bigotes bebe leche y juega con una pelota.' },
         ]
     },
     {
@@ -30,8 +34,12 @@ const CUENTOS = [
             'Después, se la come en el patio con su amiga Sara.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿De qué color es la manzana?', ops: ['Roja', 'Verde', 'Amarilla'], ok: 0 },
-            { tipo: 'decir', p: '¿Dónde se come Leo la manzana?', claves: ['patio'], r: 'En el patio.' },
+            { tipo: 'elegir', p: '¿De qué color es la manzana?', ops: ['Roja', 'Verde', 'Amarilla'], ok: 0,
+                x: 'Leo tiene una manzana roja.' },
+            { tipo: 'elegir', p: '¿Cómo es la manzana?', ops: ['Grande y dulce', 'Pequeña y ácida', 'Verde y dura'], ok: 0,
+                x: 'La manzana es grande y dulce.' },
+            { tipo: 'elegir', p: '¿Con quién se come Leo la manzana?', ops: ['Con su amiga Sara', 'Con su madre', 'Con su perro'], ok: 0,
+                x: 'Después, se la come en el patio con su amiga Sara.' },
         ]
     },
     {
@@ -44,8 +52,12 @@ const CUENTOS = [
             '¡Gol!',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Con quién juega al fútbol?', ops: ['Con su hermano', 'Con su abuela', 'Solo'], ok: 0 },
-            { tipo: 'decir', p: '¿De qué colores es el balón?', claves: ['blanco', 'negro'], r: 'Blanco y negro.' },
+            { tipo: 'elegir', p: '¿De qué colores es el balón?', ops: ['Blanco y negro', 'Rojo y azul', 'Verde y amarillo'], ok: 0,
+                x: 'Es blanco y negro.' },
+            { tipo: 'elegir', p: '¿Con quién juega al fútbol?', ops: ['Con su hermano', 'Con su abuela', 'Con su gato'], ok: 0,
+                x: 'Juego al fútbol con mi hermano.' },
+            { tipo: 'elegir', p: '¿Dónde entra el balón?', ops: ['En la portería', 'Por la ventana', 'En el río'], ok: 0,
+                x: 'Yo chuto fuerte y el balón entra en la portería.' },
         ]
     },
     {
@@ -57,8 +69,12 @@ const CUENTOS = [
             '¡Qué sonrisa tan bonita!',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿De qué color es el cepillo?', ops: ['Azul', 'Rojo', 'Verde'], ok: 0 },
-            { tipo: 'decir', p: '¿Cuándo se lava Hugo los dientes?', claves: ['manana', 'noche'], r: 'Por la mañana y por la noche.' },
+            { tipo: 'elegir', p: '¿Qué se lava Hugo?', ops: ['Los dientes', 'Las manos', 'El pelo'], ok: 0,
+                x: 'Hugo se lava los dientes.' },
+            { tipo: 'elegir', p: '¿De qué color es el cepillo?', ops: ['Azul', 'Rojo', 'Verde'], ok: 0,
+                x: 'Usa su cepillo azul y un poco de pasta.' },
+            { tipo: 'elegir', p: '¿Cuándo se lava Hugo los dientes?', ops: ['Por la mañana y por la noche', 'Solo a mediodía', 'Nunca'], ok: 0,
+                x: 'Se lava por la mañana y por la noche.' },
         ]
     },
     {
@@ -70,8 +86,12 @@ const CUENTOS = [
             'Mi abuela riega la flor con agua.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Quién visita la flor?', ops: ['Una abeja', 'Un perro', 'Un pez'], ok: 0 },
-            { tipo: 'decir', p: '¿Con qué riega la abuela la flor?', claves: ['agua'], r: 'Con agua.' },
+            { tipo: 'elegir', p: '¿De qué color es la flor?', ops: ['Amarilla', 'Roja', 'Azul'], ok: 0,
+                x: 'En el jardín hay una flor amarilla.' },
+            { tipo: 'elegir', p: '¿Quién visita la flor?', ops: ['Una abeja', 'Un perro', 'Un pez'], ok: 0,
+                x: 'Una abeja pequeña viene a visitarla.' },
+            { tipo: 'elegir', p: '¿Quién riega la flor?', ops: ['La abuela', 'El hermano', 'La profesora'], ok: 0,
+                x: 'Mi abuela riega la flor con agua.' },
         ]
     },
     {
@@ -85,9 +105,12 @@ const CUENTOS = [
             'Luego volvemos a casa y bebe mucha agua.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Cómo se llama el perro?', ops: ['Rayo', 'Toby', 'Sol'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué hace Rayo cuando se cansa?', claves: ['tumba', 'arbol', 'descansa', 'duerme', 'tumbarse'], r: 'Se tumba debajo de un árbol.' },
-            { tipo: 'elegir', p: '¿Cuándo van al parque?', ops: ['Por la tarde', 'Por la noche', 'Nunca'], ok: 0 },
+            { tipo: 'elegir', p: '¿Cómo se llama el perro?', ops: ['Rayo', 'Toby', 'Sol'], ok: 0,
+                x: 'Mi perro se llama Rayo.' },
+            { tipo: 'elegir', p: '¿Cuándo van al parque?', ops: ['Por la tarde', 'Por la noche', 'Nunca'], ok: 0,
+                x: 'Todas las tardes vamos al parque.' },
+            { tipo: 'elegir', p: '¿Qué hace Rayo cuando se cansa?', ops: ['Se tumba debajo de un árbol', 'Se sube a un banco', 'Se baña en el río'], ok: 0,
+                x: 'Cuando se cansa, se tumba debajo de un árbol.' },
         ]
     },
     {
@@ -100,8 +123,12 @@ const CUENTOS = [
             '¡Hoy tiene clase de música!',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Qué bebe Lucía?', ops: ['Leche', 'Zumo', 'Agua'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué fruta se come Lucía?', claves: ['platano', 'platanos'], r: 'Un plátano.' },
+            { tipo: 'elegir', p: '¿Dónde desayuna Lucía?', ops: ['En la cocina', 'En el colegio', 'En el parque'], ok: 0,
+                x: 'Por la mañana, Lucía desayuna en la cocina.' },
+            { tipo: 'elegir', p: '¿Qué fruta se come Lucía?', ops: ['Un plátano', 'Una manzana', 'Una pera'], ok: 0,
+                x: 'Lucía también se come un plátano.' },
+            { tipo: 'elegir', p: '¿Qué clase tiene hoy?', ops: ['Música', 'Inglés', 'Natación'], ok: 0,
+                x: '¡Hoy tiene clase de música!' },
         ]
     },
     {
@@ -114,8 +141,12 @@ const CUENTOS = [
             'Mañana, a lo mejor, vuelve a visitarme.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿De qué color es el pájaro?', ops: ['Azul', 'Rojo', 'Negro'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué le da de comer al pájaro?', claves: ['pan', 'migas'], r: 'Migas de pan.' },
+            { tipo: 'elegir', p: '¿De qué color es el pájaro?', ops: ['Azul', 'Rojo', 'Negro'], ok: 0,
+                x: 'Un pájaro azul se para en mi ventana.' },
+            { tipo: 'elegir', p: '¿Qué le da de comer al pájaro?', ops: ['Migas de pan', 'Semillas', 'Gusanos'], ok: 0,
+                x: 'Le pongo unas migas de pan en un plato pequeño.' },
+            { tipo: 'elegir', p: '¿Hacia dónde se va volando el pájaro?', ops: ['Hacia los árboles', 'Hacia el mar', 'Hacia la luna'], ok: 0,
+                x: 'El pájaro come, mueve las alas y se va volando hacia los árboles.' },
         ]
     },
     {
@@ -129,8 +160,12 @@ const CUENTOS = [
             'En casa preparamos una macedonia para merendar.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Qué le regala el frutero?', ops: ['Una mandarina', 'Una fresa', 'Una manzana'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué le dice el niño al frutero?', claves: ['gracias'], r: '¡Muchas gracias!' },
+            { tipo: 'elegir', p: '¿Qué día van a la frutería?', ops: ['El sábado', 'El lunes', 'El domingo'], ok: 0,
+                x: 'El sábado voy con mi madre a la frutería.' },
+            { tipo: 'elegir', p: '¿Qué le regala el frutero?', ops: ['Una mandarina', 'Una fresa', 'Una manzana'], ok: 0,
+                x: 'El frutero me regala una mandarina.' },
+            { tipo: 'elegir', p: '¿Qué preparan en casa para merendar?', ops: ['Una macedonia', 'Una tarta', 'Una pizza'], ok: 0,
+                x: 'En casa preparamos una macedonia para merendar.' },
         ]
     },
     {
@@ -144,8 +179,12 @@ const CUENTOS = [
             'Y baja con mucho cuidado.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Qué lleva siempre Marta?', ops: ['El casco', 'Una gorra', 'Una mochila'], ok: 0 },
-            { tipo: 'decir', p: '¿De qué color es la bicicleta?', claves: ['roja', 'rojo'], r: 'Roja.' },
+            { tipo: 'elegir', p: '¿De qué color es la bicicleta de Marta?', ops: ['Roja', 'Azul', 'Verde'], ok: 0,
+                x: 'Marta tiene una bicicleta roja.' },
+            { tipo: 'elegir', p: '¿Qué lleva siempre Marta?', ops: ['El casco', 'Una gorra', 'Una mochila'], ok: 0,
+                x: 'Siempre lleva el casco puesto.' },
+            { tipo: 'elegir', p: '¿Qué grita Marta cuando ve una cuesta?', ops: ['¡Allá voy!', '¡Qué miedo!', '¡Adiós!'], ok: 0,
+                x: 'Cuando ve una cuesta, Marta grita: «¡Allá voy!».' },
         ]
     },
     {
@@ -160,9 +199,12 @@ const CUENTOS = [
             'Después del partido, nos dimos la mano y merendamos todos juntos.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Qué número llevaba en la camiseta?', ops: ['El siete', 'El diez', 'El uno'], ok: 0 },
-            { tipo: 'decir', p: '¿Cómo terminó el partido?', claves: ['empate', 'empataron', 'empatamos', 'empatar', 'uno'], r: 'Empataron a uno.' },
-            { tipo: 'elegir', p: '¿Qué hicieron después del partido?', ops: ['Merendaron juntos', 'Se fueron a dormir', 'Vieron la tele'], ok: 0 },
+            { tipo: 'elegir', p: '¿Qué número llevaba en la camiseta?', ops: ['El siete', 'El diez', 'El uno'], ok: 0,
+                x: 'Yo llevaba la camiseta verde con el número siete.' },
+            { tipo: 'elegir', p: '¿Cómo terminó el partido?', ops: ['Empataron a uno', 'Ganaron tres a cero', 'Perdieron dos a uno'], ok: 0,
+                x: 'Al final empatamos a uno.' },
+            { tipo: 'elegir', p: '¿Qué hicieron después del partido?', ops: ['Merendaron juntos', 'Se fueron a dormir', 'Vieron la tele'], ok: 0,
+                x: 'Después del partido, nos dimos la mano y merendamos todos juntos.' },
         ]
     },
     {
@@ -177,8 +219,12 @@ const CUENTOS = [
             'Al final nos salió redonda y muy rica, y la comimos con pan.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Cuántos huevos batió?', ops: ['Cuatro', 'Dos', 'Diez'], ok: 0 },
-            { tipo: 'decir', p: '¿Quién cortó las patatas?', claves: ['abuelo'], r: 'El abuelo.' },
+            { tipo: 'elegir', p: '¿Qué cocinaron el abuelo y el niño?', ops: ['Una tortilla de patatas', 'Una pizza', 'Un bizcocho'], ok: 0,
+                x: 'Ayer mi abuelo y yo hicimos una tortilla de patatas.' },
+            { tipo: 'elegir', p: '¿Cuántos huevos batió?', ops: ['Cuatro', 'Dos', 'Diez'], ok: 0,
+                x: 'Yo batí cuatro huevos en un plato hondo con un tenedor.' },
+            { tipo: 'elegir', p: '¿Con qué se comieron la tortilla?', ops: ['Con pan', 'Con arroz', 'Con sopa'], ok: 0,
+                x: 'Al final nos salió redonda y muy rica, y la comimos con pan.' },
         ]
     },
     {
@@ -192,8 +238,12 @@ const CUENTOS = [
             'Cuando empezó a oscurecer, nos despedimos de los columpios y volvimos a casa cansados y contentos.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Dónde cayó la pelota?', ops: ['En un charco', 'En el río', 'En un árbol'], ok: 0 },
-            { tipo: 'decir', p: '¿Quién limpió la pelota?', claves: ['elena', 'prima'], r: 'Su prima Elena.' },
+            { tipo: 'elegir', p: '¿Con quién fue al parque?', ops: ['Con sus primos', 'Con su abuelo', 'Con la profesora'], ok: 0,
+                x: 'Después del colegio fuimos al parque con mis primos.' },
+            { tipo: 'elegir', p: '¿Dónde cayó la pelota?', ops: ['En un charco', 'En el río', 'En un árbol'], ok: 0,
+                x: 'De repente, la pelota rodó hasta un charco y se llenó de barro.' },
+            { tipo: 'elegir', p: '¿Qué merendaron?', ops: ['Un bocadillo', 'Un helado', 'Una tortilla'], ok: 0,
+                x: 'Más tarde merendamos un bocadillo sentados en un banco.' },
         ]
     },
     {
@@ -207,8 +257,12 @@ const CUENTOS = [
             'Por la tarde salió el sol y apareció un arcoíris precioso.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Qué apareció por la tarde?', ops: ['Un arcoíris', 'La luna', 'La nieve'], ok: 0 },
-            { tipo: 'decir', p: '¿A qué animal se parecía saltando en los charcos?', claves: ['rana', 'ranas'], r: 'A una rana.' },
+            { tipo: 'elegir', p: '¿Qué día llovió muchísimo?', ops: ['El martes', 'El sábado', 'El domingo'], ok: 0,
+                x: 'El martes llovió muchísimo durante toda la mañana.' },
+            { tipo: 'elegir', p: '¿Qué se puso a la salida?', ops: ['Las botas de agua', 'Un gorro de lana', 'Unas sandalias'], ok: 0,
+                x: 'A la salida, me puse las botas de agua y salté en todos los charcos.' },
+            { tipo: 'elegir', p: '¿Qué apareció por la tarde?', ops: ['Un arcoíris', 'La luna', 'La nieve'], ok: 0,
+                x: 'Por la tarde salió el sol y apareció un arcoíris precioso.' },
         ]
     },
     {
@@ -223,9 +277,12 @@ const CUENTOS = [
             'Mis tíos nos esperaban en el andén con una gran sonrisa.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Dónde se sentó?', ops: ['Al lado de la ventana', 'En el suelo', 'Junto a la puerta'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué animales vieron en el campo?', claves: ['vacas', 'vaca'], r: 'Vacas.' },
-            { tipo: 'elegir', p: '¿Cuánto duró el viaje?', ops: ['Tres horas', 'Un día', 'Diez minutos'], ok: 0 },
+            { tipo: 'elegir', p: '¿A quién fueron a visitar?', ops: ['A sus tíos', 'A sus abuelos', 'A sus primos'], ok: 0,
+                x: 'En verano fuimos en tren a visitar a mis tíos.' },
+            { tipo: 'elegir', p: '¿Dónde se sentó?', ops: ['Al lado de la ventana', 'En el suelo', 'Junto a la puerta'], ok: 0,
+                x: 'Yo me senté al lado de la ventana para ver el paisaje.' },
+            { tipo: 'elegir', p: '¿Cuánto duró el viaje?', ops: ['Tres horas', 'Un día', 'Diez minutos'], ok: 0,
+                x: 'Tres horas después, el tren llegó a su destino.' },
         ]
     },
     {
@@ -242,9 +299,12 @@ const CUENTOS = [
             '¡Estoy deseando volver!',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Cómo se llamaba el caballo?', ops: ['Trueno', 'Lobo', 'Rayo'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué le dio de comer al caballo?', claves: ['zanahoria', 'zanahorias'], r: 'Una zanahoria.' },
-            { tipo: 'elegir', p: '¿Qué podrán hacer en primavera?', ops: ['Montar a caballo', 'Ir a la playa', 'Pescar en el río'], ok: 0 },
+            { tipo: 'elegir', p: '¿Cómo se llamaba el perro del tío Juan?', ops: ['Lobo', 'Trueno', 'Rayo'], ok: 0,
+                x: 'Nada más llegar, su perro Lobo salió a recibirnos moviendo la cola.' },
+            { tipo: 'elegir', p: '¿Qué le dio de comer al caballo?', ops: ['Una zanahoria', 'Una manzana', 'Pan'], ok: 0,
+                x: '«Claro, pero ponle la zanahoria en la mano abierta», me contestó.' },
+            { tipo: 'elegir', p: '¿Qué podrán hacer en primavera?', ops: ['Montar a caballo', 'Ir a la playa', 'Pescar en el río'], ok: 0,
+                x: 'Antes de irnos, el tío Juan nos prometió que en primavera podríamos montar a caballo.' },
         ]
     },
     {
@@ -260,9 +320,12 @@ const CUENTOS = [
             'Luego comimos bizcocho hasta que no pudimos más.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿De qué era el bizcocho?', ops: ['De chocolate', 'De limón', 'De fresa'], ok: 0 },
-            { tipo: 'decir', p: '¿Qué gritaron cuando entró mamá?', claves: ['sorpresa'], r: '¡Sorpresa!' },
-            { tipo: 'elegir', p: '¿Dónde escondieron el regalo?', ops: ['Debajo de una silla', 'En el armario', 'En la cama'], ok: 0 },
+            { tipo: 'elegir', p: '¿De quién era el cumpleaños?', ops: ['De su madre', 'De su hermana', 'De su padre'], ok: 0,
+                x: 'El jueves era el cumpleaños de mi madre, y mi hermana y yo le preparamos una sorpresa.' },
+            { tipo: 'elegir', p: '¿De qué era el bizcocho?', ops: ['De chocolate', 'De limón', 'De fresa'], ok: 0,
+                x: 'Mi padre nos ayudó a preparar un bizcocho de chocolate.' },
+            { tipo: 'elegir', p: '¿Dónde escondieron el regalo?', ops: ['Debajo de una silla', 'En el armario', 'En la cama'], ok: 0,
+                x: 'Después pusimos la mesa con el mantel bueno y escondimos el regalo debajo de una silla.' },
         ]
     },
     {
@@ -278,8 +341,12 @@ const CUENTOS = [
             'Desde ese día, me lavo las manos antes de comer y después de jugar en el patio.',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Qué echó la profesora en las manos de Daniel?', ops: ['Purpurina', 'Pintura', 'Arena'], ok: 0 },
-            { tipo: 'decir', p: '¿Hasta qué número contaron?', claves: ['veinte'], r: 'Hasta veinte.' },
+            { tipo: 'elegir', p: '¿Qué echó la profesora en las manos de Daniel?', ops: ['Purpurina', 'Pintura', 'Arena'], ok: 0,
+                x: 'Echó un poco de purpurina en las manos de Daniel y le pidió que saludara a sus compañeros.' },
+            { tipo: 'elegir', p: '¿Con qué se lavaron las manos?', ops: ['Con agua y jabón', 'Con leche', 'Con arena'], ok: 0,
+                x: 'Después fuimos al baño y nos lavamos las manos con agua y jabón.' },
+            { tipo: 'elegir', p: '¿Hasta qué número contaron?', ops: ['Hasta veinte', 'Hasta cinco', 'Hasta cien'], ok: 0,
+                x: 'Contamos hasta veinte mientras frotábamos entre los dedos y debajo de las uñas.' },
         ]
     },
     {
@@ -296,9 +363,145 @@ const CUENTOS = [
             '¡Éramos campeones!',
         ],
         preguntas: [
-            { tipo: 'elegir', p: '¿Cómo se llamaba nuestro equipo?', ops: ['Los Leones', 'Los Tigres', 'Los Lobos'], ok: 0 },
-            { tipo: 'decir', p: '¿Quién era la capitana?', claves: ['irene'], r: 'Irene.' },
-            { tipo: 'elegir', p: '¿Cómo empató Irene?', ops: ['De cabeza', 'De penalti', 'Con la mano'], ok: 0 },
+            { tipo: 'elegir', p: '¿Cómo se llamaba nuestro equipo?', ops: ['Los Leones', 'Los Tigres', 'Los Lobos'], ok: 0,
+                x: 'Nuestro equipo, los Leones, jugaba contra los Tigres, que no habían perdido ningún partido.' },
+            { tipo: 'elegir', p: '¿Quién era la capitana?', ops: ['Irene', 'Samuel', 'Elena'], ok: 0,
+                x: 'En el descanso, nuestra capitana, Irene, nos animó: «¡Todavía podemos ganar si jugamos juntos!».' },
+            { tipo: 'elegir', p: '¿Cómo empató Irene?', ops: ['De cabeza', 'De penalti', 'Con la mano'], ok: 0,
+                x: 'En la segunda parte, Irene empató con un remate de cabeza.' },
+        ]
+    },
+    // Países (un cuento por cada tema de país de temas.js)
+    {
+        id: 'l0-panda', nivel: 0, tema: 'china', foto: 'el oso panda', titulo: 'Mei, el oso panda',
+        texto: [
+            'Mei es un oso panda blanco y negro.',
+            'Mei vive en un bosque de China.',
+            'Mei come bambú todo el día.',
+            'Después, Mei duerme en un árbol.',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿Qué animal es Mei?', ops: ['Un oso panda', 'Un gato', 'Un pájaro'], ok: 0,
+                x: 'Mei es un oso panda blanco y negro.' },
+            { tipo: 'elegir', p: '¿Qué come Mei?', ops: ['Bambú', 'Arroz', 'Pescado'], ok: 0,
+                x: 'Mei come bambú todo el día.' },
+            { tipo: 'elegir', p: '¿Dónde duerme Mei?', ops: ['En un árbol', 'En una cama', 'En el agua'], ok: 0,
+                x: 'Después, Mei duerme en un árbol.' },
+        ]
+    },
+    {
+        id: 'l1-girasoles', nivel: 1, tema: 'ucrania', foto: 'los girasoles', titulo: 'Los girasoles de Olena',
+        texto: [
+            'En verano, Olena visita a su abuela en Ucrania.',
+            'Cerca de la casa hay un campo enorme de girasoles.',
+            'Los girasoles son altos y amarillos, como el sol.',
+            'En el tejado de una casa, una cigüeña blanca cuida su nido.',
+            'Por la tarde, Olena y su abuela pasean y comen pipas.',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿A quién visita Olena en verano?', ops: ['A su abuela', 'A su primo', 'A su profesora'], ok: 0,
+                x: 'En verano, Olena visita a su abuela en Ucrania.' },
+            { tipo: 'elegir', p: '¿De qué color son los girasoles?', ops: ['Amarillos', 'Rojos', 'Azules'], ok: 0,
+                x: 'Los girasoles son altos y amarillos, como el sol.' },
+            { tipo: 'elegir', p: '¿Qué pájaro tiene su nido en el tejado?', ops: ['Una cigüeña', 'Un loro', 'Un pato'], ok: 0,
+                x: 'En el tejado de una casa, una cigüeña blanca cuida su nido.' },
+        ]
+    },
+    {
+        id: 'l1-desierto', nivel: 1, tema: 'marruecos', foto: 'el dromedario', titulo: 'Un paseo por el desierto',
+        texto: [
+            'Yasmín viaja con su familia a Marruecos.',
+            'Primero visitan Marrakech, una ciudad con mercados llenos de colores.',
+            'Después van al desierto del Sáhara.',
+            'Allí Yasmín sube a un dromedario, que tiene una sola joroba.',
+            'Por la noche miran las estrellas sobre las dunas.',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿Qué ciudad visitan primero?', ops: ['Marrakech', 'Madrid', 'Pekín'], ok: 0,
+                x: 'Primero visitan Marrakech, una ciudad con mercados llenos de colores.' },
+            { tipo: 'elegir', p: '¿Cuántas jorobas tiene el dromedario?', ops: ['Una', 'Dos', 'Tres'], ok: 0,
+                x: 'Allí Yasmín sube a un dromedario, que tiene una sola joroba.' },
+            { tipo: 'elegir', p: '¿Qué miran por la noche?', ops: ['Las estrellas', 'La tele', 'El mar'], ok: 0,
+                x: 'Por la noche miran las estrellas sobre las dunas.' },
+        ]
+    },
+    {
+        id: 'l2-alhambra', nivel: 2, tema: 'espana', foto: 'la Alhambra', titulo: 'La excursión a Granada',
+        texto: [
+            'Este curso, nuestra clase hizo una excursión a Granada.',
+            'Por la mañana visitamos la Alhambra, un palacio muy antiguo sobre una colina.',
+            'Tiene patios con fuentes, jardines y paredes llenas de dibujos.',
+            'La guía nos contó que se construyó hace muchos siglos.',
+            'En el Patio de los Leones, contamos doce leones de piedra alrededor de una fuente.',
+            'Desde una torre vimos la sierra con nieve.',
+            'Al volver, dibujamos la Alhambra en el autobús.',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿A qué ciudad fue la clase de excursión?', ops: ['A Granada', 'A Sevilla', 'A Bilbao'], ok: 0,
+                x: 'Este curso, nuestra clase hizo una excursión a Granada.' },
+            { tipo: 'elegir', p: '¿Cuántos leones de piedra contaron?', ops: ['Doce', 'Cinco', 'Veinte'], ok: 0,
+                x: 'En el Patio de los Leones, contamos doce leones de piedra alrededor de una fuente.' },
+            { tipo: 'elegir', p: '¿Qué vieron desde una torre?', ops: ['La sierra con nieve', 'El mar', 'Un río enorme'], ok: 0,
+                x: 'Desde una torre vimos la sierra con nieve.' },
+        ]
+    },
+    {
+        id: 'l2-colibri', nivel: 2, tema: 'colombia', foto: 'el colibrí', titulo: 'Las cartas de Camilo',
+        texto: [
+            'Mi amigo Camilo vive en Colombia y me escribe cartas.',
+            'Su ciudad, Bogotá, está en las montañas y por la mañana hace fresco.',
+            'Su abuela tiene una finca donde cultivan café.',
+            'En el jardín de la finca hay colibríes, unos pájaros diminutos que mueven las alas muy rápido.',
+            'En la última carta me mandó una foto de la palma de cera, un árbol altísimo.',
+            '¡Este verano quiero ir a visitarlo!',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿Dónde vive Camilo?', ops: ['En Colombia', 'En Italia', 'En China'], ok: 0,
+                x: 'Mi amigo Camilo vive en Colombia y me escribe cartas.' },
+            { tipo: 'elegir', p: '¿Qué cultivan en la finca de la abuela?', ops: ['Café', 'Trigo', 'Fresas'], ok: 0,
+                x: 'Su abuela tiene una finca donde cultivan café.' },
+            { tipo: 'elegir', p: '¿Cómo mueven las alas los colibríes?', ops: ['Muy rápido', 'Muy despacio', 'No las mueven'], ok: 0,
+                x: 'En el jardín de la finca hay colibríes, unos pájaros diminutos que mueven las alas muy rápido.' },
+        ]
+    },
+    {
+        id: 'l2-castillo', nivel: 2, tema: 'rumania', foto: 'el castillo de Bran', titulo: 'El castillo de la montaña',
+        texto: [
+            'En vacaciones, Andrei y su familia viajaron a Rumanía.',
+            'Primero pasearon por Bucarest, la capital, que tiene muchos parques.',
+            'Después fueron en coche hasta los montes Cárpatos.',
+            'Allí visitaron el castillo de Bran, que está encima de una roca.',
+            'Tenía torres, escaleras estrechas y tejados rojos.',
+            'Al final del viaje fueron en barca por el delta del Danubio y vieron muchos pelícanos.',
+            'Andrei lo dibujó todo en su cuaderno.',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿Cuál es la capital de Rumanía?', ops: ['Bucarest', 'Granada', 'Moscú'], ok: 0,
+                x: 'Primero pasearon por Bucarest, la capital, que tiene muchos parques.' },
+            { tipo: 'elegir', p: '¿Dónde está el castillo de Bran?', ops: ['Encima de una roca', 'Al lado del mar', 'En una isla'], ok: 0,
+                x: 'Allí visitaron el castillo de Bran, que está encima de una roca.' },
+            { tipo: 'elegir', p: '¿Qué pájaros vieron en el delta del Danubio?', ops: ['Pelícanos', 'Pingüinos', 'Gallinas'], ok: 0,
+                x: 'Al final del viaje fueron en barca por el delta del Danubio y vieron muchos pelícanos.' },
+        ]
+    },
+    {
+        id: 'l3-baikal', nivel: 3, tema: 'rusia', foto: 'el lago Baikal', titulo: 'Las fotos de Sasha',
+        texto: [
+            'Sasha nos trajo a clase las fotos de su viaje a Rusia, el país más grande del mundo.',
+            'En Moscú visitó la Plaza Roja, donde está la catedral de San Basilio, con cúpulas de muchos colores.',
+            'Al lado está el Kremlin, rodeado por una muralla de ladrillo rojo con torres.',
+            'Después cogió un tren muy largo que tardó varios días en llegar al lago Baikal.',
+            'Es el lago más profundo del mundo y en invierno su agua se congela.',
+            '«Caminamos sobre el hielo y se veían burbujas debajo», nos contó.',
+            'En un museo aprendió que en los bosques de Rusia viven osos pardos.',
+        ],
+        preguntas: [
+            { tipo: 'elegir', p: '¿Qué hay en la Plaza Roja?', ops: ['La catedral de San Basilio', 'La Alhambra', 'La Gran Muralla'], ok: 0,
+                x: 'En Moscú visitó la Plaza Roja, donde está la catedral de San Basilio, con cúpulas de muchos colores.' },
+            { tipo: 'elegir', p: '¿Cómo llegó Sasha al lago Baikal?', ops: ['En un tren muy largo', 'En avión', 'En barco'], ok: 0,
+                x: 'Después cogió un tren muy largo que tardó varios días en llegar al lago Baikal.' },
+            { tipo: 'elegir', p: '¿Qué le pasa al agua del lago en invierno?', ops: ['Se congela', 'Se calienta', 'Se vuelve roja'], ok: 0,
+                x: 'Es el lago más profundo del mundo y en invierno su agua se congela.' },
         ]
     },
 ];
@@ -511,6 +714,63 @@ function lecRespuestaOk(alternativas, claves) {
 }
 function lecContarPalabras(c) { return lecTokens(c).ref.length; }
 
+/* ---------- Palabras que me cuestan ----------
+   Se calculan con el código por palabra («e») de cada lectura, que ya se guardaba: no se guarda nada de lo oído.
+   pw = posiciones de las palabras que el niño practicó y dijo bien después (solo números). */
+const LEC_DIFICIL = new Set(['m', 's', 'd']);
+const LEC_PW_MAX = 60;
+function lecPalabraLimpia(s) { return String(s || '').replace(/[^\p{L}\p{N}]/gu, ''); }
+// Palabra para enseñar: en minúscula salvo los nombres propios (los que nunca salen en minúscula en el cuento)
+function lecPalabraVer(tk, k) {
+    const w = lecPalabraLimpia(tk.disp[k]), min = w.toLowerCase();
+    if (w === min) return w;
+    return tk.disp.some(d => lecPalabraLimpia(d) === min) ? min : w;
+}
+function lecPalabrasDificiles(tk, estados) {
+    const vistas = new Set(), r = [];
+    estados.forEach((e, k) => { if (LEC_DIFICIL.has(e) && tk.ref[k] && !vistas.has(tk.ref[k])) { vistas.add(tk.ref[k]); r.push({ k, ref: tk.ref[k], w: lecPalabraVer(tk, k), e }); } });
+    return r;
+}
+function lecPalabrasPracticar(tk, estados) { return lecPalabrasDificiles(tk, estados).map(x => x.w); }
+// Lista acumulada: cuántas veces ha costado cada palabra, la última vez y si la ha practicado bien después
+function lecPalabrasCuestan(lecturas) {
+    const m = new Map(), tks = {};
+    (lecturas || []).forEach(r => {
+        const c = lecCuento(r.cuento);
+        if (!c || typeof r.e !== 'string' || !r.e) return;
+        const tk = tks[c.id] || (tks[c.id] = lecTokens(c));
+        const pw = new Set(Array.isArray(r.pw) ? r.pw : []);
+        const vistas = new Set(), bien = new Set();
+        [...r.e].forEach((e, k) => {
+            const ref = tk.ref[k];
+            if (!ref) return;
+            const mal = LEC_DIFICIL.has(e);
+            if (!mal && !pw.has(k)) return;
+            let x = m.get(ref);
+            if (!x) { x = { w: lecPalabraVer(tk, k), ref, n: 0, t: 0, ok: 0, tOk: 0 }; m.set(ref, x); }
+            if (mal && !vistas.has(ref)) { vistas.add(ref); x.n++; x.t = Math.max(x.t, r.t || 0); }
+            if (pw.has(k) && !bien.has(ref)) { bien.add(ref); x.ok++; x.tOk = Math.max(x.tOk, r.t || 0); }
+        });
+    });
+    const l = [...m.values()].filter(x => x.n > 0).map(x => Object.assign(x, { superada: x.ok > 0 && x.tOk >= x.t }));
+    return l.sort((a, b) => (a.superada - b.superada) || (b.n - a.n) || (b.t - a.t) || a.w.localeCompare(b.w));
+}
+// Comprensión por cuento (para Mi progreso y el panel del profe)
+function lecComprensionPorCuento(lecturas) {
+    const m = {};
+    (lecturas || []).forEach(r => {
+        if (r.comp == null || !(r.compN > 0) || !lecCuento(r.cuento)) return;
+        const x = m[r.cuento] || (m[r.cuento] = { cuento: r.cuento, veces: 0, mejor: 0, ultima: 0, ultimaN: 0, t: 0 });
+        x.veces++; x.mejor = Math.max(x.mejor, r.comp);
+        if ((r.t || 0) >= x.t) { x.t = r.t || 0; x.ultima = r.comp; x.ultimaN = r.compN; }
+    });
+    return CUENTOS.filter(c => m[c.id]).map(c => Object.assign(m[c.id], { titulo: c.titulo }));
+}
+// Al practicar una palabra suelta: vale si alguna palabra oída se parece lo bastante
+function lecPalabraOk(alternativas, ref) {
+    return (alternativas || []).some(a => lecPalabras(a).some(w => lecSim(w, ref) >= LEC_UMBRAL_BIEN));
+}
+
 /* =====================================================================
    Datos de las lecturas (este dispositivo) y lo que se sincroniza
    ===================================================================== */
@@ -530,7 +790,8 @@ function guardarLecturas() {
     if (typeof programarSync === 'function') programarSync();
 }
 // Al servidor SOLO van puntuaciones (lista blanca también en el servidor): nunca lo oído ni el audio
-const LEC_CAMPOS_SERVIDOR = ['id', 't', 'cuento', 'nivel', 'metodo', 'prec', 'ppm', 'compl', 'est', 'pausas', 'autoc', 'pron', 'comp', 'compN', 'dur', 'n', 'esc', 'e'];
+const LEC_CAMPOS_SERVIDOR = ['id', 't', 'cuento', 'nivel', 'metodo', 'prec', 'ppm', 'compl', 'est', 'pausas', 'autoc', 'pron', 'comp', 'compN', 'dur', 'n', 'esc', 'e', 'pw', 'qv'];
+// pw = posiciones (números) de las palabras difíciles que luego dijo bien al practicarlas; qv = versión de las preguntas
 function lecturaParaServidor(r) { const o = {}; LEC_CAMPOS_SERVIDOR.forEach(k => { if (r[k] !== undefined) o[k] = r[k]; }); return o; }
 function lecturaParaExportar() {
     return lecturaData.lecturas.map(r => Object.assign(lecturaParaServidor(r), { titulo: (lecCuento(r.cuento) || {}).titulo || r.cuento, fecha: new Date(r.t).toISOString(), grabacion: !!r.audioId }));
@@ -627,10 +888,19 @@ function lecVistaLista() {
             </div>
             <button id="lec-recomendado" onclick="lecAbrir('${rec.id}')" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-6 py-3 rounded-xl">¡A leer!</button>
         </div>
+        ${lecTarjetaCuestanLista()}
         ${grupos}
         <p class="text-[11px] text-slate-400 mt-2">ℹ️ ${LEC_AVISO} Lo que se oye y las grabaciones se quedan en este dispositivo; con clave solo se guardan las puntuaciones.</p>`;
 }
 
+function lecTarjetaCuestanLista() {
+    const l = lecPalabrasCuestan(lecturaData.lecturas).filter(x => !x.superada);
+    if (!l.length) return '';
+    return `<div id="lec-cuestan-lista" class="bg-stadium-950 border border-amber-500/30 rounded-2xl p-3 mb-5">
+        <div class="text-sm font-bold text-white mb-1">💪 Palabras que me cuestan</div>
+        <p class="text-[11px] text-slate-400 mb-2">Pulsa 🔊 para escucharlas. Cuando las digas bien al practicar, saldrán con ✅ en «Mi progreso».</p>
+        ${lecCuestanHTML(l, { max: 10, oir: true, fecha: false })}</div>`;
+}
 function lecAbrir(id) {
     const c = lecCuento(id);
     if (!c) return;
@@ -939,7 +1209,7 @@ function lecAdultoSalir() {
 /* ---------- Resultado ---------- */
 function lecMostrarResultado(o) {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-    lecRes = Object.assign(o, { id, t: Date.now(), esc: lecEscuchoAntes, guardado: false, audioId: null, preg: { i: 0, aciertos: 0, hechas: 0, orden: null, respondida: false } });
+    lecRes = Object.assign(o, { id, t: Date.now(), esc: lecEscuchoAntes, guardado: false, audioId: null, pw: new Set(), preg: { i: 0, aciertos: 0, hechas: 0, orden: null, respondida: false, repaso: lecPreguntasHechas(lecturaData.lecturas, o.c.id, id) } });
     if (o.blob) {
         const audioId = 'lec-' + id;
         o.blob.arrayBuffer().then(buf => audioPut({ id: audioId, word: 'cuento:' + o.c.id, t: lecRes.t, modo: 'lectura', type: o.blob.type, data: buf }))
@@ -956,16 +1226,12 @@ function lecMostrarResultado(o) {
 function lecMensaje(est) {
     return est >= 3 ? '¡Qué bien has leído!' : est === 2 ? '¡Muy bien! Cada vez lees mejor.' : est === 1 ? '¡Sigue practicando, lo haces cada vez mejor!' : '¡Vamos a intentarlo otra vez!';
 }
-function lecPalabrasPracticar(tk, estados) {
-    const vistas = new Set(), r = [];
-    estados.forEach((e, k) => { if ((e === 'm' || e === 's' || e === 'd') && !vistas.has(tk.ref[k])) { vistas.add(tk.ref[k]); r.push(tk.disp[k].replace(/[^\p{L}\p{N}]/gu, '')); } });
-    return r;
-}
 function lecVistaResultado() {
     const r = lecRes, m = r.met, t = typeof temaActual === 'function' ? temaActual() : { mascota: '🌟' };
     const clases = r.estados.map(e => 'lec-' + e);
     const objetivo = LEC_OBJETIVO_PPM[r.c.nivel];
     const practicar = lecPalabrasPracticar(r.tk, r.estados);
+    const dificiles = lecPalabrasDificiles(r.tk, r.estados);
     const fila = (a, b) => `<tr><td class="pr-3 py-0.5 text-slate-400">${a}</td><td class="text-white">${b}</td></tr>`;
     const nulo = v => v == null ? '—' : v;
     return `
@@ -995,6 +1261,7 @@ function lecVistaResultado() {
             ${r.blob ? '<button onclick="lecOirMiLectura()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-sm">▶️ Escuchar mi lectura</button>' : ''}
             <button onclick="lecOtraVez()" class="bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-white font-bold px-4 py-2 rounded-xl text-sm">🔁 Leer otra vez</button>
         </div>
+        ${lecTarjetaDificiles(r, dificiles)}
         <div id="lec-preguntas" class="bg-stadium-950 border border-pitch-600/40 rounded-2xl p-4 mb-4"></div>
         <details id="lec-profe" class="bg-stadium-950 border border-slate-800 rounded-2xl p-4 text-sm">
             <summary class="cursor-pointer font-bold text-white">👩‍🏫 Para el profe: números de esta lectura</summary>
@@ -1015,6 +1282,76 @@ function lecVistaResultado() {
             <p class="mt-3 text-[11px] text-slate-400">Cómo se calcula: cada palabra oída se compara con la del texto (alineación con tolerancia a pequeñas diferencias). «Bien» = se parece ≥ 80 %; «con dudas» = 50-80 %; «no se entendió» = menos; «saltada» = no se oyó pero se siguió leyendo. PCPM = palabras bien o con dudas × 60 / segundos leyendo. La pronunciación es el parecido medio entre lo oído y lo escrito: depende mucho del micrófono y del navegador. ${LEC_AVISO}</p>
         </details>`;
 }
+// Palabras difíciles de esta lectura, para el niño: escucharlas y probar otra vez cada una
+function lecTarjetaDificiles(r, dificiles) {
+    if (!r.met.leidas) return '';
+    if (!dificiles.length) return `<div id="lec-dificiles" class="bg-emerald-950/40 border border-emerald-700/50 rounded-2xl p-4 mb-4 text-center">
+            <div class="font-game text-lg text-emerald-300">🎉 ¡Has leído todas las palabras muy bien!</div></div>`;
+    const sr = lecPuedeEscuchar() && r.metodo !== 'adulto';
+    return `<div id="lec-dificiles" class="bg-stadium-950 border border-amber-500/40 rounded-2xl p-4 mb-4">
+        <div class="font-game text-lg text-white mb-0.5">💪 Palabras para practicar</div>
+        <p class="text-xs text-slate-300 mb-3">Estas palabras han sido un reto. ¡Es normal! Escúchalas${sr ? ' y prueba a decirlas otra vez' : ''}.</p>
+        <div class="flex flex-col gap-2">${dificiles.map(x => `
+            <div class="lec-pal flex flex-wrap items-center gap-2 bg-stadium-900 border ${r.pw.has(x.k) ? 'border-emerald-600' : 'border-slate-700'} rounded-xl px-3 py-2" data-pal="${x.k}">
+                <span class="font-bold text-white text-xl flex-1 min-w-[6rem]">${lecEsc(x.w)}</span>
+                <button onclick="lecOirPalabra(${x.k})" class="lec-pal-oir bg-pitch-600 hover:bg-pitch-500 text-white w-10 h-10 rounded-xl shrink-0" aria-label="Escuchar «${lecEsc(x.w)}»">🔊</button>
+                ${sr ? `<button onclick="lecProbarPalabra(${x.k})" class="lec-pal-probar ${r.pw.has(x.k) ? 'bg-emerald-600' : 'bg-rose-600 hover:bg-rose-500'} text-white text-sm font-bold px-3 h-10 rounded-xl shrink-0"${r.pw.has(x.k) ? ' disabled' : ''}>${r.pw.has(x.k) ? '✅ ¡Conseguido!' : '🎙️ Probar'}</button>` : ''}
+                <div class="lec-pal-fb w-full text-xs text-slate-300 empty:hidden"></div>
+            </div>`).join('')}
+        </div></div>`;
+}
+function lecOirPalabra(k) {
+    const r = lecRes; if (!r || !r.tk.disp[k]) return;
+    if (typeof pararVoz === 'function') pararVoz();
+    decir(lecPalabraVer(r.tk, k));
+}
+let lecPalSR = null;
+function lecProbarPalabra(k) {
+    const r = lecRes;
+    if (!r || lecPalSR || lecPregSR || !r.tk.ref[k] || r.pw.has(k)) return;
+    const ref = r.tk.ref[k], fila = document.querySelector(`#lec-dificiles [data-pal="${k}"]`);
+    const b = fila && fila.querySelector('.lec-pal-probar'), fb = fila && fila.querySelector('.lec-pal-fb');
+    if (typeof pararVoz === 'function') pararVoz();
+    if (b) { b.textContent = '👂 Te escucho…'; b.disabled = true; }
+    const alts = [];
+    let err = null;
+    const fin = () => { if (b && !r.pw.has(k)) { b.textContent = '🎙️ Probar otra vez'; b.disabled = false; } };
+    try {
+        const s = new SpeechRec();
+        s.lang = 'es-ES'; s.continuous = false; s.interimResults = false; s.maxAlternatives = 5;
+        s.onresult = e => { for (let i = 0; i < e.results.length; i++) for (let j = 0; j < e.results[i].length; j++) if (e.results[i][j].transcript) alts.push(e.results[i][j].transcript.trim()); };
+        s.onerror = e => { err = e.error || 'error'; };
+        s.onend = () => {
+            lecPalSR = null;
+            if (!lecRes || lecRes.id !== r.id) return;
+            if (!alts.length) { fin(); if (fb) fb.textContent = err === 'not-allowed' ? '🔒 Necesito permiso para usar el micrófono.' : '🤔 No te he oído. Pulsa «Probar» y di la palabra.'; return; }
+            if (lecPalabraOk(alts, ref)) {
+                r.pw.add(k);
+                if (b) { b.textContent = '✅ ¡Conseguido!'; b.disabled = true; b.classList.remove('bg-rose-600', 'hover:bg-rose-500'); b.classList.add('bg-emerald-600'); }
+                if (fila) { fila.classList.remove('border-slate-700'); fila.classList.add('border-emerald-600'); }
+                if (fb) fb.innerHTML = '<span class="text-emerald-300 font-bold">🎉 ¡Muy bien! Esta palabra ya te sale.</span>';
+                decir(FRASES_VOZ.muyBien);
+                lecGuardarPracticadas();
+            } else {
+                fin();
+                if (fb) fb.innerHTML = '<span class="text-amber-300">💪 ¡Casi! Escúchala con 🔊 y prueba otra vez.</span>';
+                decir(FRASES_VOZ.casi);
+            }
+        };
+        lecPalSR = s;
+        s.start();
+        setTimeout(() => { if (lecPalSR === s) { try { s.stop(); } catch (_) { } } }, 6000);
+    } catch (e) { lecPalSR = null; fin(); }
+}
+// Si la lectura ya estaba guardada, se apuntan las practicadas en su registro (y se vuelve a sincronizar)
+function lecGuardarPracticadas() {
+    const r = lecRes; if (!r || !r.guardado) return;
+    const reg = lecturaData.lecturas.find(x => x.id === r.id);
+    if (!reg) return;
+    reg.pw = [...r.pw].sort((a, b) => a - b).slice(0, LEC_PW_MAX);
+    delete reg.s;
+    guardarLecturas();
+}
 function lecOirMiLectura() { if (lecRes && lecRes.blob) reproducirBlob(lecRes.blob); }
 function lecOtraVez() { const id = lecRes ? lecRes.c.id : lecCuentoId; lecGuardarPendiente(); lecAbrir(id); }
 
@@ -1026,7 +1363,8 @@ function lecPintarPregunta() {
     if (r.guardado || p.i >= qs.length) {
         const sig = lecSiguienteCuento(r.c);
         box.innerHTML = `<div class="text-center">
-            ${p.hechas ? `<div class="font-game text-lg text-white mb-1">🧠 Has acertado ${p.aciertos} de ${p.hechas} preguntas</div>` : ''}
+            ${p.hechas ? `<div class="font-game text-lg text-white mb-1" id="lec-comp-total">🧠 Has acertado ${p.aciertos} de ${p.hechas} preguntas</div>` : ''}
+            ${p.hechas && p.repaso ? '<div class="text-[11px] text-slate-400 mb-1">Estas preguntas ya las habías contestado: hoy eran de repaso.</div>' : ''}
             <div class="text-amber-300 text-sm mb-3" id="lec-xp">${r.xp ? `+${r.xp} XP` : ''}</div>
             <div class="flex flex-wrap gap-2 justify-center">
                 ${sig ? `<button id="lec-siguiente" onclick="lecAbrir('${sig.id}')" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-5 py-2.5 rounded-xl">➡️ Siguiente cuento: ${lecEsc(sig.titulo)}</button>` : ''}
@@ -1038,7 +1376,7 @@ function lecPintarPregunta() {
     let cuerpo = '';
     if (q.tipo === 'elegir') {
         if (!p.orden) p.orden = (typeof shuffle === 'function' ? shuffle : a => a)(q.ops.map((_, k) => k));
-        cuerpo = `<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">${p.orden.map(k => `<button onclick="lecResponder(${k === q.ok}, this)" class="lec-op bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3 rounded-xl border border-slate-700">${lecEsc(q.ops[k])}</button>`).join('')}</div>`;
+        cuerpo = `<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">${p.orden.map(k => `<button onclick="lecResponder(${k === q.ok}, this)" data-op="${k}" class="lec-op bg-stadium-800 hover:bg-pitch-700 text-white font-bold p-3 rounded-xl border border-slate-700">${lecEsc(q.ops[k])}</button>`).join('')}</div>`;
     } else {
         const sr = lecPuedeEscuchar() && lecRes.metodo !== 'adulto';
         cuerpo = `<div class="flex flex-wrap gap-2 justify-center">
@@ -1050,11 +1388,15 @@ function lecPintarPregunta() {
     box.innerHTML = `
         <div class="flex justify-between items-center mb-2"><span class="text-xs text-slate-400">Pregunta ${p.i + 1} de ${qs.length}</span>
             <button onclick="lecSaltarPreguntas()" class="text-xs text-slate-400 underline">Saltar preguntas</button></div>
+        ${p.i === 0 ? `<div class="text-xs text-slate-300 mb-2">🧠 ¿Has entendido el cuento? Elige la respuesta.${p.repaso ? ' <span class="text-slate-400">(de repaso: ya las contestaste)</span>' : ` <span class="text-amber-300">+${LEC_XP_PREGUNTA} XP por acierto</span>`}</div>` : ''}
         <div class="flex items-center gap-2 mb-3"><button onclick="lecPreguntar()" class="bg-pitch-600 text-white w-9 h-9 rounded-xl shrink-0" aria-label="Escuchar la pregunta">🔊</button>
             <div class="font-bold text-white text-lg" id="lec-pregunta">${lecEsc(q.p)}</div></div>
         ${cuerpo}
-        <div id="lec-preg-fb" class="mt-3 text-center text-sm min-h-[1.25rem]"></div>`;
-    p.respondida = false;
+        <div id="lec-preg-fb" class="mt-3 text-center text-sm min-h-[1.25rem]"></div>
+        <div id="lec-preg-sig-box" class="mt-2 text-center"></div>`;
+    // Si se vuelve a pintar con la pregunta ya contestada, se enseña contestada (y sigue bloqueada)
+    p.respondida = p.hechas > p.i;
+    if (p.respondida) lecPintarRespondida(p.ultOk, p.ultOp);
 }
 function lecPreguntar() { const r = lecRes; if (r && !r.guardado && r.c.preguntas[r.preg.i]) decir(r.c.preguntas[r.preg.i].p); }
 function lecResponderVoz() {
@@ -1087,23 +1429,37 @@ function lecResponderVoz() {
     } catch (e) { lecPregSR = null; if (b) { b.textContent = '🎙️ Responder'; b.disabled = false; } }
 }
 function lecResponder(ok, btn) {
-    const r = lecRes; if (!r || r.preg.respondida) return;
-    const p = r.preg, q = r.c.preguntas[p.i];
+    const r = lecRes; if (!r || r.guardado || r.preg.respondida || r.preg.hechas > r.preg.i) return;
+    const p = r.preg;
     p.respondida = true; p.hechas++; if (ok) p.aciertos++;
+    p.ultOk = !!ok; p.ultOp = btn && btn.dataset ? btn.dataset.op : null;
+    lecPintarRespondida(ok, p.ultOp, true);
+}
+function lecPintarRespondida(ok, op, hablar) {
+    const r = lecRes; if (!r) return;
+    const p = r.preg, q = r.c.preguntas[p.i];
+    const btn = op != null ? document.querySelector(`#lec-preguntas .lec-op[data-op="${op}"]`) : null;
+    // Bloqueado: una vez contestada no se puede cambiar (ni sumar más puntos)
     document.querySelectorAll('#lec-preguntas button').forEach(b => { if (!b.textContent.includes('Saltar')) b.disabled = true; });
     const respuesta = q.tipo === 'elegir' ? q.ops[q.ok] : q.r;
     if (btn) btn.classList.add(ok ? 'correct' : 'wrong');
+    if (q.tipo === 'elegir') document.querySelectorAll('#lec-preguntas .lec-op').forEach(b => { if (+b.dataset.op === q.ok) b.classList.add('correct'); });
     const fb = document.getElementById('lec-preg-fb');
-    if (ok) { fb.innerHTML = '<span class="text-emerald-400 font-bold">✅ ¡Correcto!</span>'; decir(FRASES_VOZ.correcto); }
-    else { fb.innerHTML = `<span class="text-amber-300">La respuesta es: <strong>${lecEsc(respuesta)}</strong></span>`; decir([FRASES_VOZ.respuestaEs, respuesta]); }
-    const id = r.id;
-    setTimeout(() => {
-        if (!lecRes || lecRes.id !== id) return;
-        p.i++;
-        if (p.i >= r.c.preguntas.length) lecGuardarRegistro(Math.round(p.aciertos / p.hechas * 100));
-        lecPintarPregunta();
-        lecPreguntar();
-    }, ok ? 1600 : 2600);
+    const expl = q.x ? `<div class="lec-expl mt-2 text-xs text-slate-200 bg-stadium-900 border border-slate-700 rounded-xl px-3 py-2 text-left">📖 Lo dice el cuento: <em class="text-white">${lecEsc(q.x)}</em></div>` : '';
+    const xp = ok && !p.repaso ? ` <span class="text-amber-300 text-xs">+${LEC_XP_PREGUNTA} XP</span>` : '';
+    if (ok) { fb.innerHTML = `<span class="text-emerald-400 font-bold">✅ ¡Correcto!</span>${xp}${expl}`; if (hablar) decir(FRASES_VOZ.correcto); }
+    else { fb.innerHTML = `<span class="text-amber-300">La respuesta es: <strong>${lecEsc(respuesta)}</strong></span>${expl}`; if (hablar) decir([FRASES_VOZ.respuestaEs, respuesta]); }
+    const ultima = p.i + 1 >= r.c.preguntas.length;
+    const sig = document.getElementById('lec-preg-sig-box');
+    if (sig) sig.innerHTML = `<button id="lec-preg-sig" onclick="lecSiguientePregunta()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-5 py-2.5 rounded-xl">${ultima ? '🏁 Ver mi resultado' : '➡️ Siguiente pregunta'}</button>`;
+}
+function lecSiguientePregunta() {
+    const r = lecRes; if (!r || r.guardado || r.preg.hechas <= r.preg.i) return;
+    const p = r.preg;
+    p.i++; p.orden = null; p.respondida = false;
+    if (p.i >= r.c.preguntas.length) lecGuardarRegistro(Math.round(p.aciertos / p.hechas * 100));
+    lecPintarPregunta();
+    lecPreguntar();
 }
 function lecSaltarPreguntas() {
     const r = lecRes; if (!r || r.guardado) return;
@@ -1120,9 +1476,14 @@ function lecSiguienteCuento(c) {
 }
 
 /* ---------- Guardar la lectura (cuando acaban las preguntas, se saltan o se sale) ---------- */
-function lecXP(est, comp, repetidaHoy) {
-    if (repetidaHoy) return est;
-    return est * 5 + (comp != null && comp >= 50 ? 5 : 0);
+// XP: la lectura (menos si ya se leyó hoy) + 2 por pregunta acertada, SOLO la primera vez que se contestan las
+// preguntas de ese cuento (después son de repaso: así no se pueden «farmear» puntos repitiendo).
+const LEC_XP_PREGUNTA = 2, LEC_PREGUNTAS_VERSION = 2;
+function lecXP(est, aciertos, repetidaHoy, preguntasHechas) {
+    return (repetidaHoy ? est : est * 5) + (preguntasHechas ? 0 : Math.max(0, aciertos || 0) * LEC_XP_PREGUNTA);
+}
+function lecPreguntasHechas(lecturas, cuento, excepto) {
+    return (lecturas || []).some(x => x.cuento === cuento && x.id !== excepto && x.qv === LEC_PREGUNTAS_VERSION && x.compN > 0);
 }
 function lecGuardarRegistro(comp) {
     const r = lecRes;
@@ -1135,12 +1496,14 @@ function lecGuardarRegistro(comp) {
         id: r.id, t: r.t, cuento: r.c.id, nivel: r.c.nivel, metodo: r.metodo,
         prec: m.prec, ppm: m.ppm, compl: m.compl, est: m.est, pausas: m.pausas, autoc: m.autoc, pron: m.pron,
         comp: comp == null ? null : comp, compN: r.preg.hechas, dur: Math.min(1800, Math.round(m.ms / 1000)), n: m.n,
-        esc: !!r.esc, e: r.estados.join(''),
+        esc: !!r.esc, e: r.estados.join(''), qv: LEC_PREGUNTAS_VERSION,
+        ...(r.pw && r.pw.size ? { pw: [...r.pw].sort((a, b) => a - b).slice(0, LEC_PW_MAX) } : {}),
         audioId: r.audioId || null, oido: (r.oido || '').slice(0, 2000) // solo en este dispositivo
     };
     lecturaData.lecturas.push(reg);
     guardarLecturas();
-    r.xp = m.correctas ? lecXP(m.est, comp, repetidaHoy) : 0;
+    // Puntos de las preguntas solo la primera vez (y solo si ha leído algo)
+    r.xp = m.correctas ? lecXP(m.est, r.preg.aciertos, repetidaHoy, r.preg.repaso) : 0;
     if (r.xp && typeof addXP === 'function') addXP(r.xp);
 }
 function lecGuardarPendiente() { if (lecRes && !lecRes.guardado) lecGuardarRegistro(lecRes.preg.hechas ? Math.round(lecRes.preg.aciertos / lecRes.preg.hechas * 100) : null); }
@@ -1149,6 +1512,7 @@ function lecSalir() {
     lecPararEscucha();
     if (lecAdulto) { clearInterval(lecAdulto.reloj); if (lecAdulto.stream) lecAdulto.stream.getTracks().forEach(t => t.stop()); lecAdulto = null; }
     if (lecPregSR) { try { lecPregSR.abort(); } catch (_) { } lecPregSR = null; }
+    if (lecPalSR) { try { lecPalSR.abort(); } catch (_) { } lecPalSR = null; }
     lecGuardarPendiente();
     lecRes = null; lecVista = 'lista';
 }
@@ -1180,14 +1544,8 @@ function renderProgresoLectura() {
     if (!L.length) { box.innerHTML = cab + '<p class="text-xs text-slate-400">Todavía no hay lecturas. Ve a «📖 Leo en voz alta» y lee un cuento.</p>'; return; }
     const ult = L.slice(-30), prim5 = L.slice(0, 5), ult5 = L.slice(-5);
     const objetivo = LEC_OBJETIVO_PPM[lecNivel()];
-    // Palabras para practicar: las que más fallan en las últimas 20 lecturas
-    const fallos = {};
-    L.slice(-20).forEach(r => {
-        const c = lecCuento(r.cuento); if (!c || !r.e) return;
-        const tk = lecTokens(c);
-        [...r.e].forEach((e, k) => { if ((e === 'm' || e === 's') && tk.disp[k]) { const w = tk.disp[k].replace(/[^\p{L}\p{N}]/gu, '').toLowerCase(); fallos[w] = (fallos[w] || 0) + 1; } });
-    });
-    const practicar = Object.entries(fallos).sort((a, b) => b[1] - a[1]).slice(0, 12);
+    // Palabras que me cuestan (todas las lecturas) y comprensión por cuento
+    const cuestan = lecPalabrasCuestan(L), compr = lecComprensionPorCuento(L);
     // Primera y última lectura de cada cuento
     const porCuento = {};
     L.forEach(r => { (porCuento[r.cuento] = porCuento[r.cuento] || []).push(r); });
@@ -1209,7 +1567,8 @@ function renderProgresoLectura() {
             <div><div class="text-xs text-slate-300 mb-1">⚡ Palabras correctas por minuto</div>${lecGrafico(ult.map(r => r.ppm), { color: '#38bdf8', objetivo, etiqueta: 'Gráfico de palabras correctas por minuto' })}</div>
             <div><div class="text-xs text-slate-300 mb-1">🎯 Precisión (%)</div>${lecGrafico(ult.map(r => r.prec), { color: '#34d399', max: 100, etiqueta: 'Gráfico de precisión' })}</div>
         </div>
-        <div class="text-xs mb-3"><span class="text-slate-400">Palabras para practicar:</span> ${practicar.length ? practicar.map(([w, n]) => `<span class="inline-block bg-rose-950/60 border border-rose-700/50 text-rose-200 px-2 py-0.5 rounded-lg mr-1 mb-1">${lecEsc(w)} <span class="opacity-60">×${n}</span></span>`).join('') : '<span class="text-emerald-300">ninguna destacada</span>'}</div>
+        <div class="mb-3" id="prog-cuestan"><div class="text-xs text-slate-300 mb-1">💪 Palabras que me cuestan</div>${lecCuestanHTML(cuestan, { max: 20, oir: true })}</div>
+        <div class="mb-3" id="prog-comprension"><div class="text-xs text-slate-300 mb-1">🧠 Comprensión por cuento</div>${lecComprensionHTML(compr)}</div>
         ${comparar ? `<div class="text-xs mb-3 overflow-x-auto"><div class="text-slate-300 mb-1">Primera lectura frente a la última</div><table class="w-full text-slate-300"><thead><tr class="text-slate-500"><th class="text-left">Cuento</th><th class="text-left">Primera</th><th class="text-left">Última</th><th class="text-left">PCPM</th></tr></thead><tbody>${comparar}</tbody></table></div>` : ''}
         <div class="text-xs overflow-x-auto mb-2"><div class="text-slate-300 mb-1">Últimas lecturas</div><table class="w-full text-slate-300" id="prog-lectura-tabla"><thead><tr class="text-slate-500"><th class="text-left">Fecha</th><th class="text-left">Cuento</th><th>⭐</th><th>Precisión</th><th>PCPM</th><th>Leído</th><th>Comprensión</th></tr></thead><tbody>
             ${L.slice(-8).reverse().map(r => `<tr class="border-t border-slate-800"><td class="py-1 pr-2 whitespace-nowrap">${typeof fmtFecha === 'function' ? fmtFecha(r.t) : ''}</td><td class="pr-2">${lecEsc((lecCuento(r.cuento) || {}).titulo || r.cuento)}${r.metodo === 'adulto' ? ' 👩‍🏫' : ''}</td><td class="text-center">${r.est}</td><td class="text-center">${r.prec}%</td><td class="text-center">${r.ppm}</td><td class="text-center">${r.compl}%</td><td class="text-center">${r.comp == null ? '—' : r.comp + '%'}</td></tr>`).join('')}
@@ -1218,6 +1577,34 @@ function renderProgresoLectura() {
             <p class="text-[10px] text-slate-500 flex-1">PCPM = palabras leídas bien (o con dudas) por minuto. La línea amarilla es un objetivo orientativo para su nivel. ${LEC_AVISO}</p>
             <button onclick="lecExportarCSV()" class="bg-stadium-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">⬇️ Lecturas (CSV)</button>
         </div>`;
+}
+// Chips de «palabras que me cuestan»: ×veces, última vez y ✅ si la practicó bien después
+function lecCuestanHTML(lista, o) {
+    o = o || {};
+    if (!lista.length) return '<span class="text-xs text-emerald-300">🎉 ¡Ninguna! Todas las palabras te salen bien.</span>';
+    const fecha = t => typeof fmtFecha === 'function' && t ? fmtFecha(t) : '';
+    const max = o.max || lista.length;
+    return `<div class="flex flex-wrap gap-1.5">${lista.slice(0, max).map(x => `
+        <span class="lec-cuesta inline-flex items-center gap-1 ${x.superada ? 'bg-emerald-950/50 border-emerald-700/50 text-emerald-200' : 'bg-rose-950/60 border-rose-700/50 text-rose-200'} border px-2 py-1 rounded-lg text-xs" data-w="${lecEsc(x.w)}" title="${x.superada ? 'La practicó y la dijo bien' : 'Le ha costado'} · última vez ${lecEsc(fecha(x.t))}">
+            ${x.superada ? '✅ ' : ''}<strong>${lecEsc(x.w)}</strong> <span class="opacity-70">×${x.n}</span>${o.fecha === false ? '' : ` <span class="opacity-50 text-[10px]">${lecEsc(fecha(x.t))}</span>`}
+            ${o.oir ? `<button type="button" onclick="decir(this.parentNode.dataset.w)" class="ml-0.5" aria-label="Escuchar «${lecEsc(x.w)}»">🔊</button>` : ''}
+        </span>`).join('')}${lista.length > max ? `<span class="text-[11px] text-slate-400 self-center">y ${lista.length - max} más</span>` : ''}</div>`;
+}
+function lecComprensionHTML(lista) {
+    if (!lista.length) return '<span class="text-xs text-slate-400">Todavía no ha contestado preguntas.</span>';
+    return `<div class="overflow-x-auto"><table class="w-full text-xs text-slate-300 lec-compr"><thead><tr class="text-slate-500"><th class="text-left">Cuento</th><th>Última</th><th>Mejor</th><th>Veces</th></tr></thead><tbody>
+        ${lista.map(x => `<tr class="border-t border-slate-800" data-cuento="${x.cuento}"><td class="py-1 pr-2">${lecEsc(x.titulo)}</td><td class="text-center">${x.ultima}%</td><td class="text-center ${x.mejor >= 67 ? 'text-emerald-300' : x.mejor >= 34 ? 'text-amber-300' : 'text-rose-300'}">${x.mejor}%</td><td class="text-center">${x.veces}</td></tr>`).join('')}
+        </tbody></table></div>`;
+}
+// Resumen para el panel del profe (con las lecturas que devuelve el servidor para un alumno)
+function lecResumenProfeHTML(lecturas) {
+    const L = (lecturas || []).slice().sort((a, b) => (a.t || 0) - (b.t || 0));
+    if (!L.length) return '<p class="text-xs text-slate-400">Todavía no ha leído ningún cuento (o no se ha sincronizado).</p>';
+    const ult = L[L.length - 1];
+    return `<div class="text-[11px] text-slate-400 mb-2">${L.length} lecturas · última: ${lecEsc(typeof fmtFecha === 'function' ? fmtFecha(ult.t) : '')}</div>
+        <div class="mb-3"><div class="text-xs font-bold text-slate-200 mb-1">💪 Palabras que le cuestan</div>${lecCuestanHTML(lecPalabrasCuestan(L), { max: 30, oir: true })}
+            <div class="text-[10px] text-slate-500 mt-1">×n = lecturas en que le costó · ✅ = la practicó y la dijo bien después</div></div>
+        <div><div class="text-xs font-bold text-slate-200 mb-1">🧠 Comprensión</div>${lecComprensionHTML(lecComprensionPorCuento(L))}</div>`;
 }
 async function lecReproducir(id) {
     try { const r = (await audioAll()).find(x => x.id === id); if (r) reproducirBlob(new Blob([r.data], { type: r.type })); } catch (e) { console.warn(e); }
@@ -1236,5 +1623,6 @@ if (typeof renderProgresoHabla === 'function') {
 
 if (typeof module !== 'undefined' && module.exports) module.exports = {
     CUENTOS, lecNorm, lecPalabras, lecSim, lecAlinear, lecMetricas, lecPCPM, lecEstrellas, lecTokens, lecRespuestaOk,
-    lecContarPalabras, lecDesbloqueado, lecRecomendado, lecMejores, lecturaParaServidor, lecXP, LEC_OBJETIVO_PPM
+    lecContarPalabras, lecDesbloqueado, lecRecomendado, lecMejores, lecturaParaServidor, lecXP, LEC_OBJETIVO_PPM,
+    lecPalabrasDificiles, lecPalabrasPracticar, lecPalabrasCuestan, lecComprensionPorCuento, lecPalabraOk, lecPreguntasHechas, lecResumenProfeHTML, LEC_XP_PREGUNTA, LEC_PREGUNTAS_VERSION
 };

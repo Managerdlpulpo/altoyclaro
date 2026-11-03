@@ -91,11 +91,11 @@ prueba('respuestas habladas: basta con la palabra clave (con tolerancia)', () =>
     assert.equal(L.lecRespuestaOk(['en el sofá'], ['cama']), false);
     assert.equal(L.lecRespuestaOk(['eran 7'], ['siete']), true);
 });
-prueba('cuentos: 15-20, niveles 0-3, fotos existentes, temas válidos y longitud creciente', () => {
+prueba('cuentos: 15-30, niveles 0-3, fotos existentes, temas válidos y longitud creciente', () => {
     const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
     const fotos = new Set([...html.matchAll(/es:\s*'([^']+)',\s*img:/g)].map(m => m[1]));
     assert.ok(fotos.size >= 30, 'vocabulario leído');
-    assert.ok(L.CUENTOS.length >= 15 && L.CUENTOS.length <= 20, 'número de cuentos');
+    assert.ok(L.CUENTOS.length >= 15 && L.CUENTOS.length <= 30, 'número de cuentos');
     const ids = new Set();
     const media = [0, 0, 0, 0], cuenta = [0, 0, 0, 0];
     for (const c of L.CUENTOS) {
@@ -103,10 +103,22 @@ prueba('cuentos: 15-20, niveles 0-3, fotos existentes, temas válidos y longitud
         assert.ok([0, 1, 2, 3].includes(c.nivel));
         assert.ok(T.TEMAS[c.tema], 'tema ' + c.tema);
         assert.ok(fotos.has(c.foto), 'foto no existe: ' + c.foto);
-        assert.ok(c.preguntas.length >= 2 && c.preguntas.length <= 5);
+        // Comprensión: 3 preguntas de elegir con 3 opciones; la explicación es una frase copiada del cuento
+        // y la respuesta correcta sale en esa frase (así la respuesta está claramente en el texto)
+        assert.equal(c.preguntas.length, 3, c.id);
+        const textoN = L.lecPalabras(c.texto.join(' ')).join(' ');
         for (const q of c.preguntas) {
-            if (q.tipo === 'elegir') assert.ok(q.ops[q.ok] !== undefined);
-            else { assert.equal(q.tipo, 'decir'); assert.ok(q.claves.length && q.r); }
+            assert.equal(q.tipo, 'elegir', c.id);
+            assert.equal(q.ops.length, 3, c.id + ': ' + q.p);
+            assert.equal(new Set(q.ops.map(L.lecNorm)).size, 3, 'opciones repetidas: ' + q.p);
+            assert.ok(q.ops[q.ok] !== undefined && q.p.length < 90);
+            assert.ok(typeof q.x === 'string' && q.x.length, 'falta explicación: ' + q.p);
+            const xN = L.lecPalabras(q.x).join(' ');
+            assert.ok(textoN.includes(xN), c.id + ': la explicación no está en el cuento: ' + q.x);
+            // las palabras con contenido de la respuesta (más de 3 letras, o la única que haya) tienen que salir en la frase
+            const todas = L.lecPalabras(q.ops[q.ok]), largas = todas.filter(w => w.length > 3);
+            const okN = largas.length ? largas : todas;
+            assert.ok(okN.every(w => L.lecPalabras(q.x).some(v => L.lecSim(v, w) >= 0.75)), c.id + ': la respuesta «' + q.ops[q.ok] + '» no sale en «' + q.x + '»');
         }
         const t = L.lecTokens(c);
         assert.equal(t.ref.length, t.disp.length);
@@ -129,6 +141,71 @@ prueba('desbloqueo y recomendación', () => {
 prueba('solo las puntuaciones van al servidor (sin lo oído ni el audio)', () => {
     const r = plano(L.lecturaParaServidor({ id: 'x', t: 1, cuento: 'l0-gato', prec: 90, oido: 'bigotes es', audioId: 'lec-1', s: 1, e: 'bb' }));
     assert.deepEqual(r, { id: 'x', t: 1, cuento: 'l0-gato', prec: 90, e: 'bb' });
+});
+prueba('palabras difíciles de una lectura: m/s/d, sin repetir y sin puntuación', () => {
+    const e = [...'b'.repeat(N)]; e[1] = 'm'; e[2] = 'd'; e[3] = 's';
+    const d = plano(L.lecPalabrasDificiles(tk, e));
+    assert.deepEqual(d.map(x => x.k), [1, 2, 3]);
+    assert.ok(d.every(x => /^[\p{L}\p{N}]+$/u.test(x.w)));
+    assert.deepEqual(plano(L.lecPalabrasPracticar(tk, e)), d.map(x => x.w));
+    assert.deepEqual(plano(L.lecPalabrasDificiles(tk, [...'b'.repeat(N)])), []);
+});
+prueba('palabras que me cuestan: se acumulan por lectura y salen ✅ si se practicaron bien después', () => {
+    const e1 = [...'b'.repeat(N)]; e1[1] = 'm'; e1[3] = 's';
+    const e2 = [...'b'.repeat(N)]; e2[1] = 'd';
+    const lect = [
+        { id: 'a', t: 100, cuento: 'l0-gato', e: e1.join('') },
+        { id: 'b', t: 200, cuento: 'l0-gato', e: e2.join(''), pw: [1] },
+        { id: 'c', t: 300, cuento: 'no-existe', e: 'mmm' },
+        { id: 'd', t: 50, cuento: 'l0-gato' }
+    ];
+    const l = plano(L.lecPalabrasCuestan(lect));
+    assert.equal(l.length, 2);
+    const w1 = tk.ref[1], w3 = tk.ref[3];
+    const p1 = l.find(x => x.ref === w1), p3 = l.find(x => x.ref === w3);
+    assert.equal(p1.n, 2); assert.equal(p1.t, 200); assert.equal(p1.superada, true);
+    assert.equal(p3.n, 1); assert.equal(p3.superada, false);
+    assert.equal(l[0].ref, w3, 'las no superadas van primero');
+    // Si vuelve a costarle después de practicarla, deja de estar ✅
+    lect.push({ id: 'e', t: 400, cuento: 'l0-gato', e: e2.join('') });
+    assert.equal(plano(L.lecPalabrasCuestan(lect)).find(x => x.ref === w1).superada, false);
+    assert.deepEqual(plano(L.lecPalabrasCuestan([])), []);
+});
+prueba('practicar una palabra: vale si se parece lo bastante', () => {
+    assert.equal(L.lecPalabraOk(['el gato', 'gatos'], 'gato'), true);
+    assert.equal(L.lecPalabraOk(['perro'], 'gato'), false);
+    assert.equal(L.lecPalabraOk([], 'gato'), false);
+});
+prueba('comprensión por cuento: última, mejor y veces', () => {
+    const l = plano(L.lecComprensionPorCuento([
+        { cuento: 'l0-gato', t: 1, comp: 33, compN: 3 }, { cuento: 'l0-gato', t: 5, comp: 67, compN: 3 },
+        { cuento: 'l0-gato', t: 3, comp: 100, compN: 3 }, { cuento: 'l0-gato', t: 9, comp: null, compN: 0 },
+        { cuento: 'l0-balon', t: 2, comp: 0, compN: 3 }, { cuento: 'x', t: 2, comp: 50, compN: 2 }
+    ]));
+    assert.equal(l.length, 2);
+    const g = l.find(x => x.cuento === 'l0-gato');
+    assert.equal(g.veces, 3); assert.equal(g.mejor, 100); assert.equal(g.ultima, 67); assert.equal(g.titulo, gato.titulo);
+});
+prueba('XP: 2 por acierto solo la primera vez que se contestan las preguntas (sin farmeo)', () => {
+    assert.equal(L.lecXP(3, 3, false, false), 15 + 6);
+    assert.equal(L.lecXP(3, 3, false, true), 15);
+    assert.equal(L.lecXP(2, 0, false, false), 10);
+    assert.equal(L.lecXP(2, 3, true, true), 2);
+    const v = L.LEC_PREGUNTAS_VERSION;
+    assert.equal(L.lecPreguntasHechas([{ id: 'a', cuento: 'l0-gato', qv: v, compN: 3 }], 'l0-gato', 'b'), true);
+    assert.equal(L.lecPreguntasHechas([{ id: 'a', cuento: 'l0-gato', qv: v, compN: 3 }], 'l0-gato', 'a'), false);
+    assert.equal(L.lecPreguntasHechas([{ id: 'a', cuento: 'l0-gato', qv: v, compN: 0 }], 'l0-gato', 'b'), false, 'si las saltó, no cuentan');
+    assert.equal(L.lecPreguntasHechas([{ id: 'a', cuento: 'l0-gato', compN: 3 }], 'l0-gato', 'b'), false, 'las preguntas antiguas no cuentan');
+    assert.equal(L.lecPreguntasHechas([{ id: 'a', cuento: 'l0-balon', qv: v, compN: 3 }], 'l0-gato', 'b'), false);
+});
+prueba('al servidor van también las palabras practicadas (pw) y la versión de preguntas (qv)', () => {
+    const r = plano(L.lecturaParaServidor({ id: 'x', t: 1, cuento: 'l0-gato', e: 'mb', pw: [0], qv: 2, oido: 'gato', audioId: 'a' }));
+    assert.deepEqual(r, { id: 'x', t: 1, cuento: 'l0-gato', e: 'mb', pw: [0], qv: 2 });
+});
+prueba('resumen del profe: palabras y comprensión, con texto escapado', () => {
+    const h = L.lecResumenProfeHTML([{ cuento: 'l0-gato', t: 1, e: 'bm' + 'b'.repeat(N - 2), comp: 67, compN: 3 }]);
+    assert.ok(h.includes('Palabras que le cuestan') && h.includes(tk.ref[1]) && h.includes('67%'));
+    assert.ok(L.lecResumenProfeHTML([]).includes('Todavía no'));
 });
 prueba('tema: ordenConTema da prioridad al tema sin quitar los demás (y sin tema, todo igual)', () => {
     const lista = [];

@@ -187,6 +187,181 @@
    "v": "cefe00bb",
    "h": "5f2a49ac4f96"
   },
+  "la Alhambra": {
+   "f": "la-alhambra.mp3",
+   "v": "1c097251",
+   "h": "f50a990a2ab5"
+  },
+  "la Sagrada Familia": {
+   "f": "la-sagrada-familia.mp3",
+   "v": "588c97fe",
+   "h": "af3d36701c6a"
+  },
+  "Madrid": {
+   "f": "madrid.mp3",
+   "v": "112ce107",
+   "h": "367ba91233fd"
+  },
+  "el lince ibérico": {
+   "f": "el-lince-iberico.mp3",
+   "v": "c4150f22",
+   "h": "d3d15a4ad011"
+  },
+  "los molinos de viento": {
+   "f": "los-molinos-de-viento.mp3",
+   "v": "14cf9425",
+   "h": "2eadba653f38"
+  },
+  "la Gran Muralla": {
+   "f": "la-gran-muralla.mp3",
+   "v": "88f6cc4c",
+   "h": "ef7306755b54"
+  },
+  "la Ciudad Prohibida": {
+   "f": "la-ciudad-prohibida.mp3",
+   "v": "24f20184",
+   "h": "c113e62c446d"
+  },
+  "el oso panda": {
+   "f": "el-oso-panda.mp3",
+   "v": "62b7aeb1",
+   "h": "29bd5edd5dd5"
+  },
+  "el bambú": {
+   "f": "el-bambu.mp3",
+   "v": "9fe4d988",
+   "h": "ba91eade7eb2"
+  },
+  "Shanghái": {
+   "f": "shanghai.mp3",
+   "v": "5ebd7713",
+   "h": "11f5ac027ac2"
+  },
+  "la catedral de Santa Sofía": {
+   "f": "la-catedral-de-santa-sofia.mp3",
+   "v": "927fff4d",
+   "h": "bcc78542d28e"
+  },
+  "Kiev": {
+   "f": "kiev.mp3",
+   "v": "61534730",
+   "h": "04e26e1e3c16"
+  },
+  "los girasoles": {
+   "f": "los-girasoles.mp3",
+   "v": "bd5c5cad",
+   "h": "075ae95e04d8"
+  },
+  "los montes Cárpatos": {
+   "f": "los-montes-carpatos.mp3",
+   "v": "76d444de",
+   "h": "78d3e31cd21f"
+  },
+  "la cigüeña": {
+   "f": "la-ciguena.mp3",
+   "v": "271c231c",
+   "h": "6542308845f7"
+  },
+  "el Kremlin": {
+   "f": "el-kremlin.mp3",
+   "v": "a5703874",
+   "h": "c405a9cfd53d"
+  },
+  "la catedral de San Basilio": {
+   "f": "la-catedral-de-san-basilio.mp3",
+   "v": "9758af4d",
+   "h": "c516b68b6ab4"
+  },
+  "San Petersburgo": {
+   "f": "san-petersburgo.mp3",
+   "v": "29fb39cc",
+   "h": "8b18efc27830"
+  },
+  "el lago Baikal": {
+   "f": "el-lago-baikal.mp3",
+   "v": "f14a58dd",
+   "h": "6da729b3d6ad"
+  },
+  "el oso pardo": {
+   "f": "el-oso-pardo.mp3",
+   "v": "8a5bc706",
+   "h": "a38359ec4caf"
+  },
+  "el desierto del Sáhara": {
+   "f": "el-desierto-del-sahara.mp3",
+   "v": "35318172",
+   "h": "c2e30b652ace"
+  },
+  "el dromedario": {
+   "f": "el-dromedario.mp3",
+   "v": "6a3d3067",
+   "h": "e3871896d1b0"
+  },
+  "Marrakech": {
+   "f": "marrakech.mp3",
+   "v": "6db611e4",
+   "h": "3be1605624b6"
+  },
+  "la mezquita Hassan II": {
+   "f": "la-mezquita-hassan-ii.mp3",
+   "v": "98c9e316",
+   "h": "614053b269e6"
+  },
+  "las montañas del Atlas": {
+   "f": "las-montanas-del-atlas.mp3",
+   "v": "dfbdee0d",
+   "h": "683fe9b5515d"
+  },
+  "el castillo de Bran": {
+   "f": "el-castillo-de-bran.mp3",
+   "v": "fdc89066",
+   "h": "fde6ce2c92fd"
+  },
+  "el castillo de Peleș": {
+   "f": "el-castillo-de-peles.mp3",
+   "v": "e735b49e",
+   "h": "e2dd20d7f9b6"
+  },
+  "Bucarest": {
+   "f": "bucarest.mp3",
+   "v": "f53a2000",
+   "h": "5fac78a81008"
+  },
+  "el delta del Danubio": {
+   "f": "el-delta-del-danubio.mp3",
+   "v": "5b93fbf4",
+   "h": "3934964e97ec"
+  },
+  "el pelícano": {
+   "f": "el-pelicano.mp3",
+   "v": "e9290a7b",
+   "h": "3355db5a3612"
+  },
+  "el colibrí": {
+   "f": "el-colibri.mp3",
+   "v": "fc677a7a",
+   "h": "721ecf4b239a"
+  },
+  "el café": {
+   "f": "el-cafe.mp3",
+   "v": "368061f6",
+   "h": "2f6669cc5554"
+  },
+  "Cartagena de Indias": {
+   "f": "cartagena-de-indias.mp3",
+   "v": "7b7f1331",
+   "h": "451f7033b738"
+  },
+  "la palma de cera": {
+   "f": "la-palma-de-cera.mp3",
+   "v": "08410bb7",
+   "h": "6c05277b3cce"
+  },
+  "Bogotá": {
+   "f": "bogota.mp3",
+   "v": "3142f19a",
+   "h": "42d6c877719e"
+  },
   "¡Pasa la pelota!": {
    "f": "pasa-la-pelota.mp3",
    "v": "17d8b6f0",
@@ -771,6 +946,531 @@
    "f": "veo-un-avion-en-el-cielo.mp3",
    "v": "1a6774b7",
    "h": "3fca6c129572"
+  },
+  "La Alhambra está en Granada.": {
+   "f": "la-alhambra-esta-en-granada.mp3",
+   "v": "b8e5655d",
+   "h": "95f17e01e0d2"
+  },
+  "La Alhambra tiene jardines y fuentes.": {
+   "f": "la-alhambra-tiene-jardines-y-fuentes.mp3",
+   "v": "79abe96f",
+   "h": "0bacb1f3dfdc"
+  },
+  "Quiero visitar la Alhambra.": {
+   "f": "quiero-visitar-la-alhambra.mp3",
+   "v": "d790c09a",
+   "h": "7732f192f957"
+  },
+  "La Sagrada Familia está en Barcelona.": {
+   "f": "la-sagrada-familia-esta-en-barcelona.mp3",
+   "v": "eedef8e8",
+   "h": "060cca686390"
+  },
+  "La Sagrada Familia tiene torres muy altas.": {
+   "f": "la-sagrada-familia-tiene-torres-muy-altas.mp3",
+   "v": "8395d915",
+   "h": "1cafbc90f24d"
+  },
+  "Miro la Sagrada Familia desde la calle.": {
+   "f": "miro-la-sagrada-familia-desde-la-calle.mp3",
+   "v": "eef1e103",
+   "h": "837eb6417c60"
+  },
+  "Madrid es la capital de España.": {
+   "f": "madrid-es-la-capital-de-espana.mp3",
+   "v": "f1b87ba8",
+   "h": "ed8b11ee8f7c"
+  },
+  "En Madrid hay muchos museos.": {
+   "f": "en-madrid-hay-muchos-museos.mp3",
+   "v": "ffacbecf",
+   "h": "fe1e4a2469e0"
+  },
+  "Mi tío vive en Madrid.": {
+   "f": "mi-tio-vive-en-madrid.mp3",
+   "v": "ffc4887f",
+   "h": "d64a596596e5"
+  },
+  "El lince ibérico vive en España.": {
+   "f": "el-lince-iberico-vive-en-espana.mp3",
+   "v": "bbd41535",
+   "h": "ee6e1a13be93"
+  },
+  "El lince ibérico tiene pelos negros en las orejas.": {
+   "f": "el-lince-iberico-tiene-pelos-negros-en-las-orejas.mp3",
+   "v": "ab27f892",
+   "h": "b461cef602e3"
+  },
+  "El lince ibérico es un gato salvaje.": {
+   "f": "el-lince-iberico-es-un-gato-salvaje.mp3",
+   "v": "021be9a8",
+   "h": "5326ea77dee2"
+  },
+  "Los molinos de viento son blancos.": {
+   "f": "los-molinos-de-viento-son-blancos.mp3",
+   "v": "dc0e0fee",
+   "h": "72f6dd57d33d"
+  },
+  "Hay molinos de viento en La Mancha.": {
+   "f": "hay-molinos-de-viento-en-la-mancha.mp3",
+   "v": "26609664",
+   "h": "377d5879f00a"
+  },
+  "El viento mueve los molinos.": {
+   "f": "el-viento-mueve-los-molinos.mp3",
+   "v": "164c147b",
+   "h": "d0a94efaf896"
+  },
+  "La Gran Muralla está en China.": {
+   "f": "la-gran-muralla-esta-en-china.mp3",
+   "v": "8122253b",
+   "h": "918e8ef4549d"
+  },
+  "La Gran Muralla es muy larga.": {
+   "f": "la-gran-muralla-es-muy-larga.mp3",
+   "v": "017e457c",
+   "h": "f45678837a54"
+  },
+  "Camino por la Gran Muralla.": {
+   "f": "camino-por-la-gran-muralla.mp3",
+   "v": "91f574b8",
+   "h": "60c3264a00b0"
+  },
+  "La Ciudad Prohibida está en Pekín.": {
+   "f": "la-ciudad-prohibida-esta-en-pekin.mp3",
+   "v": "bdf33eff",
+   "h": "98a4c0dbf7ed"
+  },
+  "La Ciudad Prohibida tiene tejados amarillos.": {
+   "f": "la-ciudad-prohibida-tiene-tejados-amarillos.mp3",
+   "v": "373c4c67",
+   "h": "59ab479a7bf8"
+  },
+  "Los emperadores vivían en la Ciudad Prohibida.": {
+   "f": "los-emperadores-vivian-en-la-ciudad-prohibida.mp3",
+   "v": "8f2e3bf8",
+   "h": "e9f972e269b0"
+  },
+  "El oso panda come bambú.": {
+   "f": "el-oso-panda-come-bambu.mp3",
+   "v": "9ed79237",
+   "h": "aa9e163f6dc0"
+  },
+  "El oso panda es blanco y negro.": {
+   "f": "el-oso-panda-es-blanco-y-negro.mp3",
+   "v": "4b165115",
+   "h": "803d9287b834"
+  },
+  "El oso panda vive en China.": {
+   "f": "el-oso-panda-vive-en-china.mp3",
+   "v": "2747b428",
+   "h": "ab99794e2e61"
+  },
+  "El bambú crece muy rápido.": {
+   "f": "el-bambu-crece-muy-rapido.mp3",
+   "v": "857e2388",
+   "h": "ab73736dc6bb"
+  },
+  "El panda come bambú.": {
+   "f": "el-panda-come-bambu.mp3",
+   "v": "9011799a",
+   "h": "91a6672a9866"
+  },
+  "El bambú es alto y verde.": {
+   "f": "el-bambu-es-alto-y-verde.mp3",
+   "v": "b3a48516",
+   "h": "a70753be8619"
+  },
+  "Shanghái es una ciudad muy grande.": {
+   "f": "shanghai-es-una-ciudad-muy-grande.mp3",
+   "v": "cc6d8cf9",
+   "h": "f1e795896842"
+  },
+  "Shanghái tiene edificios muy altos.": {
+   "f": "shanghai-tiene-edificios-muy-altos.mp3",
+   "v": "0003dd06",
+   "h": "7658299a7f24"
+  },
+  "Shanghái está junto al mar.": {
+   "f": "shanghai-esta-junto-al-mar.mp3",
+   "v": "60434b2f",
+   "h": "440079de008f"
+  },
+  "La catedral de Santa Sofía está en Kiev.": {
+   "f": "la-catedral-de-santa-sofia-esta-en-kiev.mp3",
+   "v": "e9e85e6e",
+   "h": "c01acb94ee63"
+  },
+  "La catedral de Santa Sofía tiene cúpulas doradas.": {
+   "f": "la-catedral-de-santa-sofia-tiene-cupulas-doradas.mp3",
+   "v": "9c9e46c8",
+   "h": "fd55d4863ca0"
+  },
+  "La catedral de Santa Sofía es muy antigua.": {
+   "f": "la-catedral-de-santa-sofia-es-muy-antigua.mp3",
+   "v": "0088a6b1",
+   "h": "a33bfc11b0f2"
+  },
+  "Kiev es la capital de Ucrania.": {
+   "f": "kiev-es-la-capital-de-ucrania.mp3",
+   "v": "dfd567d7",
+   "h": "4effc230ccba"
+  },
+  "El río Dniéper pasa por Kiev.": {
+   "f": "el-rio-dnieper-pasa-por-kiev.mp3",
+   "v": "f8feb6e0",
+   "h": "b85db649b47b"
+  },
+  "Kiev tiene parques muy bonitos.": {
+   "f": "kiev-tiene-parques-muy-bonitos.mp3",
+   "v": "2b9c0a10",
+   "h": "7ce96be535e9"
+  },
+  "Los girasoles son amarillos.": {
+   "f": "los-girasoles-son-amarillos.mp3",
+   "v": "e5035f9c",
+   "h": "46d14f202140"
+  },
+  "En Ucrania hay campos de girasoles.": {
+   "f": "en-ucrania-hay-campos-de-girasoles.mp3",
+   "v": "33593f8c",
+   "h": "7d17b1ad7501"
+  },
+  "Los girasoles miran al sol.": {
+   "f": "los-girasoles-miran-al-sol.mp3",
+   "v": "6e228862",
+   "h": "bdbfdb5a12da"
+  },
+  "Los montes Cárpatos tienen muchos bosques.": {
+   "f": "los-montes-carpatos-tienen-muchos-bosques.mp3",
+   "v": "fd309f82",
+   "h": "cc68aecd10f5"
+  },
+  "En invierno hay nieve en los montes Cárpatos.": {
+   "f": "en-invierno-hay-nieve-en-los-montes-carpatos.mp3",
+   "v": "33031425",
+   "h": "a4df9625e18c"
+  },
+  "Subimos a los montes Cárpatos.": {
+   "f": "subimos-a-los-montes-carpatos.mp3",
+   "v": "2f9f64c9",
+   "h": "3bfccaafcde3"
+  },
+  "La cigüeña tiene las patas largas.": {
+   "f": "la-ciguena-tiene-las-patas-largas.mp3",
+   "v": "7b01b2c1",
+   "h": "3466d1de26c1"
+  },
+  "La cigüeña hace su nido en lo alto.": {
+   "f": "la-ciguena-hace-su-nido-en-lo-alto.mp3",
+   "v": "5f5aef21",
+   "h": "1797cbaf96b9"
+  },
+  "La cigüeña es blanca y negra.": {
+   "f": "la-ciguena-es-blanca-y-negra.mp3",
+   "v": "431ac8c0",
+   "h": "de1ad678e94d"
+  },
+  "El Kremlin está en Moscú.": {
+   "f": "el-kremlin-esta-en-moscu.mp3",
+   "v": "bbc245be",
+   "h": "59ebafc46cfa"
+  },
+  "El Kremlin tiene murallas rojas.": {
+   "f": "el-kremlin-tiene-murallas-rojas.mp3",
+   "v": "4cd54325",
+   "h": "35d545bc31f7"
+  },
+  "El Kremlin tiene torres altas.": {
+   "f": "el-kremlin-tiene-torres-altas.mp3",
+   "v": "ee202c32",
+   "h": "a559f5b1792c"
+  },
+  "La catedral de San Basilio está en la Plaza Roja.": {
+   "f": "la-catedral-de-san-basilio-esta-en-la-plaza-roja.mp3",
+   "v": "e930f67d",
+   "h": "4cb51fc834b1"
+  },
+  "La catedral de San Basilio tiene cúpulas de colores.": {
+   "f": "la-catedral-de-san-basilio-tiene-cupulas-de-colores.mp3",
+   "v": "f916bee5",
+   "h": "b1dd7b841d0e"
+  },
+  "Me gustan los colores de la catedral de San Basilio.": {
+   "f": "me-gustan-los-colores-de-la-catedral-de-san-basilio.mp3",
+   "v": "d3251871",
+   "h": "8d8dac8ca01e"
+  },
+  "San Petersburgo tiene muchos canales.": {
+   "f": "san-petersburgo-tiene-muchos-canales.mp3",
+   "v": "23006abf",
+   "h": "a207bb08b1ac"
+  },
+  "San Petersburgo está junto al mar.": {
+   "f": "san-petersburgo-esta-junto-al-mar.mp3",
+   "v": "3da0b864",
+   "h": "b43458533782"
+  },
+  "En San Petersburgo hay palacios.": {
+   "f": "en-san-petersburgo-hay-palacios.mp3",
+   "v": "0179708c",
+   "h": "7868b51eb378"
+  },
+  "El lago Baikal es muy profundo.": {
+   "f": "el-lago-baikal-es-muy-profundo.mp3",
+   "v": "51c67e20",
+   "h": "0e696ccaa552"
+  },
+  "El agua del lago Baikal es muy limpia.": {
+   "f": "el-agua-del-lago-baikal-es-muy-limpia.mp3",
+   "v": "94abec04",
+   "h": "8796924f77d8"
+  },
+  "En invierno el lago Baikal se congela.": {
+   "f": "en-invierno-el-lago-baikal-se-congela.mp3",
+   "v": "fd2d8669",
+   "h": "3727f40a1a53"
+  },
+  "El oso pardo es grande y fuerte.": {
+   "f": "el-oso-pardo-es-grande-y-fuerte.mp3",
+   "v": "ac3b70a0",
+   "h": "84e240aec21c"
+  },
+  "El oso pardo vive en el bosque.": {
+   "f": "el-oso-pardo-vive-en-el-bosque.mp3",
+   "v": "ab604ae4",
+   "h": "83b58a2c7836"
+  },
+  "El oso pardo come peces y frutas.": {
+   "f": "el-oso-pardo-come-peces-y-frutas.mp3",
+   "v": "a9e71990",
+   "h": "0458e60ddd6c"
+  },
+  "El desierto del Sáhara tiene mucha arena.": {
+   "f": "el-desierto-del-sahara-tiene-mucha-arena.mp3",
+   "v": "77eaaa24",
+   "h": "11cabcabc7d1"
+  },
+  "En el desierto del Sáhara hace calor.": {
+   "f": "en-el-desierto-del-sahara-hace-calor.mp3",
+   "v": "c87f781c",
+   "h": "7b36671b6416"
+  },
+  "Hay dunas en el desierto del Sáhara.": {
+   "f": "hay-dunas-en-el-desierto-del-sahara.mp3",
+   "v": "7c838499",
+   "h": "c54e53eb9476"
+  },
+  "El dromedario tiene una joroba.": {
+   "f": "el-dromedario-tiene-una-joroba.mp3",
+   "v": "a45c8f2c",
+   "h": "b33f937acee6"
+  },
+  "El dromedario camina por el desierto.": {
+   "f": "el-dromedario-camina-por-el-desierto.mp3",
+   "v": "41485b32",
+   "h": "23280bbcd773"
+  },
+  "El dromedario puede beber mucha agua.": {
+   "f": "el-dromedario-puede-beber-mucha-agua.mp3",
+   "v": "d9a44a4b",
+   "h": "c608c2507a5f"
+  },
+  "Marrakech está en Marruecos.": {
+   "f": "marrakech-esta-en-marruecos.mp3",
+   "v": "3c1a8e84",
+   "h": "5d0bbfbbefc9"
+  },
+  "En Marrakech hay mercados con especias.": {
+   "f": "en-marrakech-hay-mercados-con-especias.mp3",
+   "v": "fdba627c",
+   "h": "998b5b2913c9"
+  },
+  "Marrakech tiene una plaza muy famosa.": {
+   "f": "marrakech-tiene-una-plaza-muy-famosa.mp3",
+   "v": "eeb64a24",
+   "h": "f235d7999441"
+  },
+  "La mezquita Hassan II está en Casablanca.": {
+   "f": "la-mezquita-hassan-ii-esta-en-casablanca.mp3",
+   "v": "1df4f944",
+   "h": "a4c62db4deb5"
+  },
+  "La mezquita Hassan II está junto al mar.": {
+   "f": "la-mezquita-hassan-ii-esta-junto-al-mar.mp3",
+   "v": "0489f3cb",
+   "h": "ff235d81fc5b"
+  },
+  "La mezquita Hassan II tiene una torre muy alta.": {
+   "f": "la-mezquita-hassan-ii-tiene-una-torre-muy-alta.mp3",
+   "v": "f69e2ce7",
+   "h": "08d4d402af06"
+  },
+  "Las montañas del Atlas están en Marruecos.": {
+   "f": "las-montanas-del-atlas-estan-en-marruecos.mp3",
+   "v": "ab904628",
+   "h": "7d00e9314798"
+  },
+  "En invierno hay nieve en las montañas del Atlas.": {
+   "f": "en-invierno-hay-nieve-en-las-montanas-del-atlas.mp3",
+   "v": "b22d31e5",
+   "h": "86e7ed6b3f70"
+  },
+  "Caminamos por las montañas del Atlas.": {
+   "f": "caminamos-por-las-montanas-del-atlas.mp3",
+   "v": "dcf5f6c9",
+   "h": "b74e8fe3a84c"
+  },
+  "El castillo de Bran está encima de una roca.": {
+   "f": "el-castillo-de-bran-esta-encima-de-una-roca.mp3",
+   "v": "2d45f88d",
+   "h": "9797c53fa743"
+  },
+  "El castillo de Bran tiene tejados rojos.": {
+   "f": "el-castillo-de-bran-tiene-tejados-rojos.mp3",
+   "v": "ded85d1f",
+   "h": "101ea48c85aa"
+  },
+  "Visito el castillo de Bran.": {
+   "f": "visito-el-castillo-de-bran.mp3",
+   "v": "e077039c",
+   "h": "0b5d50ebf755"
+  },
+  "El castillo de Peleș está en el bosque.": {
+   "f": "el-castillo-de-peles-esta-en-el-bosque.mp3",
+   "v": "754c015e",
+   "h": "8101f278bef8"
+  },
+  "El castillo de Peleș tiene muchas torres.": {
+   "f": "el-castillo-de-peles-tiene-muchas-torres.mp3",
+   "v": "22c1c337",
+   "h": "61f9770e4173"
+  },
+  "El castillo de Peleș es muy bonito.": {
+   "f": "el-castillo-de-peles-es-muy-bonito.mp3",
+   "v": "8c6dcfb7",
+   "h": "d408756b5118"
+  },
+  "Bucarest es la capital de Rumanía.": {
+   "f": "bucarest-es-la-capital-de-rumania.mp3",
+   "v": "1f75cdcd",
+   "h": "31f5a888be3b"
+  },
+  "En Bucarest hay parques y lagos.": {
+   "f": "en-bucarest-hay-parques-y-lagos.mp3",
+   "v": "9f469ae0",
+   "h": "8b24c40452d0"
+  },
+  "Mi prima vive en Bucarest.": {
+   "f": "mi-prima-vive-en-bucarest.mp3",
+   "v": "94e5ba5e",
+   "h": "818dadd1953a"
+  },
+  "El río Danubio llega al mar en el delta del Danubio.": {
+   "f": "el-rio-danubio-llega-al-mar-en-el-delta-del-danubio.mp3",
+   "v": "ab50de3a",
+   "h": "c6c9ca496569"
+  },
+  "En el delta del Danubio viven muchos pájaros.": {
+   "f": "en-el-delta-del-danubio-viven-muchos-pajaros.mp3",
+   "v": "109fbbc1",
+   "h": "bd2efa0dbccd"
+  },
+  "Vamos en barca por el delta del Danubio.": {
+   "f": "vamos-en-barca-por-el-delta-del-danubio.mp3",
+   "v": "42a73150",
+   "h": "988db92ed3a0"
+  },
+  "El pelícano tiene un pico muy grande.": {
+   "f": "el-pelicano-tiene-un-pico-muy-grande.mp3",
+   "v": "431da269",
+   "h": "407f500ebfa8"
+  },
+  "El pelícano come peces.": {
+   "f": "el-pelicano-come-peces.mp3",
+   "v": "b52a04c3",
+   "h": "e9a73ce50054"
+  },
+  "El pelícano vive cerca del agua.": {
+   "f": "el-pelicano-vive-cerca-del-agua.mp3",
+   "v": "97a2389b",
+   "h": "66f264cbd807"
+  },
+  "El colibrí es un pájaro muy pequeño.": {
+   "f": "el-colibri-es-un-pajaro-muy-pequeno.mp3",
+   "v": "401a8833",
+   "h": "c11da583d664"
+  },
+  "El colibrí mueve las alas muy rápido.": {
+   "f": "el-colibri-mueve-las-alas-muy-rapido.mp3",
+   "v": "6fb430f9",
+   "h": "75817321421c"
+  },
+  "El colibrí bebe el néctar de las flores.": {
+   "f": "el-colibri-bebe-el-nectar-de-las-flores.mp3",
+   "v": "cd833c1a",
+   "h": "6fc40edc5584"
+  },
+  "En Colombia cultivan mucho café.": {
+   "f": "en-colombia-cultivan-mucho-cafe.mp3",
+   "v": "0c65ae43",
+   "h": "efa88dc186fb"
+  },
+  "Mi abuelo bebe café.": {
+   "f": "mi-abuelo-bebe-cafe.mp3",
+   "v": "58035eb6",
+   "h": "8b7cb3b0e3a4"
+  },
+  "El café crece en las montañas.": {
+   "f": "el-cafe-crece-en-las-montanas.mp3",
+   "v": "04e2acdd",
+   "h": "21c1fc6bd2ba"
+  },
+  "Cartagena de Indias está junto al mar.": {
+   "f": "cartagena-de-indias-esta-junto-al-mar.mp3",
+   "v": "db5ca225",
+   "h": "48b53e9ff1ce"
+  },
+  "Cartagena de Indias tiene casas de colores.": {
+   "f": "cartagena-de-indias-tiene-casas-de-colores.mp3",
+   "v": "ad1e3215",
+   "h": "3b825fad14a9"
+  },
+  "Cartagena de Indias tiene una muralla antigua.": {
+   "f": "cartagena-de-indias-tiene-una-muralla-antigua.mp3",
+   "v": "a716a9df",
+   "h": "9669ebf9e229"
+  },
+  "La palma de cera es un árbol muy alto.": {
+   "f": "la-palma-de-cera-es-un-arbol-muy-alto.mp3",
+   "v": "2e05e31d",
+   "h": "548ecfa74f82"
+  },
+  "La palma de cera es el árbol de Colombia.": {
+   "f": "la-palma-de-cera-es-el-arbol-de-colombia.mp3",
+   "v": "ed96935a",
+   "h": "16160300f83e"
+  },
+  "La palma de cera crece en las montañas.": {
+   "f": "la-palma-de-cera-crece-en-las-montanas.mp3",
+   "v": "604a839d",
+   "h": "3df1698de75e"
+  },
+  "Bogotá es la capital de Colombia.": {
+   "f": "bogota-es-la-capital-de-colombia.mp3",
+   "v": "818245a7",
+   "h": "415bad2cb47d"
+  },
+  "Bogotá está en las montañas.": {
+   "f": "bogota-esta-en-las-montanas.mp3",
+   "v": "02ef6e40",
+   "h": "6c7bf6765a82"
+  },
+  "En Bogotá hace fresco por la mañana.": {
+   "f": "en-bogota-hace-fresco-por-la-manana.mp3",
+   "v": "0047a68a",
+   "h": "558f38c86e5f"
   },
   "¡Perfecto!": {
    "f": "perfecto.mp3",
@@ -1447,10 +2147,40 @@
    "v": "c21aeb44",
    "h": "95a97405579e"
   },
-  "En la cama de Ana.": {
+  "En la cama de Ana": {
    "f": "en-la-cama-de-ana.mp3",
-   "v": "c58cdd5f",
-   "h": "f781a5530093"
+   "v": "7ea3a2f3",
+   "h": "4c18185c6384"
+  },
+  "En el sofá": {
+   "f": "en-el-sofa.mp3",
+   "v": "475348bc",
+   "h": "42304e64cc7b"
+  },
+  "En el jardín": {
+   "f": "en-el-jardin.mp3",
+   "v": "22889f06",
+   "h": "74d54d2fcd92"
+  },
+  "¿Con qué juega Bigotes?": {
+   "f": "con-que-juega-bigotes.mp3",
+   "v": "54ce9026",
+   "h": "3bf15c4db83b"
+  },
+  "Con una pelota": {
+   "f": "con-una-pelota.mp3",
+   "v": "ee4f0d32",
+   "h": "034c301f5cf7"
+  },
+  "Con un ratón": {
+   "f": "con-un-raton.mp3",
+   "v": "92496131",
+   "h": "f2bf458335f4"
+  },
+  "Con una caja": {
+   "f": "con-una-caja.mp3",
+   "v": "0ef3a2ca",
+   "h": "1aa45c56b479"
   },
   "La manzana roja": {
    "f": "la-manzana-roja.mp3",
@@ -1497,15 +2227,45 @@
    "v": "e07b40eb",
    "h": "0295cf84a7ed"
   },
-  "¿Dónde se come Leo la manzana?": {
-   "f": "donde-se-come-leo-la-manzana.mp3",
-   "v": "d01cfac5",
-   "h": "7eb5252e693d"
+  "¿Cómo es la manzana?": {
+   "f": "como-es-la-manzana.mp3",
+   "v": "34d7349c",
+   "h": "4572f03480a3"
   },
-  "En el patio.": {
-   "f": "en-el-patio.mp3",
-   "v": "e538495b",
-   "h": "2cc33ed73b01"
+  "Grande y dulce": {
+   "f": "grande-y-dulce.mp3",
+   "v": "7ab5b06c",
+   "h": "9e3b0e3c0128"
+  },
+  "Pequeña y ácida": {
+   "f": "pequena-y-acida.mp3",
+   "v": "e57ebfd7",
+   "h": "665d2a381cf5"
+  },
+  "Verde y dura": {
+   "f": "verde-y-dura.mp3",
+   "v": "bb89819b",
+   "h": "b7774dc28a2d"
+  },
+  "¿Con quién se come Leo la manzana?": {
+   "f": "con-quien-se-come-leo-la-manzana.mp3",
+   "v": "08279d19",
+   "h": "21546a492f9e"
+  },
+  "Con su amiga Sara": {
+   "f": "con-su-amiga-sara.mp3",
+   "v": "aea47150",
+   "h": "9f58c0b70ed7"
+  },
+  "Con su madre": {
+   "f": "con-su-madre.mp3",
+   "v": "b567d545",
+   "h": "902571e105f0"
+  },
+  "Con su perro": {
+   "f": "con-su-perro.mp3",
+   "v": "a1f268ea",
+   "h": "2549f0bffeeb"
   },
   "Mi balón": {
    "f": "mi-balon.mp3",
@@ -1537,6 +2297,26 @@
    "v": "515a7033",
    "h": "7cbdd6f58dd3"
   },
+  "¿De qué colores es el balón?": {
+   "f": "de-que-colores-es-el-balon.mp3",
+   "v": "3a2982bb",
+   "h": "8b9af464b28d"
+  },
+  "Blanco y negro": {
+   "f": "blanco-y-negro.mp3",
+   "v": "2c38376b",
+   "h": "3fa3b594a73c"
+  },
+  "Rojo y azul": {
+   "f": "rojo-y-azul.mp3",
+   "v": "9a484b07",
+   "h": "bbc586497672"
+  },
+  "Verde y amarillo": {
+   "f": "verde-y-amarillo.mp3",
+   "v": "94a4a8f2",
+   "h": "472b5229e307"
+  },
   "¿Con quién juega al fútbol?": {
    "f": "con-quien-juega-al-futbol.mp3",
    "v": "0a71ca97",
@@ -1552,20 +2332,30 @@
    "v": "d63a3d7c",
    "h": "10b456ac1cf6"
   },
-  "Solo": {
-   "f": "solo.mp3",
-   "v": "dbf6e45e",
-   "h": "41092e6ba35b"
+  "Con su gato": {
+   "f": "con-su-gato.mp3",
+   "v": "1383e00c",
+   "h": "c7f11da368db"
   },
-  "¿De qué colores es el balón?": {
-   "f": "de-que-colores-es-el-balon.mp3",
-   "v": "3a2982bb",
-   "h": "8b9af464b28d"
+  "¿Dónde entra el balón?": {
+   "f": "donde-entra-el-balon.mp3",
+   "v": "7d802d16",
+   "h": "ccbd9dd18de9"
   },
-  "Blanco y negro.": {
-   "f": "blanco-y-negro.mp3",
-   "v": "3d02b70e",
-   "h": "2b65d2f73aed"
+  "En la portería": {
+   "f": "en-la-porteria.mp3",
+   "v": "edd22c9f",
+   "h": "9f01affee94e"
+  },
+  "Por la ventana": {
+   "f": "por-la-ventana.mp3",
+   "v": "b231c294",
+   "h": "4f776a35fb37"
+  },
+  "En el río": {
+   "f": "en-el-rio.mp3",
+   "v": "6daff5c4",
+   "h": "402c93631858"
   },
   "Los dientes de Hugo": {
    "f": "los-dientes-de-hugo.mp3",
@@ -1592,6 +2382,26 @@
    "v": "f66efe3d",
    "h": "510fc69849fd"
   },
+  "¿Qué se lava Hugo?": {
+   "f": "que-se-lava-hugo.mp3",
+   "v": "ad245e44",
+   "h": "4cca1392cbcc"
+  },
+  "Los dientes": {
+   "f": "los-dientes.mp3",
+   "v": "f65e2189",
+   "h": "6ecc067ae88d"
+  },
+  "Las manos": {
+   "f": "las-manos.mp3",
+   "v": "c15385f4",
+   "h": "57fa429236b4"
+  },
+  "El pelo": {
+   "f": "el-pelo.mp3",
+   "v": "2e068c6b",
+   "h": "b5795532a951"
+  },
   "¿De qué color es el cepillo?": {
    "f": "de-que-color-es-el-cepillo.mp3",
    "v": "e7756e02",
@@ -1612,10 +2422,20 @@
    "v": "651804f0",
    "h": "c09239d0be6c"
   },
-  "Por la mañana y por la noche.": {
+  "Por la mañana y por la noche": {
    "f": "por-la-manana-y-por-la-noche.mp3",
-   "v": "84f84f89",
-   "h": "4f0fd94de656"
+   "v": "2ca8daa3",
+   "h": "906600afa910"
+  },
+  "Solo a mediodía": {
+   "f": "solo-a-mediodia.mp3",
+   "v": "0c88a564",
+   "h": "cc2a68b412e3"
+  },
+  "Nunca": {
+   "f": "nunca.mp3",
+   "v": "cc1571d4",
+   "h": "d8b40e40e82b"
   },
   "La flor del jardín": {
    "f": "la-flor-del-jardin.mp3",
@@ -1642,6 +2462,11 @@
    "v": "bce09354",
    "h": "39b1eb3462b4"
   },
+  "¿De qué color es la flor?": {
+   "f": "de-que-color-es-la-flor.mp3",
+   "v": "93520242",
+   "h": "2a22ce31863b"
+  },
   "¿Quién visita la flor?": {
    "f": "quien-visita-la-flor.mp3",
    "v": "62875f80",
@@ -1662,15 +2487,25 @@
    "v": "9cbb85d3",
    "h": "7fa344972769"
   },
-  "¿Con qué riega la abuela la flor?": {
-   "f": "con-que-riega-la-abuela-la-flor.mp3",
-   "v": "48916aac",
-   "h": "14f1ab5167a1"
+  "¿Quién riega la flor?": {
+   "f": "quien-riega-la-flor.mp3",
+   "v": "b32cff37",
+   "h": "8b313ac63d8c"
   },
-  "Con agua.": {
-   "f": "con-agua.mp3",
-   "v": "8a8a776a",
-   "h": "dc97e5cc2514"
+  "La abuela": {
+   "f": "la-abuela.mp3",
+   "v": "09a68d53",
+   "h": "688d8041b17d"
+  },
+  "El hermano": {
+   "f": "el-hermano.mp3",
+   "v": "5b909b7a",
+   "h": "fb9dde863956"
+  },
+  "La profesora": {
+   "f": "la-profesora.mp3",
+   "v": "79346205",
+   "h": "e5c071f4ef61"
   },
   "El perro en el parque": {
    "f": "el-perro-en-el-parque.mp3",
@@ -1727,16 +2562,6 @@
    "v": "a0ed3c01",
    "h": "77fad2b8edc9"
   },
-  "¿Qué hace Rayo cuando se cansa?": {
-   "f": "que-hace-rayo-cuando-se-cansa.mp3",
-   "v": "e16569f9",
-   "h": "46b270abd68e"
-  },
-  "Se tumba debajo de un árbol.": {
-   "f": "se-tumba-debajo-de-un-arbol.mp3",
-   "v": "9979235d",
-   "h": "ce2729dd71ee"
-  },
   "¿Cuándo van al parque?": {
    "f": "cuando-van-al-parque.mp3",
    "v": "19262a9b",
@@ -1752,10 +2577,25 @@
    "v": "fbefeec8",
    "h": "b99b81d37ca2"
   },
-  "Nunca": {
-   "f": "nunca.mp3",
-   "v": "cc1571d4",
-   "h": "d8b40e40e82b"
+  "¿Qué hace Rayo cuando se cansa?": {
+   "f": "que-hace-rayo-cuando-se-cansa.mp3",
+   "v": "e16569f9",
+   "h": "46b270abd68e"
+  },
+  "Se tumba debajo de un árbol": {
+   "f": "se-tumba-debajo-de-un-arbol.mp3",
+   "v": "6a1b505a",
+   "h": "1415946a8ca5"
+  },
+  "Se sube a un banco": {
+   "f": "se-sube-a-un-banco.mp3",
+   "v": "25e216c3",
+   "h": "9e7c4ef90511"
+  },
+  "Se baña en el río": {
+   "f": "se-bana-en-el-rio.mp3",
+   "v": "b61f4b17",
+   "h": "b6c1557e1d15"
   },
   "El desayuno": {
    "f": "el-desayuno.mp3",
@@ -1787,35 +2627,65 @@
    "v": "444887df",
    "h": "9ac98bd2ed12"
   },
-  "¿Qué bebe Lucía?": {
-   "f": "que-bebe-lucia.mp3",
-   "v": "320b4116",
-   "h": "f6d435cc5605"
+  "¿Dónde desayuna Lucía?": {
+   "f": "donde-desayuna-lucia.mp3",
+   "v": "f0188306",
+   "h": "8fc3868b35d1"
   },
-  "Leche": {
-   "f": "leche.mp3",
-   "v": "dd966959",
-   "h": "9d619f737e62"
+  "En la cocina": {
+   "f": "en-la-cocina.mp3",
+   "v": "c502006c",
+   "h": "97773706b8d6"
   },
-  "Zumo": {
-   "f": "zumo.mp3",
-   "v": "db7aee52",
-   "h": "6674d7596280"
+  "En el colegio": {
+   "f": "en-el-colegio.mp3",
+   "v": "24e246ed",
+   "h": "3a3d528c2d87"
   },
-  "Agua": {
-   "f": "agua.mp3",
-   "v": "780f58fc",
-   "h": "e770fe597e34"
+  "En el parque": {
+   "f": "en-el-parque.mp3",
+   "v": "cba9a056",
+   "h": "30da42c5f17c"
   },
   "¿Qué fruta se come Lucía?": {
    "f": "que-fruta-se-come-lucia.mp3",
    "v": "a08c950b",
    "h": "2b13fd53a705"
   },
-  "Un plátano.": {
+  "Un plátano": {
    "f": "un-platano.mp3",
-   "v": "933753db",
-   "h": "70868c720a98"
+   "v": "ce004a29",
+   "h": "43beb21a2f5b"
+  },
+  "Una manzana": {
+   "f": "una-manzana.mp3",
+   "v": "356e146b",
+   "h": "6ecf1d8f9833"
+  },
+  "Una pera": {
+   "f": "una-pera.mp3",
+   "v": "2093d354",
+   "h": "3a3b6573892c"
+  },
+  "¿Qué clase tiene hoy?": {
+   "f": "que-clase-tiene-hoy.mp3",
+   "v": "c5981867",
+   "h": "99d5e205284e"
+  },
+  "Música": {
+   "f": "musica.mp3",
+   "v": "3ab437f4",
+   "h": "6a4ea9076d76"
+  },
+  "Inglés": {
+   "f": "ingles.mp3",
+   "v": "faf8c17d",
+   "h": "58cb825806e5"
+  },
+  "Natación": {
+   "f": "natacion.mp3",
+   "v": "bff1ba26",
+   "h": "ecc9e645d1d9"
   },
   "El pájaro en la ventana": {
    "f": "el-pajaro-en-la-ventana.mp3",
@@ -1857,10 +2727,40 @@
    "v": "0c9d148f",
    "h": "7a69e2021188"
   },
-  "Migas de pan.": {
+  "Migas de pan": {
    "f": "migas-de-pan.mp3",
-   "v": "c3f6d072",
-   "h": "ba684f52e814"
+   "v": "bca12a34",
+   "h": "beee2e2d0a69"
+  },
+  "Semillas": {
+   "f": "semillas.mp3",
+   "v": "63f79b01",
+   "h": "c180e523056c"
+  },
+  "Gusanos": {
+   "f": "gusanos.mp3",
+   "v": "34878a3f",
+   "h": "d4d3dc32a3c0"
+  },
+  "¿Hacia dónde se va volando el pájaro?": {
+   "f": "hacia-donde-se-va-volando-el-pajaro.mp3",
+   "v": "3b201a72",
+   "h": "691892121356"
+  },
+  "Hacia los árboles": {
+   "f": "hacia-los-arboles.mp3",
+   "v": "204ca105",
+   "h": "5df4598ba927"
+  },
+  "Hacia el mar": {
+   "f": "hacia-el-mar.mp3",
+   "v": "74867e8f",
+   "h": "915f60946159"
+  },
+  "Hacia la luna": {
+   "f": "hacia-la-luna.mp3",
+   "v": "286634a0",
+   "h": "b981152183cf"
   },
   "La frutería": {
    "f": "la-fruteria.mp3",
@@ -1897,6 +2797,26 @@
    "v": "5630f4f6",
    "h": "41d47f272e85"
   },
+  "¿Qué día van a la frutería?": {
+   "f": "que-dia-van-a-la-fruteria.mp3",
+   "v": "6e4bfbf7",
+   "h": "e01438e2fedf"
+  },
+  "El sábado": {
+   "f": "el-sabado.mp3",
+   "v": "7e85ea7d",
+   "h": "e581b0913004"
+  },
+  "El lunes": {
+   "f": "el-lunes.mp3",
+   "v": "36392499",
+   "h": "eadb19912a7a"
+  },
+  "El domingo": {
+   "f": "el-domingo.mp3",
+   "v": "2332a42c",
+   "h": "c03db93478d2"
+  },
   "¿Qué le regala el frutero?": {
    "f": "que-le-regala-el-frutero.mp3",
    "v": "6cd69d78",
@@ -1912,20 +2832,25 @@
    "v": "167f7a96",
    "h": "1a41fb48c49d"
   },
-  "Una manzana": {
-   "f": "una-manzana.mp3",
-   "v": "356e146b",
-   "h": "6ecf1d8f9833"
+  "¿Qué preparan en casa para merendar?": {
+   "f": "que-preparan-en-casa-para-merendar.mp3",
+   "v": "0f7ebc25",
+   "h": "27c9eeccf674"
   },
-  "¿Qué le dice el niño al frutero?": {
-   "f": "que-le-dice-el-nino-al-frutero.mp3",
-   "v": "b9495326",
-   "h": "0eb5d4b17897"
+  "Una macedonia": {
+   "f": "una-macedonia.mp3",
+   "v": "74d18c67",
+   "h": "94ca74095d56"
   },
-  "¡Muchas gracias!": {
-   "f": "muchas-gracias.mp3",
-   "v": "1aa7baed",
-   "h": "d163e41f2c69"
+  "Una tarta": {
+   "f": "una-tarta.mp3",
+   "v": "a080b8fa",
+   "h": "1eb525dc9cfa"
+  },
+  "Una pizza": {
+   "f": "una-pizza.mp3",
+   "v": "00fe148b",
+   "h": "8eb04877d340"
   },
   "La bicicleta de Marta": {
    "f": "la-bicicleta-de-marta.mp3",
@@ -1962,6 +2887,11 @@
    "v": "0416b45f",
    "h": "7b710f92da45"
   },
+  "¿De qué color es la bicicleta de Marta?": {
+   "f": "de-que-color-es-la-bicicleta-de-marta.mp3",
+   "v": "42ddf437",
+   "h": "df66eadd6390"
+  },
   "¿Qué lleva siempre Marta?": {
    "f": "que-lleva-siempre-marta.mp3",
    "v": "5ae3f389",
@@ -1982,15 +2912,25 @@
    "v": "400c7d67",
    "h": "f6096fd6b3a3"
   },
-  "¿De qué color es la bicicleta?": {
-   "f": "de-que-color-es-la-bicicleta.mp3",
-   "v": "fc22abe3",
-   "h": "938501e8682b"
+  "¿Qué grita Marta cuando ve una cuesta?": {
+   "f": "que-grita-marta-cuando-ve-una-cuesta.mp3",
+   "v": "4fe98a1e",
+   "h": "9b7c6e501418"
   },
-  "Roja.": {
-   "f": "roja-2.mp3",
-   "v": "3a6abc26",
-   "h": "9383d52c0acc"
+  "¡Allá voy!": {
+   "f": "alla-voy.mp3",
+   "v": "02aa1dd1",
+   "h": "8c40e4a7f0fe"
+  },
+  "¡Qué miedo!": {
+   "f": "que-miedo.mp3",
+   "v": "becee4b3",
+   "h": "29c2ca6e2abc"
+  },
+  "¡Adiós!": {
+   "f": "adios.mp3",
+   "v": "2a78f31b",
+   "h": "792e5658fe72"
   },
   "El partido del sábado": {
    "f": "el-partido-del-sabado.mp3",
@@ -2057,10 +2997,20 @@
    "v": "d3f3e5aa",
    "h": "18cc4b494e5b"
   },
-  "Empataron a uno.": {
+  "Empataron a uno": {
    "f": "empataron-a-uno.mp3",
-   "v": "f55dde74",
-   "h": "efcba4cd4774"
+   "v": "507c3eb1",
+   "h": "1499faa82304"
+  },
+  "Ganaron tres a cero": {
+   "f": "ganaron-tres-a-cero.mp3",
+   "v": "07a2706d",
+   "h": "def46f6d7b73"
+  },
+  "Perdieron dos a uno": {
+   "f": "perdieron-dos-a-uno.mp3",
+   "v": "118e5f37",
+   "h": "b06343e58b70"
   },
   "¿Qué hicieron después del partido?": {
    "f": "que-hicieron-despues-del-partido.mp3",
@@ -2122,6 +3072,21 @@
    "v": "44dae4d7",
    "h": "312f3710359c"
   },
+  "¿Qué cocinaron el abuelo y el niño?": {
+   "f": "que-cocinaron-el-abuelo-y-el-nino.mp3",
+   "v": "e0be889f",
+   "h": "bffae21a8bd6"
+  },
+  "Una tortilla de patatas": {
+   "f": "una-tortilla-de-patatas.mp3",
+   "v": "ca5f44ce",
+   "h": "a0b67e16a9ff"
+  },
+  "Un bizcocho": {
+   "f": "un-bizcocho.mp3",
+   "v": "7abb0aec",
+   "h": "903895d64867"
+  },
   "¿Cuántos huevos batió?": {
    "f": "cuantos-huevos-batio.mp3",
    "v": "38fa2069",
@@ -2142,15 +3107,25 @@
    "v": "ebc8f40f",
    "h": "efc1df21e998"
   },
-  "¿Quién cortó las patatas?": {
-   "f": "quien-corto-las-patatas.mp3",
-   "v": "463e252b",
-   "h": "d44977279c94"
+  "¿Con qué se comieron la tortilla?": {
+   "f": "con-que-se-comieron-la-tortilla.mp3",
+   "v": "f94c9e70",
+   "h": "d6b585a62ade"
   },
-  "El abuelo.": {
-   "f": "el-abuelo.mp3",
-   "v": "4e8f0065",
-   "h": "8f367beffb2a"
+  "Con pan": {
+   "f": "con-pan.mp3",
+   "v": "b44d8427",
+   "h": "fb36dca24760"
+  },
+  "Con arroz": {
+   "f": "con-arroz.mp3",
+   "v": "9254f717",
+   "h": "df5bceb084c6"
+  },
+  "Con sopa": {
+   "f": "con-sopa.mp3",
+   "v": "2868f963",
+   "h": "4ac69125a005"
   },
   "La tarde en el parque": {
    "f": "la-tarde-en-el-parque.mp3",
@@ -2187,6 +3162,26 @@
    "v": "04c36317",
    "h": "913ca2d72574"
   },
+  "¿Con quién fue al parque?": {
+   "f": "con-quien-fue-al-parque.mp3",
+   "v": "2e2d0dbc",
+   "h": "cd0dca739750"
+  },
+  "Con sus primos": {
+   "f": "con-sus-primos.mp3",
+   "v": "7152b260",
+   "h": "80135c1a2691"
+  },
+  "Con su abuelo": {
+   "f": "con-su-abuelo.mp3",
+   "v": "fc6ba17e",
+   "h": "10f110c7f229"
+  },
+  "Con la profesora": {
+   "f": "con-la-profesora.mp3",
+   "v": "7ff94f4c",
+   "h": "8396202c6864"
+  },
   "¿Dónde cayó la pelota?": {
    "f": "donde-cayo-la-pelota.mp3",
    "v": "fb0c4be8",
@@ -2197,25 +3192,30 @@
    "v": "1c8605cc",
    "h": "65d59b2fdc53"
   },
-  "En el río": {
-   "f": "en-el-rio.mp3",
-   "v": "6daff5c4",
-   "h": "402c93631858"
-  },
   "En un árbol": {
    "f": "en-un-arbol.mp3",
    "v": "301431db",
    "h": "5b073cc7ee24"
   },
-  "¿Quién limpió la pelota?": {
-   "f": "quien-limpio-la-pelota.mp3",
-   "v": "9f6726e5",
-   "h": "79b26e9a4ecc"
+  "¿Qué merendaron?": {
+   "f": "que-merendaron.mp3",
+   "v": "9d18ba00",
+   "h": "70e23b708ad7"
   },
-  "Su prima Elena.": {
-   "f": "su-prima-elena.mp3",
-   "v": "cac3421b",
-   "h": "c5dbd3074b10"
+  "Un bocadillo": {
+   "f": "un-bocadillo.mp3",
+   "v": "f27c3dc9",
+   "h": "d325a0e5cde1"
+  },
+  "Un helado": {
+   "f": "un-helado.mp3",
+   "v": "410c2d80",
+   "h": "58d7185cc4e8"
+  },
+  "Una tortilla": {
+   "f": "una-tortilla.mp3",
+   "v": "2a9e0ed9",
+   "h": "6a67a30bfa0b"
   },
   "Un día de lluvia": {
    "f": "un-dia-de-lluvia.mp3",
@@ -2252,6 +3252,36 @@
    "v": "0b2c9358",
    "h": "cc17799c53c7"
   },
+  "¿Qué día llovió muchísimo?": {
+   "f": "que-dia-llovio-muchisimo.mp3",
+   "v": "92ad78df",
+   "h": "567c73dfd336"
+  },
+  "El martes": {
+   "f": "el-martes.mp3",
+   "v": "7f22dcca",
+   "h": "c89fd87ae70f"
+  },
+  "¿Qué se puso a la salida?": {
+   "f": "que-se-puso-a-la-salida.mp3",
+   "v": "f2457c9e",
+   "h": "22edeb18943c"
+  },
+  "Las botas de agua": {
+   "f": "las-botas-de-agua.mp3",
+   "v": "35066b3d",
+   "h": "f2b11f8fc833"
+  },
+  "Un gorro de lana": {
+   "f": "un-gorro-de-lana.mp3",
+   "v": "2c33f687",
+   "h": "8b0a18e67934"
+  },
+  "Unas sandalias": {
+   "f": "unas-sandalias.mp3",
+   "v": "45c1fcfd",
+   "h": "2d5dd5597a91"
+  },
   "¿Qué apareció por la tarde?": {
    "f": "que-aparecio-por-la-tarde.mp3",
    "v": "af76b33c",
@@ -2271,16 +3301,6 @@
    "f": "la-nieve.mp3",
    "v": "42d2b503",
    "h": "25aa8f5f71d6"
-  },
-  "¿A qué animal se parecía saltando en los charcos?": {
-   "f": "a-que-animal-se-parecia-saltando-en-los-charcos.mp3",
-   "v": "ba7bad07",
-   "h": "d383a614a67a"
-  },
-  "A una rana.": {
-   "f": "a-una-rana.mp3",
-   "v": "2d7c68d0",
-   "h": "8dbb92b31138"
   },
   "El viaje en tren": {
    "f": "el-viaje-en-tren.mp3",
@@ -2322,6 +3342,26 @@
    "v": "3f1fbaf4",
    "h": "31b29f78428a"
   },
+  "¿A quién fueron a visitar?": {
+   "f": "a-quien-fueron-a-visitar.mp3",
+   "v": "d692fdcf",
+   "h": "81ab68ce0cda"
+  },
+  "A sus tíos": {
+   "f": "a-sus-tios.mp3",
+   "v": "d8e3093e",
+   "h": "70d55b0f8126"
+  },
+  "A sus abuelos": {
+   "f": "a-sus-abuelos.mp3",
+   "v": "3e9636d9",
+   "h": "8812c0cbc2ad"
+  },
+  "A sus primos": {
+   "f": "a-sus-primos.mp3",
+   "v": "92871683",
+   "h": "643e21784d12"
+  },
   "¿Dónde se sentó?": {
    "f": "donde-se-sento.mp3",
    "v": "2c5d56c9",
@@ -2341,16 +3381,6 @@
    "f": "junto-a-la-puerta.mp3",
    "v": "1872cac6",
    "h": "0ff0f18a88c1"
-  },
-  "¿Qué animales vieron en el campo?": {
-   "f": "que-animales-vieron-en-el-campo.mp3",
-   "v": "ee0d2e9b",
-   "h": "e5521bf93530"
-  },
-  "Vacas.": {
-   "f": "vacas.mp3",
-   "v": "c1709bb4",
-   "h": "6e0d5d44d54c"
   },
   "¿Cuánto duró el viaje?": {
    "f": "cuanto-duro-el-viaje.mp3",
@@ -2422,30 +3452,35 @@
    "v": "ab7a2c50",
    "h": "2bca8fc96b24"
   },
-  "¿Cómo se llamaba el caballo?": {
-   "f": "como-se-llamaba-el-caballo.mp3",
-   "v": "0dc81b3c",
-   "h": "a29e70aec09c"
-  },
-  "Trueno": {
-   "f": "trueno.mp3",
-   "v": "ec13aee8",
-   "h": "c8c532e195fa"
+  "¿Cómo se llamaba el perro del tío Juan?": {
+   "f": "como-se-llamaba-el-perro-del-tio-juan.mp3",
+   "v": "f3c7c16e",
+   "h": "5f4c61b04b0c"
   },
   "Lobo": {
    "f": "lobo.mp3",
    "v": "2f19776f",
    "h": "ef879a44a66f"
   },
+  "Trueno": {
+   "f": "trueno.mp3",
+   "v": "ec13aee8",
+   "h": "c8c532e195fa"
+  },
   "¿Qué le dio de comer al caballo?": {
    "f": "que-le-dio-de-comer-al-caballo.mp3",
    "v": "2e3b8d4e",
    "h": "ee1ede480e5e"
   },
-  "Una zanahoria.": {
+  "Una zanahoria": {
    "f": "una-zanahoria.mp3",
-   "v": "f972bb17",
-   "h": "282a3b1e01f4"
+   "v": "90814986",
+   "h": "1d59501cffa5"
+  },
+  "Pan": {
+   "f": "pan.mp3",
+   "v": "6084a5d0",
+   "h": "10d2991fc109"
   },
   "¿Qué podrán hacer en primavera?": {
    "f": "que-podran-hacer-en-primavera.mp3",
@@ -2512,6 +3547,26 @@
    "v": "5b1fdbe2",
    "h": "b09cb02daec7"
   },
+  "¿De quién era el cumpleaños?": {
+   "f": "de-quien-era-el-cumpleanos.mp3",
+   "v": "87322df4",
+   "h": "1efa714c3af7"
+  },
+  "De su madre": {
+   "f": "de-su-madre.mp3",
+   "v": "d935002b",
+   "h": "cb261cfc5872"
+  },
+  "De su hermana": {
+   "f": "de-su-hermana.mp3",
+   "v": "2b45b34e",
+   "h": "541375ea5d30"
+  },
+  "De su padre": {
+   "f": "de-su-padre.mp3",
+   "v": "540927df",
+   "h": "ea86752e2c5a"
+  },
   "¿De qué era el bizcocho?": {
    "f": "de-que-era-el-bizcocho.mp3",
    "v": "5d28460f",
@@ -2531,16 +3586,6 @@
    "f": "de-fresa.mp3",
    "v": "2a06bf63",
    "h": "3dfe0add9adb"
-  },
-  "¿Qué gritaron cuando entró mamá?": {
-   "f": "que-gritaron-cuando-entro-mama.mp3",
-   "v": "7d50106a",
-   "h": "9d4a37f07a5e"
-  },
-  "¡Sorpresa!": {
-   "f": "sorpresa.mp3",
-   "v": "6a8ce549",
-   "h": "cba89739c83c"
   },
   "¿Dónde escondieron el regalo?": {
    "f": "donde-escondieron-el-regalo.mp3",
@@ -2627,15 +3672,45 @@
    "v": "4fc90453",
    "h": "f6c93943bd67"
   },
+  "¿Con qué se lavaron las manos?": {
+   "f": "con-que-se-lavaron-las-manos.mp3",
+   "v": "5677318c",
+   "h": "e3a53b0a2c9b"
+  },
+  "Con agua y jabón": {
+   "f": "con-agua-y-jabon.mp3",
+   "v": "8db954f0",
+   "h": "5e39330b010d"
+  },
+  "Con leche": {
+   "f": "con-leche.mp3",
+   "v": "0a76fa9e",
+   "h": "b584c6e8bf74"
+  },
+  "Con arena": {
+   "f": "con-arena.mp3",
+   "v": "51c2ccd2",
+   "h": "9c54da7e988c"
+  },
   "¿Hasta qué número contaron?": {
    "f": "hasta-que-numero-contaron.mp3",
    "v": "5cea0327",
    "h": "3bdfb7025a3b"
   },
-  "Hasta veinte.": {
+  "Hasta veinte": {
    "f": "hasta-veinte.mp3",
-   "v": "ea35a234",
-   "h": "6dcd17417f2b"
+   "v": "6d45a271",
+   "h": "9d752fd071b8"
+  },
+  "Hasta cinco": {
+   "f": "hasta-cinco.mp3",
+   "v": "ce7c480c",
+   "h": "76bd6d9e64c9"
+  },
+  "Hasta cien": {
+   "f": "hasta-cien.mp3",
+   "v": "51a4c052",
+   "h": "59db0fa39e7c"
   },
   "La final del torneo": {
    "f": "la-final-del-torneo.mp3",
@@ -2712,10 +3787,20 @@
    "v": "2fe0e385",
    "h": "cf29dbdf58f8"
   },
-  "Irene.": {
+  "Irene": {
    "f": "irene.mp3",
-   "v": "f9b82c8a",
-   "h": "ad18c00aa964"
+   "v": "b06fe469",
+   "h": "39c6463c0601"
+  },
+  "Samuel": {
+   "f": "samuel.mp3",
+   "v": "5f0edb60",
+   "h": "51df258973fb"
+  },
+  "Elena": {
+   "f": "elena.mp3",
+   "v": "2a3e73ca",
+   "h": "f8b82f26966d"
   },
   "¿Cómo empató Irene?": {
    "f": "como-empato-irene.mp3",
@@ -2736,6 +3821,621 @@
    "f": "con-la-mano.mp3",
    "v": "d508bfd1",
    "h": "f70ec8d18ffd"
+  },
+  "Mei, el oso panda": {
+   "f": "mei-el-oso-panda.mp3",
+   "v": "2e52e196",
+   "h": "ea9796a8d57b"
+  },
+  "Mei es un oso panda blanco y negro.": {
+   "f": "mei-es-un-oso-panda-blanco-y-negro.mp3",
+   "v": "deec6f52",
+   "h": "4d18fa0b29ae"
+  },
+  "Mei vive en un bosque de China.": {
+   "f": "mei-vive-en-un-bosque-de-china.mp3",
+   "v": "c5b1b0b3",
+   "h": "16bbed214f7d"
+  },
+  "Mei come bambú todo el día.": {
+   "f": "mei-come-bambu-todo-el-dia.mp3",
+   "v": "1610e230",
+   "h": "781efe8ab667"
+  },
+  "Después, Mei duerme en un árbol.": {
+   "f": "despues-mei-duerme-en-un-arbol.mp3",
+   "v": "b53eb2ac",
+   "h": "30895c3eb7fc"
+  },
+  "¿Qué animal es Mei?": {
+   "f": "que-animal-es-mei.mp3",
+   "v": "c9152935",
+   "h": "c49ec3ba1cbd"
+  },
+  "Un oso panda": {
+   "f": "un-oso-panda.mp3",
+   "v": "d8cdeef3",
+   "h": "4585fbfcaa7c"
+  },
+  "Un gato": {
+   "f": "un-gato.mp3",
+   "v": "797386b3",
+   "h": "2e53cb5a2417"
+  },
+  "Un pájaro": {
+   "f": "un-pajaro.mp3",
+   "v": "d71ffab5",
+   "h": "1de7bdedaa2e"
+  },
+  "¿Qué come Mei?": {
+   "f": "que-come-mei.mp3",
+   "v": "0ea4e633",
+   "h": "0812902c06fc"
+  },
+  "Bambú": {
+   "f": "bambu.mp3",
+   "v": "beea5622",
+   "h": "285efbfe549b"
+  },
+  "Arroz": {
+   "f": "arroz.mp3",
+   "v": "3ae36f78",
+   "h": "a411abe3fe8b"
+  },
+  "Pescado": {
+   "f": "pescado.mp3",
+   "v": "316db054",
+   "h": "86db20c62b91"
+  },
+  "¿Dónde duerme Mei?": {
+   "f": "donde-duerme-mei.mp3",
+   "v": "432c990a",
+   "h": "d9e1c76b8143"
+  },
+  "En una cama": {
+   "f": "en-una-cama.mp3",
+   "v": "b4120290",
+   "h": "1d350a3c97ce"
+  },
+  "En el agua": {
+   "f": "en-el-agua.mp3",
+   "v": "dcc6daae",
+   "h": "74cc0dfbd9fd"
+  },
+  "Los girasoles de Olena": {
+   "f": "los-girasoles-de-olena.mp3",
+   "v": "65f823c9",
+   "h": "d4fed2be457e"
+  },
+  "En verano, Olena visita a su abuela en Ucrania.": {
+   "f": "en-verano-olena-visita-a-su-abuela-en-ucrania.mp3",
+   "v": "0f57a4ab",
+   "h": "55b69639bb41"
+  },
+  "Cerca de la casa hay un campo enorme de girasoles.": {
+   "f": "cerca-de-la-casa-hay-un-campo-enorme-de-girasoles.mp3",
+   "v": "697f08dc",
+   "h": "a7d71c4a1974"
+  },
+  "Los girasoles son altos y amarillos, como el sol.": {
+   "f": "los-girasoles-son-altos-y-amarillos-como-el-sol.mp3",
+   "v": "7e0418f4",
+   "h": "b13cc011ed56"
+  },
+  "En el tejado de una casa, una cigüeña blanca cuida su nido.": {
+   "f": "en-el-tejado-de-una-casa-una-ciguena-blanca-cuida-su-nido.mp3",
+   "v": "f9bbf19c",
+   "h": "d31e4b16afdc"
+  },
+  "Por la tarde, Olena y su abuela pasean y comen pipas.": {
+   "f": "por-la-tarde-olena-y-su-abuela-pasean-y-comen-pipas.mp3",
+   "v": "97718bd2",
+   "h": "8c3213ee191a"
+  },
+  "¿A quién visita Olena en verano?": {
+   "f": "a-quien-visita-olena-en-verano.mp3",
+   "v": "971d6f0d",
+   "h": "3d2f60998c9d"
+  },
+  "A su abuela": {
+   "f": "a-su-abuela.mp3",
+   "v": "44476875",
+   "h": "82f96beb025a"
+  },
+  "A su primo": {
+   "f": "a-su-primo.mp3",
+   "v": "0176aaaf",
+   "h": "3b6a503940a4"
+  },
+  "A su profesora": {
+   "f": "a-su-profesora.mp3",
+   "v": "122b2cff",
+   "h": "22b1075e3ace"
+  },
+  "¿De qué color son los girasoles?": {
+   "f": "de-que-color-son-los-girasoles.mp3",
+   "v": "c1b6a8a0",
+   "h": "b5da147e62fe"
+  },
+  "Amarillos": {
+   "f": "amarillos.mp3",
+   "v": "ca2cd3d5",
+   "h": "1bef32719343"
+  },
+  "Rojos": {
+   "f": "rojos.mp3",
+   "v": "32890266",
+   "h": "2626f32a1325"
+  },
+  "Azules": {
+   "f": "azules.mp3",
+   "v": "419aba39",
+   "h": "be1fbb758fa0"
+  },
+  "¿Qué pájaro tiene su nido en el tejado?": {
+   "f": "que-pajaro-tiene-su-nido-en-el-tejado.mp3",
+   "v": "c3748169",
+   "h": "d201a7320809"
+  },
+  "Una cigüeña": {
+   "f": "una-ciguena.mp3",
+   "v": "fdc75fca",
+   "h": "bb6042e7bcdc"
+  },
+  "Un loro": {
+   "f": "un-loro.mp3",
+   "v": "cc46dab1",
+   "h": "fece4992388b"
+  },
+  "Un pato": {
+   "f": "un-pato.mp3",
+   "v": "ff5d0162",
+   "h": "0fda5a8c17dc"
+  },
+  "Un paseo por el desierto": {
+   "f": "un-paseo-por-el-desierto.mp3",
+   "v": "082b0961",
+   "h": "99177cb61ac0"
+  },
+  "Yasmín viaja con su familia a Marruecos.": {
+   "f": "yasmin-viaja-con-su-familia-a-marruecos.mp3",
+   "v": "71168d32",
+   "h": "88017881542a"
+  },
+  "Primero visitan Marrakech, una ciudad con mercados llenos de colores.": {
+   "f": "primero-visitan-marrakech-una-ciudad-con-mercados-llenos-de.mp3",
+   "v": "ddd38131",
+   "h": "d78879930fdc"
+  },
+  "Después van al desierto del Sáhara.": {
+   "f": "despues-van-al-desierto-del-sahara.mp3",
+   "v": "59f797e4",
+   "h": "7941594727e6"
+  },
+  "Allí Yasmín sube a un dromedario, que tiene una sola joroba.": {
+   "f": "alli-yasmin-sube-a-un-dromedario-que-tiene-una-sola-joroba.mp3",
+   "v": "ca1b9db8",
+   "h": "0448f1d4cb58"
+  },
+  "Por la noche miran las estrellas sobre las dunas.": {
+   "f": "por-la-noche-miran-las-estrellas-sobre-las-dunas.mp3",
+   "v": "a0655a41",
+   "h": "40da2e1035e7"
+  },
+  "¿Qué ciudad visitan primero?": {
+   "f": "que-ciudad-visitan-primero.mp3",
+   "v": "eb3028d0",
+   "h": "9948bbb4ef3c"
+  },
+  "Pekín": {
+   "f": "pekin.mp3",
+   "v": "e13949ab",
+   "h": "084f0c20887d"
+  },
+  "¿Cuántas jorobas tiene el dromedario?": {
+   "f": "cuantas-jorobas-tiene-el-dromedario.mp3",
+   "v": "7000c23f",
+   "h": "70367631546b"
+  },
+  "Una": {
+   "f": "una.mp3",
+   "v": "689538c7",
+   "h": "9edf3d43d743"
+  },
+  "Tres": {
+   "f": "tres.mp3",
+   "v": "6b544392",
+   "h": "6e8d3172f70a"
+  },
+  "¿Qué miran por la noche?": {
+   "f": "que-miran-por-la-noche.mp3",
+   "v": "dad77ab6",
+   "h": "2d2174b0427f"
+  },
+  "Las estrellas": {
+   "f": "las-estrellas.mp3",
+   "v": "38f8c3ca",
+   "h": "c2671b299a44"
+  },
+  "La tele": {
+   "f": "la-tele.mp3",
+   "v": "f73a85ff",
+   "h": "cfb35f1e2978"
+  },
+  "El mar": {
+   "f": "el-mar.mp3",
+   "v": "cec4a466",
+   "h": "ef26e8924a00"
+  },
+  "La excursión a Granada": {
+   "f": "la-excursion-a-granada.mp3",
+   "v": "214caafa",
+   "h": "123d3e71fc0d"
+  },
+  "Este curso, nuestra clase hizo una excursión a Granada.": {
+   "f": "este-curso-nuestra-clase-hizo-una-excursion-a-granada.mp3",
+   "v": "73e0e613",
+   "h": "b185f96c795d"
+  },
+  "Por la mañana visitamos la Alhambra, un palacio muy antiguo sobre una colina.": {
+   "f": "por-la-manana-visitamos-la-alhambra-un-palacio-muy-antiguo-s.mp3",
+   "v": "04177a13",
+   "h": "0e1a03fc41fe"
+  },
+  "Tiene patios con fuentes, jardines y paredes llenas de dibujos.": {
+   "f": "tiene-patios-con-fuentes-jardines-y-paredes-llenas-de-dibujo.mp3",
+   "v": "cd15836d",
+   "h": "6c0b727b52c6"
+  },
+  "La guía nos contó que se construyó hace muchos siglos.": {
+   "f": "la-guia-nos-conto-que-se-construyo-hace-muchos-siglos.mp3",
+   "v": "037f68c8",
+   "h": "94a0477cda71"
+  },
+  "En el Patio de los Leones, contamos doce leones de piedra alrededor de una fuente.": {
+   "f": "en-el-patio-de-los-leones-contamos-doce-leones-de-piedra-alr.mp3",
+   "v": "f093b155",
+   "h": "8b422e574f72"
+  },
+  "Desde una torre vimos la sierra con nieve.": {
+   "f": "desde-una-torre-vimos-la-sierra-con-nieve.mp3",
+   "v": "3fe2e29f",
+   "h": "ef084a892b81"
+  },
+  "Al volver, dibujamos la Alhambra en el autobús.": {
+   "f": "al-volver-dibujamos-la-alhambra-en-el-autobus.mp3",
+   "v": "86ce9168",
+   "h": "d3145a41518f"
+  },
+  "¿A qué ciudad fue la clase de excursión?": {
+   "f": "a-que-ciudad-fue-la-clase-de-excursion.mp3",
+   "v": "a1dd853d",
+   "h": "4867c11d8169"
+  },
+  "A Granada": {
+   "f": "a-granada.mp3",
+   "v": "4fba6053",
+   "h": "2ae51ba07fda"
+  },
+  "A Sevilla": {
+   "f": "a-sevilla.mp3",
+   "v": "564832bd",
+   "h": "3d802e5f2d2b"
+  },
+  "A Bilbao": {
+   "f": "a-bilbao.mp3",
+   "v": "1d86e4b9",
+   "h": "d5d73f339089"
+  },
+  "¿Cuántos leones de piedra contaron?": {
+   "f": "cuantos-leones-de-piedra-contaron.mp3",
+   "v": "a448c24a",
+   "h": "55d66eaa3dbd"
+  },
+  "Doce": {
+   "f": "doce.mp3",
+   "v": "fb1a3979",
+   "h": "cb6bfd49c9fe"
+  },
+  "Cinco": {
+   "f": "cinco.mp3",
+   "v": "0aea8423",
+   "h": "1b38cc5399c1"
+  },
+  "Veinte": {
+   "f": "veinte.mp3",
+   "v": "ad54c412",
+   "h": "0a9942746859"
+  },
+  "¿Qué vieron desde una torre?": {
+   "f": "que-vieron-desde-una-torre.mp3",
+   "v": "8a334093",
+   "h": "bc2fa98d39a2"
+  },
+  "La sierra con nieve": {
+   "f": "la-sierra-con-nieve.mp3",
+   "v": "603cebe3",
+   "h": "79927d9c767e"
+  },
+  "Un río enorme": {
+   "f": "un-rio-enorme.mp3",
+   "v": "2a220e0e",
+   "h": "bea30be1ccad"
+  },
+  "Las cartas de Camilo": {
+   "f": "las-cartas-de-camilo.mp3",
+   "v": "54df3020",
+   "h": "92863a78831d"
+  },
+  "Mi amigo Camilo vive en Colombia y me escribe cartas.": {
+   "f": "mi-amigo-camilo-vive-en-colombia-y-me-escribe-cartas.mp3",
+   "v": "7fa26e8a",
+   "h": "02d296108ba1"
+  },
+  "Su ciudad, Bogotá, está en las montañas y por la mañana hace fresco.": {
+   "f": "su-ciudad-bogota-esta-en-las-montanas-y-por-la-manana-hace-f.mp3",
+   "v": "aa7a157a",
+   "h": "9eec2b5892ce"
+  },
+  "Su abuela tiene una finca donde cultivan café.": {
+   "f": "su-abuela-tiene-una-finca-donde-cultivan-cafe.mp3",
+   "v": "195f1bbc",
+   "h": "0348b831abdb"
+  },
+  "En el jardín de la finca hay colibríes, unos pájaros diminutos que mueven las alas muy rápido.": {
+   "f": "en-el-jardin-de-la-finca-hay-colibries-unos-pajaros-diminuto.mp3",
+   "v": "83d607db",
+   "h": "ce0b9d3eca7a"
+  },
+  "En la última carta me mandó una foto de la palma de cera, un árbol altísimo.": {
+   "f": "en-la-ultima-carta-me-mando-una-foto-de-la-palma-de-cera-un.mp3",
+   "v": "da5f4600",
+   "h": "c9b48315b938"
+  },
+  "¡Este verano quiero ir a visitarlo!": {
+   "f": "este-verano-quiero-ir-a-visitarlo.mp3",
+   "v": "f5dc48a4",
+   "h": "17873c86428a"
+  },
+  "¿Dónde vive Camilo?": {
+   "f": "donde-vive-camilo.mp3",
+   "v": "7543593b",
+   "h": "16f8004e9c22"
+  },
+  "En Colombia": {
+   "f": "en-colombia.mp3",
+   "v": "8be1299b",
+   "h": "eed642b8a092"
+  },
+  "En Italia": {
+   "f": "en-italia.mp3",
+   "v": "4851ed5b",
+   "h": "8751eabc6111"
+  },
+  "En China": {
+   "f": "en-china.mp3",
+   "v": "87a76851",
+   "h": "3ad5c41dce2b"
+  },
+  "¿Qué cultivan en la finca de la abuela?": {
+   "f": "que-cultivan-en-la-finca-de-la-abuela.mp3",
+   "v": "44eb7e09",
+   "h": "745b85581cce"
+  },
+  "Café": {
+   "f": "cafe.mp3",
+   "v": "b23aee6a",
+   "h": "74a7c80c7205"
+  },
+  "Trigo": {
+   "f": "trigo.mp3",
+   "v": "49772793",
+   "h": "b1208894ea8e"
+  },
+  "Fresas": {
+   "f": "fresas.mp3",
+   "v": "0030f634",
+   "h": "086a5b22df7a"
+  },
+  "¿Cómo mueven las alas los colibríes?": {
+   "f": "como-mueven-las-alas-los-colibries.mp3",
+   "v": "34cdb51c",
+   "h": "3440d76b9f9c"
+  },
+  "Muy rápido": {
+   "f": "muy-rapido.mp3",
+   "v": "c9969570",
+   "h": "58ec14de3c10"
+  },
+  "Muy despacio": {
+   "f": "muy-despacio.mp3",
+   "v": "4a57d264",
+   "h": "be9881dca869"
+  },
+  "No las mueven": {
+   "f": "no-las-mueven.mp3",
+   "v": "5bdac1fe",
+   "h": "5396cfd99116"
+  },
+  "El castillo de la montaña": {
+   "f": "el-castillo-de-la-montana.mp3",
+   "v": "cf776071",
+   "h": "f597de700d2c"
+  },
+  "En vacaciones, Andrei y su familia viajaron a Rumanía.": {
+   "f": "en-vacaciones-andrei-y-su-familia-viajaron-a-rumania.mp3",
+   "v": "28b16339",
+   "h": "c757eef0d856"
+  },
+  "Primero pasearon por Bucarest, la capital, que tiene muchos parques.": {
+   "f": "primero-pasearon-por-bucarest-la-capital-que-tiene-muchos-pa.mp3",
+   "v": "b5f44a59",
+   "h": "9a16929cdaf7"
+  },
+  "Después fueron en coche hasta los montes Cárpatos.": {
+   "f": "despues-fueron-en-coche-hasta-los-montes-carpatos.mp3",
+   "v": "41163d34",
+   "h": "0f282f6614a7"
+  },
+  "Allí visitaron el castillo de Bran, que está encima de una roca.": {
+   "f": "alli-visitaron-el-castillo-de-bran-que-esta-encima-de-una-ro.mp3",
+   "v": "feff68fe",
+   "h": "05ac3a4260a7"
+  },
+  "Tenía torres, escaleras estrechas y tejados rojos.": {
+   "f": "tenia-torres-escaleras-estrechas-y-tejados-rojos.mp3",
+   "v": "fb265c91",
+   "h": "4b4b414020d1"
+  },
+  "Al final del viaje fueron en barca por el delta del Danubio y vieron muchos pelícanos.": {
+   "f": "al-final-del-viaje-fueron-en-barca-por-el-delta-del-danubio.mp3",
+   "v": "d45cbe70",
+   "h": "c9e46bf904e5"
+  },
+  "Andrei lo dibujó todo en su cuaderno.": {
+   "f": "andrei-lo-dibujo-todo-en-su-cuaderno.mp3",
+   "v": "5fe21166",
+   "h": "5aabc05e258e"
+  },
+  "¿Cuál es la capital de Rumanía?": {
+   "f": "cual-es-la-capital-de-rumania.mp3",
+   "v": "a81bf3cf",
+   "h": "91c3bdbeaaae"
+  },
+  "Granada": {
+   "f": "granada.mp3",
+   "v": "321bfa60",
+   "h": "080b311677f8"
+  },
+  "Moscú": {
+   "f": "moscu.mp3",
+   "v": "099d124d",
+   "h": "a3ac1cdc7d5d"
+  },
+  "¿Dónde está el castillo de Bran?": {
+   "f": "donde-esta-el-castillo-de-bran.mp3",
+   "v": "ff371e13",
+   "h": "7b91d0edb7d2"
+  },
+  "Encima de una roca": {
+   "f": "encima-de-una-roca.mp3",
+   "v": "52038905",
+   "h": "0f1446c38875"
+  },
+  "Al lado del mar": {
+   "f": "al-lado-del-mar.mp3",
+   "v": "7c2dc755",
+   "h": "1c5a1cfdfc38"
+  },
+  "En una isla": {
+   "f": "en-una-isla.mp3",
+   "v": "81c13e9b",
+   "h": "fbd5ea6a84c1"
+  },
+  "¿Qué pájaros vieron en el delta del Danubio?": {
+   "f": "que-pajaros-vieron-en-el-delta-del-danubio.mp3",
+   "v": "fff7ddcf",
+   "h": "524f076e0f4b"
+  },
+  "Pelícanos": {
+   "f": "pelicanos.mp3",
+   "v": "8f1f9079",
+   "h": "2e56b6adfdae"
+  },
+  "Pingüinos": {
+   "f": "pinguinos.mp3",
+   "v": "c0c794f3",
+   "h": "c1a95ed0f35e"
+  },
+  "Gallinas": {
+   "f": "gallinas.mp3",
+   "v": "b57a2a54",
+   "h": "39b1a2fd7dc0"
+  },
+  "Las fotos de Sasha": {
+   "f": "las-fotos-de-sasha.mp3",
+   "v": "2d828956",
+   "h": "63598abcfb24"
+  },
+  "Sasha nos trajo a clase las fotos de su viaje a Rusia, el país más grande del mundo.": {
+   "f": "sasha-nos-trajo-a-clase-las-fotos-de-su-viaje-a-rusia-el-pai.mp3",
+   "v": "f094e8cc",
+   "h": "0198e4e9a75b"
+  },
+  "En Moscú visitó la Plaza Roja, donde está la catedral de San Basilio, con cúpulas de muchos colores.": {
+   "f": "en-moscu-visito-la-plaza-roja-donde-esta-la-catedral-de-san.mp3",
+   "v": "a842f5a7",
+   "h": "8c71fb8ce56b"
+  },
+  "Al lado está el Kremlin, rodeado por una muralla de ladrillo rojo con torres.": {
+   "f": "al-lado-esta-el-kremlin-rodeado-por-una-muralla-de-ladrillo.mp3",
+   "v": "6a88b7a6",
+   "h": "fd53d5accda9"
+  },
+  "Después cogió un tren muy largo que tardó varios días en llegar al lago Baikal.": {
+   "f": "despues-cogio-un-tren-muy-largo-que-tardo-varios-dias-en-lle.mp3",
+   "v": "220ff9bf",
+   "h": "71336225f147"
+  },
+  "Es el lago más profundo del mundo y en invierno su agua se congela.": {
+   "f": "es-el-lago-mas-profundo-del-mundo-y-en-invierno-su-agua-se-c.mp3",
+   "v": "09649f31",
+   "h": "04377e520831"
+  },
+  "«Caminamos sobre el hielo y se veían burbujas debajo», nos contó.": {
+   "f": "caminamos-sobre-el-hielo-y-se-veian-burbujas-debajo-nos-cont.mp3",
+   "v": "6608f1d2",
+   "h": "ef587de5b041"
+  },
+  "En un museo aprendió que en los bosques de Rusia viven osos pardos.": {
+   "f": "en-un-museo-aprendio-que-en-los-bosques-de-rusia-viven-osos.mp3",
+   "v": "d9f9b4a1",
+   "h": "6c9110825550"
+  },
+  "¿Qué hay en la Plaza Roja?": {
+   "f": "que-hay-en-la-plaza-roja.mp3",
+   "v": "a3d9317e",
+   "h": "f7b99b3f2a28"
+  },
+  "¿Cómo llegó Sasha al lago Baikal?": {
+   "f": "como-llego-sasha-al-lago-baikal.mp3",
+   "v": "a844f9db",
+   "h": "6a5774524fa2"
+  },
+  "En un tren muy largo": {
+   "f": "en-un-tren-muy-largo.mp3",
+   "v": "04526371",
+   "h": "94c4e673099d"
+  },
+  "En avión": {
+   "f": "en-avion.mp3",
+   "v": "7406c81d",
+   "h": "1193a3c482a2"
+  },
+  "En barco": {
+   "f": "en-barco.mp3",
+   "v": "bcef71a0",
+   "h": "053ed5461c1f"
+  },
+  "¿Qué le pasa al agua del lago en invierno?": {
+   "f": "que-le-pasa-al-agua-del-lago-en-invierno.mp3",
+   "v": "0361cfac",
+   "h": "28ebc224462e"
+  },
+  "Se congela": {
+   "f": "se-congela.mp3",
+   "v": "d5e1c475",
+   "h": "0876930382de"
+  },
+  "Se calienta": {
+   "f": "se-calienta.mp3",
+   "v": "ea8ba9fc",
+   "h": "107e31981e74"
+  },
+  "Se vuelve roja": {
+   "f": "se-vuelve-roja.mp3",
+   "v": "04f3ad71",
+   "h": "38296d7f311d"
   },
   "¡Genial, sigue así!": {
    "f": "genial-sigue-asi.mp3",
@@ -2791,6 +4491,71 @@
    "f": "pi-pi-genial.mp3",
    "v": "43a21be7",
    "h": "6197cda2f659"
+  },
+  "¡Olé! ¡Muy bien!": {
+   "f": "ole-muy-bien.mp3",
+   "v": "532518c3",
+   "h": "371a5aa4c56c"
+  },
+  "¡Qué bien lo has hecho!": {
+   "f": "que-bien-lo-has-hecho.mp3",
+   "v": "48ac8b8e",
+   "h": "0ffe073bb444"
+  },
+  "¡Muy bien, pequeño panda!": {
+   "f": "muy-bien-pequeno-panda.mp3",
+   "v": "81b50ffb",
+   "h": "94541b78c6e7"
+  },
+  "¡Más fuerte que la Gran Muralla!": {
+   "f": "mas-fuerte-que-la-gran-muralla.mp3",
+   "v": "adc7666e",
+   "h": "42f3a0cf6bab"
+  },
+  "¡Brillas como un girasol!": {
+   "f": "brillas-como-un-girasol.mp3",
+   "v": "e9acae69",
+   "h": "295cfbdfa9a7"
+  },
+  "¡Muy bien! ¡Sigue así!": {
+   "f": "muy-bien-sigue-asi.mp3",
+   "v": "a8146e8e",
+   "h": "91dcc9d917c0"
+  },
+  "¡Fuerte como un oso! ¡Muy bien!": {
+   "f": "fuerte-como-un-oso-muy-bien.mp3",
+   "v": "b3b9eb26",
+   "h": "105e96c0b0a8"
+  },
+  "¡Genial, campeón!": {
+   "f": "genial-campeon.mp3",
+   "v": "342af82d",
+   "h": "4b106d653bf2"
+  },
+  "¡Muy bien, viajero del desierto!": {
+   "f": "muy-bien-viajero-del-desierto.mp3",
+   "v": "27364539",
+   "h": "ec5d7efcc530"
+  },
+  "¡Genial! ¡Sigue así!": {
+   "f": "genial-sigue-asi-2.mp3",
+   "v": "24495ce8",
+   "h": "6141ce9737cd"
+  },
+  "¡Muy bien! ¡Eres el rey del castillo!": {
+   "f": "muy-bien-eres-el-rey-del-castillo.mp3",
+   "v": "dc83f909",
+   "h": "865ffa8ec862"
+  },
+  "¡Chévere! ¡Muy bien!": {
+   "f": "chevere-muy-bien.mp3",
+   "v": "26aacc6f",
+   "h": "9382bd09558e"
+  },
+  "¡Rápido como un colibrí!": {
+   "f": "rapido-como-un-colibri.mp3",
+   "v": "c38607c0",
+   "h": "19879b2698f2"
   },
   "¡Hola!": {
    "f": "hola.mp3",
@@ -2987,6 +4752,11 @@
    "v": "a16f9f93",
    "h": "9136c6ed0b23"
   },
+  "¡Muchas gracias!": {
+   "f": "muchas-gracias.mp3",
+   "v": "1aa7baed",
+   "h": "d163e41f2c69"
+  },
   "Gracias por ayudarme.": {
    "f": "gracias-por-ayudarme.mp3",
    "v": "82a45629",
@@ -3006,11 +4776,6 @@
    "f": "que-bonito-muchas-gracias.mp3",
    "v": "83c76ce3",
    "h": "75245e965a8e"
-  },
-  "¡Adiós!": {
-   "f": "adios.mp3",
-   "v": "2a78f31b",
-   "h": "792e5658fe72"
   },
   "¡Hasta mañana!": {
    "f": "hasta-manana.mp3",

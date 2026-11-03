@@ -1,4 +1,4 @@
-/* Me gusta hablar Alto y claro · Tema favorito del niño (fútbol, animales…)
+/* Me gusta hablar Alto y claro · Tema favorito del niño (fútbol, animales… o un país: China, Ucrania…)
    La elección se guarda en el perfil (gameState.tema; es una preferencia, no un dato personal) y se
    sincroniza con la clave. Cambia de verdad la app:
    - Aspecto: colores de acento, dibujos de fondo, mascota y celebraciones (texto y voz grabada).
@@ -49,6 +49,56 @@ const TEMAS = {
         descripcion: 'Azul de carretera y más palabras y cuentos de coches, trenes y bicis.',
         frases: ['¡A toda máquina! ¡Muy bien!', '¡Pi, pi! ¡Genial!'],
     },
+    // Países: monumentos, ciudades, paisajes y animales de cada lugar (datos sencillos y neutrales para niños)
+    espana: {
+        nombre: 'España', emoji: '🇪🇸', cat: 'España', mascota: '☀️', pais: true,
+        rgb: { 500: '239 68 68', 600: '220 38 38', 700: '185 28 28', 900: '127 29 29' },
+        fondo: ['☀️', '🏰', '🫒', '🍊'], premio: '¡Olé!',
+        descripcion: 'La Alhambra, la Sagrada Familia, Madrid, el lince ibérico y los molinos de viento.',
+        frases: ['¡Olé! ¡Muy bien!', '¡Qué bien lo has hecho!'],
+    },
+    china: {
+        nombre: 'China', emoji: '🇨🇳', cat: 'China', mascota: '🐼', pais: true,
+        rgb: { 500: '249 115 22', 600: '234 88 12', 700: '194 65 12', 900: '124 45 18' },
+        fondo: ['🐼', '🎋', '🏮', '🐉'], premio: '¡Panda campeón!',
+        descripcion: 'La Gran Muralla, la Ciudad Prohibida, Shanghái, el bambú y el oso panda.',
+        frases: ['¡Muy bien, pequeño panda!', '¡Más fuerte que la Gran Muralla!'],
+    },
+    ucrania: {
+        nombre: 'Ucrania', emoji: '🇺🇦', cat: 'Ucrania', mascota: '🌻', pais: true,
+        rgb: { 500: '14 165 233', 600: '2 132 199', 700: '3 105 161', 900: '12 74 110' },
+        fondo: ['🌻', '🌾', '⛪', '🏔️'], premio: '¡Como un girasol!',
+        descripcion: 'La catedral de Santa Sofía, Kiev, los montes Cárpatos, los girasoles y la cigüeña.',
+        frases: ['¡Brillas como un girasol!', '¡Muy bien! ¡Sigue así!'],
+    },
+    rusia: {
+        nombre: 'Rusia', emoji: '🇷🇺', cat: 'Rusia', mascota: '🐻', pais: true,
+        rgb: { 500: '99 102 241', 600: '79 70 229', 700: '67 56 202', 900: '49 46 129' },
+        fondo: ['🐻', '❄️', '🌲', '🪆'], premio: '¡Fuerte como un oso!',
+        descripcion: 'El Kremlin, la catedral de San Basilio, San Petersburgo, el lago Baikal y el oso pardo.',
+        frases: ['¡Fuerte como un oso! ¡Muy bien!', '¡Genial, campeón!'],
+    },
+    marruecos: {
+        nombre: 'Marruecos', emoji: '🇲🇦', cat: 'Marruecos', mascota: '🐪', pais: true,
+        rgb: { 500: '16 185 129', 600: '5 150 105', 700: '4 120 87', 900: '6 78 59' },
+        fondo: ['🐪', '🏜️', '🕌', '🌴'], premio: '¡Genial, viajero!',
+        descripcion: 'Marrakech, la mezquita Hassan II, el desierto del Sáhara, el Atlas y el dromedario.',
+        frases: ['¡Muy bien, viajero del desierto!', '¡Genial! ¡Sigue así!'],
+    },
+    rumania: {
+        nombre: 'Rumanía', emoji: '🇷🇴', cat: 'Rumanía', mascota: '🏰', pais: true,
+        rgb: { 500: '217 70 239', 600: '192 38 211', 700: '162 28 175', 900: '112 26 117' },
+        fondo: ['🏰', '🌲', '🏔️', '🦢'], premio: '¡Rey del castillo!',
+        descripcion: 'El castillo de Bran, el castillo de Peleș, Bucarest, el delta del Danubio y el pelícano.',
+        frases: ['¡Muy bien! ¡Eres el rey del castillo!', '¡Genial, sigue así!'],
+    },
+    colombia: {
+        nombre: 'Colombia', emoji: '🇨🇴', cat: 'Colombia', mascota: '🦜', pais: true,
+        rgb: { 500: '234 179 8', 600: '202 138 4', 700: '161 98 7', 900: '113 63 18' },
+        fondo: ['🦜', '☕', '🌴', '🏔️'], premio: '¡Chévere!',
+        descripcion: 'Bogotá, Cartagena de Indias, la palma de cera, el café y el colibrí.',
+        frases: ['¡Chévere! ¡Muy bien!', '¡Rápido como un colibrí!'],
+    },
 };
 // FIN TEMAS
 const TEMA_POR_DEFECTO = 'mezcla';
@@ -96,17 +146,22 @@ function aplicarTema() {
     const m = document.getElementById('header-mascota'); if (m) m.textContent = t.mascota;
     const b = document.getElementById('tema-btn'); if (b) { b.innerHTML = `<span aria-hidden="true">${t.emoji}</span><span class="hidden sm:inline">${t.nombre}</span>`; b.title = b.ariaLabel = 'Mi tema: ' + t.nombre + ' (cambiar)'; }
     const w = document.getElementById('welcome-tema');
-    if (w) w.innerHTML = t.cat ? `${t.emoji} Tu tema: <strong>${t.nombre}</strong>. Verás más palabras y cuentos de ${t.nombre.toLowerCase()}, mezclados con los demás. <button onclick="abrirTemas()" class="underline text-white/80">Cambiar</button>`
+    if (w) w.innerHTML = t.cat ? `${t.emoji} Tu tema: <strong>${t.nombre}</strong>. Verás más palabras y cuentos de ${t.pais ? t.nombre : t.nombre.toLowerCase()}, mezclados con los demás. <button onclick="abrirTemas()" class="underline text-white/80">Cambiar</button>`
         : `${t.emoji} Tu tema: <strong>${t.nombre}</strong>. <button onclick="abrirTemas()" class="underline text-white/80">Elige tu tema favorito</button>`;
     const g = document.getElementById('goal-titulo'); if (g) g.textContent = t.premio;
 }
+// Botones del selector: primero los temas de siempre y, debajo, los países con su título
 function temaBotonesHTML(sel, accion) {
-    return Object.entries(TEMAS).map(([k, t]) => `<button type="button" data-tema="${k}" onclick="${accion}('${k}')"
+    const boton = ([k, t]) => `<button type="button" data-tema="${k}" onclick="${accion}('${k}')"
         class="tema-opcion text-left rounded-2xl border-2 p-3 transition ${k === sel ? 'border-white bg-white/10' : 'border-slate-700 bg-stadium-800 hover:border-slate-500'}"
         style="--c:rgb(${t.rgb[500]})">
         <div class="text-2xl">${t.emoji} <span class="inline-block w-3 h-3 rounded-full align-middle" style="background:rgb(${t.rgb[500]})"></span></div>
         <div class="font-bold text-white text-sm mt-1">${t.nombre}</div>
-        <div class="text-[11px] text-slate-400 leading-snug">${t.descripcion}</div></button>`).join('');
+        <div class="text-[11px] text-slate-400 leading-snug">${t.descripcion}</div></button>`;
+    const todos = Object.entries(TEMAS);
+    return todos.filter(([, t]) => !t.pais).map(boton).join('') +
+        `<div class="tema-titulo-paises col-span-full font-game text-lg text-white mt-2">🌍 Países del mundo <span class="font-sans text-xs text-slate-400">monumentos, ciudades, paisajes y animales</span></div>` +
+        todos.filter(([, t]) => t.pais).map(boton).join('');
 }
 function abrirTemas() {
     const m = document.getElementById('tema-modal');
