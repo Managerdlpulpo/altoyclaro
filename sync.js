@@ -38,7 +38,7 @@ function nombreDispositivo() {
     const nav = /Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : '';
     return nav ? `${so} · ${nav}` : so;
 }
-function escS(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;' }[c])); }
+function escS(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
 async function llamarApi(ruta, cuerpo, extra = {}) {
     try {
@@ -304,107 +304,388 @@ async function _sincronizarUnaVez(opciones) {
         const tabLect = document.getElementById('tab-lectura');
         if ((nuevos || d.borradoT) && tabLect && !tabLect.classList.contains('hidden') && typeof renderLectura === 'function' && typeof lecturaOcupada === 'function' && !lecturaOcupada()) renderLectura();
         const tabFr = document.getElementById('tab-frases');
-        if ((nuevos || d.borradoT) && tabFr && !tabFr.classList.contains('hidden') && typeof renderFrases === 'function') renderFrases();
-        if (nuevos && tabProg && !tabProg.classList.contains('hidden') && typeof renderProgreso === 'function') renderProgreso();
+        if ((nuevos || d.borradoT) && tabFr && !tabFr.classList.contains('hidden') && typeof renderFrases === 'function' && typeof frasesOcupada === 'function' && !frasesOcupada() && frVista.modo === 'inicio') renderFrases();
+        if ((nuevos || d.borradoT) && tabProg && !tabProg.classList.contains('hidden') && typeof renderProgresoHabla === 'function') renderProgresoHabla();
     } finally { aplicandoRemoto = false; }
+    if (hablaData.intentos.some(i => !i.s) || (hayLect && lecturaData.lecturas.some(i => !i.s)) || (hayFr && frasesData.registros.some(i => !i.s))) _syncOtraVez = true;
     return true;
 }
-
-function bloquearDispositivo(mensaje) {
-    syncMeta.conectado = false; syncMeta.bloqueado = true; syncMeta.motivo = mensaje || 'Esta clave ya no sirve en este dispositivo.';
-    guardarSyncMeta();
-    mostrarAcceso('formulario', syncMeta.motivo);
-}
-
-/* ---------- UI de la cuenta ---------- */
 let syncEstado = '';
-function actualizarCuentaUI() {
-    const btn = document.getElementById('cuenta-btn');
-    if (!btn) return;
-    if (rolActual === 'profe') {
-        btn.innerHTML = '<span aria-hidden="true">👤</span><span class="hidden sm:inline">Profe</span>';
-        btn.title = 'Sesión del profe';
-    } else if (rolActual === 'nino' && syncMeta.alias) {
-        btn.innerHTML = '<span aria-hidden="true">🔑</span><span class="hidden sm:inline">' + escS(syncMeta.alias) + '</span>';
-        btn.title = 'Mi clave: ' + syncMeta.alias;
-    } else {
-        btn.innerHTML = '<span aria-hidden="true">🔑</span><span class="hidden sm:inline">Entrar</span>';
-        btn.title = 'Entrar con mi clave';
-    }
-}
 
-function abrirCuenta() {
-    crearModalesSync();
-    document.getElementById('cuenta-modal').classList.remove('hidden');
-    renderCuenta();
+/* ---------- Entrar, salir y borrar datos del dispositivo ---------- */
+async function borrarDatosLocales() {
+    localStorage.removeItem('ligaHablaVisual');
+    localStorage.removeItem('ligaHablaVoz');
+    localStorage.removeItem('ligaHablaTestTextos');
+    localStorage.removeItem('ligaHablaLectura');
+    localStorage.removeItem('ligaHablaFrases');
+    localStorage.removeItem('ligaHablaPegatinas');
+    localStorage.removeItem('ligaHablaPenalty');
+    localStorage.removeItem(SYNC_KEY);
+    try { if (typeof audioClear === 'function') await audioClear(); } catch (e) { }
 }
-function cerrarCuenta() { const m = document.getElementById('cuenta-modal'); if (m) m.classList.add('hidden'); }
-
-function renderCuenta() {
-    const c = document.getElementById('cuenta-contenido');
-    if (!c) return;
-    if (rolActual === 'profe') {
-        c.innerHTML = `<div class="text-center"><div class="text-4xl mb-2">👤</div><p class="text-slate-200">Has entrado como <strong>profe</strong>.</p><p class="text-xs text-slate-400 mt-2">La sesión dura 8 horas. Puedes probar la app y gestionar las claves desde el engranaje.</p><button onclick="cerrarSesion()" class="mt-4 bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-sm">Cerrar sesión del profe</button></div>`;
-        return;
-    }
-    if (rolActual === 'nino') {
-        c.innerHTML = `<div class="text-center"><div class="text-4xl mb-2">🔑</div><p class="text-slate-200">Clave: <strong>${escS(syncMeta.alias)}</strong></p><p class="text-xs text-slate-400 mt-1">Progreso sincronizado en hasta 2 dispositivos.</p><button onclick="cerrarSesion()" class="mt-4 bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-sm">Cerrar sesión / cambiar de alumno</button></div>`;
-        return;
-    }
-    c.innerHTML = `<div class="text-center"><p class="text-slate-300">No hay sesión activa.</p></div>`;
-}
-
-async function cerrarSesion() {
-    if (!confirm('¿Cerrar la sesión en este dispositivo?')) return;
-    await llamarApi('acceso', { accion: 'salir' });
-    syncMeta = syncMetaVacia(); guardarSyncMeta();
-    location.reload();
-}
-
 async function entrarConClave() {
     const input = document.getElementById('login-codigo');
     const msg = document.getElementById('login-mensaje');
     const btn = document.getElementById('login-boton');
-    const codigo = (input.value || '').trim().toUpperCase();
-    if (!codigo) { msg.className = 'text-xs mt-3 text-red-300 text-center'; msg.textContent = 'Escribe la clave.'; return; }
-    btn.disabled = true; msg.className = 'text-xs mt-3 text-slate-300 text-center'; msg.textContent = 'Comprobando…';
-    const r = await llamarApi('acceso', { accion: 'entrar', codigo, dispositivo: dispositivoId(), nombreDispositivo: nombreDispositivo() });
+    const codigo = (input.value || '').trim();
+    if (!codigo) { msg.textContent = 'Escribe tu clave.'; return; }
+    btn.disabled = true; msg.className = 'text-xs mt-3 text-slate-300'; msg.textContent = 'Comprobando…';
+    const r = await llamarApi('acceso', { accion: 'entrar', codigo, dispositivo: dispositivoId(), nombre: nombreDispositivo() });
     btn.disabled = false;
-    if (r.status !== 200 || !r.datos.ok) {
-        msg.className = 'text-xs mt-3 text-red-300 text-center';
-        msg.textContent = r.datos.mensaje || 'No se pudo entrar.';
-        return;
+    if (r.status !== 200 || !r.datos.ok) { msg.className = 'text-xs mt-3 text-red-300'; msg.textContent = r.datos.mensaje || 'No se pudo entrar.'; return; }
+    const { id, alias } = r.datos;
+    let perfilT = 0;
+    if (syncMeta.ninoId && syncMeta.ninoId !== id) {
+        await borrarDatosLocales(); // eran datos de otro niño
+    } else if (syncMeta.ninoId === id) {
+        perfilT = syncMeta.perfilT || 0;
+    } else {
+        await prepararDatosLocales(alias);
+        if (syncMeta._juntar) perfilT = 1;
     }
-    input.value = '';
+    syncMeta = Object.assign(syncMetaVacia(), { conectado: true, ninoId: id, alias, perfilT });
+    guardarSyncMeta();
+    if (typeof hablaData !== 'undefined') hablaData = cargarHabla();
+    if (typeof lecturaData !== 'undefined') lecturaData = cargarLecturas();
+    if (typeof frasesData !== 'undefined') frasesData = cargarFrases();
+    try { gameState = limpiarPerfilLocal(JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState); } catch (e) { }
+    msg.textContent = 'Sincronizando…';
+    rolActual = 'nino';
+    await sincronizar();
     location.reload();
 }
-
-async function borrarDatosLocales() {
-    // Borra el progreso local (no toca la clave ni el dispositivoId)
-    ['ligaHablaVisual', 'ligaHablaVoz', 'ligaHablaLectura', 'ligaHablaFrases', 'ligaHablaTestTextos'].forEach(k => localStorage.removeItem(k));
-    if (typeof audioClear === 'function') try { await audioClear(); } catch (e) { }
-}
-
-async function borrarDispositivoBloqueado() {
-    if (!confirm('¿Borrar todos los datos guardados en este dispositivo? (el progreso en el servidor no se toca)')) return;
+async function cerrarSesion() {
+    if (rolActual === 'profe') {
+        if (!confirm('¿Salir de la sesión del profe en este dispositivo?')) return;
+        await llamarApi('acceso', { accion: 'salir_profe' });
+        if (!syncMeta.ninoId && localStorage.getItem('ligaHablaVisual') && confirm('¿Borrar también lo que has probado en este dispositivo (perfil, progreso y grabaciones)?')) await borrarDatosLocales();
+        location.reload(); return;
+    }
+    if (!confirm('¿Cerrar sesión en este dispositivo?\n\nSe borrarán de ESTE dispositivo el perfil, el progreso y las grabaciones de voz. El progreso guardado con tu clave sigue en el servidor y podrás volver a entrar con tu clave.')) return;
+    if (navigator.onLine) { try { await sincronizar(); } catch (e) { } await llamarApi('acceso', { accion: 'salir' }); }
     await borrarDatosLocales();
-    syncMeta = syncMetaVacia(); guardarSyncMeta();
     location.reload();
 }
+async function borrarDispositivoBloqueado() {
+    if (!confirm('¿Borrar el perfil, el progreso y las grabaciones de este dispositivo?')) return;
+    await borrarDatosLocales();
+    location.reload();
+}
+// Clave cambiada, anulada o dispositivo liberado: vuelta a la pantalla de acceso (el progreso local se conserva)
+function bloquearDispositivo(mensaje) {
+    syncMeta.bloqueado = true; syncMeta.motivo = mensaje || ''; guardarSyncMeta();
+    if (typeof cancelarSesionHabla === 'function') { try { cancelarSesionHabla(); } catch (e) { } }
+    mostrarAcceso('formulario', (mensaje || 'Tu clave ha cambiado o este dispositivo ya no está autorizado.') + ' Si no tienes tu clave, pídesela al profe. Tu progreso de este dispositivo sigue guardado aquí.');
+}
 
-/* ---------- Modales de sincronización ---------- */
+/* ---------- Interfaz ---------- */
 function crearModalesSync() {
-    if (document.getElementById('cuenta-modal')) return;
     const html = `
-    <div id="cuenta-modal" class="modal hidden">
-        <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-4"><h2 class="font-game text-xl text-white">Mi cuenta</h2><button onclick="cerrarCuenta()" class="text-slate-400 hover:text-white text-2xl">&times;</button></div>
-            <div id="cuenta-contenido"></div>
+    <div id="cuenta-modal" class="modal hidden" style="z-index:110">
+      <div class="bg-stadium-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-game text-xl text-white">☁️ Mi clave y ajustes</h3>
+          <button onclick="document.getElementById('cuenta-modal').classList.add('hidden')" class="text-slate-400" aria-label="Cerrar">✕</button>
         </div>
+        <div id="cuenta-info" class="text-sm text-slate-300 space-y-1 mb-4"></div>
+      <!-- Voz de la app (ajuste del dispositivo: lo puede cambiar también el alumno) -->
+      <div id="ajustes-voz" class="bg-stadium-800 p-3 rounded-xl space-y-2 mb-4">
+      <h4 class="font-game text-white">🔊 Voz</h4>
+      <label class="flex items-start gap-2 text-xs text-slate-200"><input id="voz-grabada" type="checkbox" checked onchange="cambiarVozGrabada(this.checked)" class="mt-0.5"> Usar la voz grabada natural para palabras y frases del juego (recomendado)</label>
+      <label class="block text-xs text-slate-400" for="voz-select">Voz del dispositivo para el resto de textos:</label>
+      <div class="flex gap-2">
+      <select id="voz-select" onchange="cambiarVoz(this.value)" class="flex-1 min-w-0 bg-stadium-900 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white"><option value="">Automática</option></select>
+      <button onclick="probarVoz()" class="bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-volume-high"></i> Probar</button>
+      </div>
+      <p id="voz-info" class="text-[11px] text-slate-400"></p>
+      </div>
+        <div class="grid gap-2">
+          <button onclick="sincronizar().then(actualizarCuentaUI)" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 rounded-xl text-sm"><i class="fa-solid fa-rotate mr-1"></i> Sincronizar ahora</button>
+          <button onclick="cerrarSesion()" class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 rounded-xl text-sm"><i class="fa-solid fa-right-from-bracket mr-1"></i> Cerrar sesión</button>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-3">Al cerrar sesión se borra todo de este dispositivo (también las grabaciones). <a href="privacidad.html" target="_blank" class="underline text-sky-300">Privacidad</a></p>
+      </div>
     </div>`;
     document.body.insertAdjacentHTML('beforeend', html);
 }
+function abrirCuenta() {
+    actualizarCuentaUI();
+    if (typeof renderSelectorVoz === 'function') renderSelectorVoz();
+    document.getElementById('cuenta-modal').classList.remove('hidden');
+}
+function actualizarCuentaUI() {
+    const b = document.getElementById('cuenta-btn');
+    if (b) {
+        b.innerHTML = rolActual === 'profe'
+            ? `<span aria-hidden="true">🧑‍🏫</span><span class="hidden sm:inline">Profe</span>`
+            : `<span aria-hidden="true">☁️</span><span class="hidden sm:inline max-w-[7rem] truncate">${escS(syncMeta.alias || 'Mi clave')}</span>`;
+        b.setAttribute('aria-label', b.title = rolActual === 'profe' ? 'Sesión del profe' : `Mi clave (${syncMeta.alias || ''})`);
+    }
+    const info = document.getElementById('cuenta-info');
+    if (info && rolActual === 'profe') {
+        info.innerHTML = `<div>Has entrado como <strong class="text-white">${esAdminProfe() ? 'administrador' : nombreClase(profeInfo)}</strong>. La sesión dura 8 horas.</div>
+          <div class="text-xs text-slate-400">Lo que pruebes en la app como profe se queda solo en este dispositivo (no se sincroniza). Las claves de los niños se gestionan en el Panel del profe.</div>`;
+        const s = document.querySelector('#cuenta-modal button[onclick^="sincronizar"]'); if (s) s.classList.add('hidden');
+    } else if (info && syncMeta.conectado) {
+        const pend = ((typeof hablaData !== 'undefined') ? hablaData.intentos.filter(i => !i.s).length : 0)
+            + ((typeof lecturaData !== 'undefined') ? lecturaData.lecturas.filter(i => !i.s).length : 0)
+            + ((typeof frasesData !== 'undefined') ? frasesData.registros.filter(i => !i.s).length : 0);
+        info.innerHTML = `<div>Has entrado como <strong class="text-white">${escS(syncMeta.alias)}</strong>.</div>
+          <div>Última sincronización: ${syncMeta.ultima ? new Date(syncMeta.ultima).toLocaleString('es-ES') : 'todavía no'}</div>
+          <div>${pend ? `⏳ ${pend} intento(s) por enviar` : '✅ Todo enviado'}</div>
+          ${syncEstado ? `<div class="text-amber-300">${escS(syncEstado)}</div>` : ''}
+          <div class="text-xs text-slate-400">Se sincroniza: nombre, nivel, XP, puntuaciones del test de nivel, intentos (texto), puntuaciones de lectura y de frases cotidianas (sin lo que se oyó) y las pegatinas conseguidas. Las grabaciones y las respuestas libres del test se quedan en este dispositivo.</div>`;
+    }
+}
 
+/* ---------- Panel del profe: claves de la clase ---------- */
+let _claveProfe = ''; // solo en memoria: se olvida al recargar
+let _claveProfeOk = false; // true solo cuando el servidor ha aceptado esa clave (para abrir el panel en la sesión de un alumno)
+let _ultimo401Profe = 0;
+// El panel del profe (nivel, test, reiniciar, claves) solo se abre con sesión de profe o con la clave del profe comprobada
+function panelProfeDesbloqueado() { return rolActual === 'profe' || (_claveProfeOk && !!_claveProfe); }
+function aplicarCandadoPanel() {
+    const abierto = panelProfeDesbloqueado();
+    const ver = (id, si) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', !si); };
+    ver('teacher-bloqueo', !abierto);
+    ver('teacher-controles', abierto);
+    ver('admin-titulo', abierto);
+    ver('admin-intro', abierto);
+    const m = document.getElementById('teacher-modal'); if (m) m.classList.toggle('bloqueado', !abierto);
+}
+async function llamarAdmin(accion, extra = {}) {
+    const r = await llamarApi('admin', Object.assign({ accion }, extra), { headers: { 'X-Clave-Profe': _claveProfe } });
+    if (r.status === 401 || r.status === 403 && accion === 'listar') {
+        _claveProfe = ''; _claveProfeOk = false; aplicarCandadoPanel();
+        // la sesión del profe caducó: vuelta a la pantalla de acceso (como mucho una vez cada 15 s, para no entrar en bucle)
+        if (rolActual === 'profe' && Date.now() - _ultimo401Profe > 15000) { _ultimo401Profe = Date.now(); comprobarAcceso(); }
+    }
+    return r;
+}
+function adminMensaje(txt, tipo = 'info') {
+    const m = document.getElementById('admin-mensaje');
+    if (!m) return;
+    m.className = 'text-xs mt-2 ' + (tipo === 'error' ? 'text-red-300' : tipo === 'ok' ? 'text-emerald-300' : 'text-slate-300');
+    m.textContent = txt;
+}
+async function adminAbrir() {
+    _claveProfe = document.getElementById('admin-clave').value;
+    if (!_claveProfe) { adminMensaje('Escribe la clave del profe.', 'error'); return; }
+    adminMensaje('Comprobando…');
+    const r = await llamarAdmin('listar');
+    if (r.status !== 200) { _claveProfe = ''; _claveProfeOk = false; aplicarCandadoPanel(); adminMensaje(r.datos.mensaje || 'No se pudo abrir.', 'error'); return; }
+    document.getElementById('admin-clave').value = '';
+    _claveProfeOk = true;
+    aplicarCandadoPanel();
+    profeInfo = r.datos.profesor || { rol: 'admin' };
+    aplicarPapelProfe();
+    document.getElementById('admin-login').classList.add('hidden');
+    document.getElementById('admin-panel').classList.remove('hidden');
+    adminMensaje('');
+    adminPintar(r.datos);
+    if (typeof cargarPegatinasProfe === 'function') cargarPegatinasProfe();
+}
+function adminCerrarPanel() {
+    _claveProfe = ''; _claveProfeOk = false;
+    aplicarCandadoPanel();
+    if (rolActual === 'profe') { document.getElementById('admin-codigo-nuevo').classList.add('hidden'); return; }
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('admin-profesores-bloque').classList.add('hidden');
+    document.getElementById('admin-login').classList.remove('hidden');
+    document.getElementById('admin-codigo-nuevo').classList.add('hidden');
+    document.getElementById('admin-lista').innerHTML = '';
+}
+async function adminRefrescar() {
+    const r = await llamarAdmin('listar');
+    if (r.status === 401) { adminCerrarPanel(); adminMensaje(r.datos.mensaje, 'error'); return; }
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminPintar(r.datos);
+    if (typeof cargarPegatinasProfe === 'function') cargarPegatinasProfe();
+}
+function adminMostrarCodigo(alias, codigo) {
+    const box = document.getElementById('admin-codigo-nuevo');
+    box.innerHTML = `<div class="text-xs text-slate-300">Clave de <strong class="text-white">${escS(alias)}</strong>:</div>
+      <div class="font-game text-3xl tracking-widest text-amber-300 my-1 select-all" id="admin-codigo-texto">${escS(codigo)}</div>
+      <div class="text-xs text-amber-200">✍️ Apúntala y dásela al niño o a su familia. Por seguridad no se volverá a mostrar.</div>
+      <button onclick="this.parentElement.classList.add('hidden')" class="mt-2 text-xs underline text-slate-300">Ya la he apuntado</button>`;
+    box.classList.remove('hidden');
+}
+function adminPintar(d) {
+    const cont = document.getElementById('admin-lista');
+    if (!d) return;
+    cont._datos = d; cont._ninos = d.ninos;
+    if (typeof pegBadge === 'function' && d.pegatinasPendientes != null) pegBadge(d.pegatinasPendientes);
+    // Solo el admin recibe «profesores»: filtro por clase, reasignar y elegir clase al crear
+    const admin = Array.isArray(d.profesores), profs = d.profesores || [];
+    const fb = document.getElementById('admin-filtro-bloque'), fs = document.getElementById('admin-filtro'), cs = document.getElementById('admin-crear-profesor');
+    const opciones = sel => `<option value="">Administrador (sin profesor)</option>` + profs.map(p => `<option value="${escS(p.id)}"${sel === p.id ? ' selected' : ''}>${nombreClase(p)}${p.activo ? '' : ' (desactivado)'}</option>`).join('');
+    if (fb) fb.classList.toggle('hidden', !admin || !profs.length);
+    if (cs) { cs.classList.toggle('hidden', !admin || !profs.length); if (admin) { const v = cs.value; cs.innerHTML = opciones(v); cs.value = profs.some(p => p.id === v) ? v : ''; } }
+    let filtro = '*';
+    if (fs && admin) {
+        const v = fs.value || '*';
+        fs.innerHTML = `<option value="*">Todas las clases (${d.ninos.length})</option><option value="_">Administrador (sin profesor) (${d.ninos.filter(n => !n.profesor).length})</option>`
+            + profs.map(p => `<option value="${escS(p.id)}">${nombreClase(p)} (${d.ninos.filter(n => n.profesor === p.id).length})</option>`).join('');
+        fs.value = [...fs.options].some(o => o.value === v) ? v : '*'; filtro = fs.value;
+    }
+    const lista = d.ninos.filter(n => filtro === '*' || (filtro === '_' ? !n.profesor : n.profesor === filtro));
+    if (!lista.length) { cont.innerHTML = `<p class="text-xs text-slate-400">${d.ninos.length ? 'No hay alumnos en esta clase.' : 'Todavía no hay niños con clave.'}</p>`; return; }
+    cont.innerHTML = lista.map(n => `
+      <div class="bg-stadium-950 border border-slate-800 rounded-xl p-3" data-nino="${escS(n.id)}">
+        <div class="flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold text-white">${escS(n.alias)} ${n.revocado ? '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">clave anulada</span>' : ''}${admin ? ` <span class="text-[10px] bg-sky-900 text-sky-200 px-1.5 py-0.5 rounded">${n.profesor ? nombreClase(profs.find(p => p.id === n.profesor)) : 'Administrador'}</span>` : ''}</div>
+            <div class="text-[11px] text-slate-400">${n.xp != null ? `XP ${n.xp} · Nivel ${n.nivel}` : 'Sin perfil aún'}${n.test ? ` · Test ${new Date(n.test.t).toLocaleDateString('es-ES')}: C ${n.test.comp}% V ${n.test.voc}% H ${n.test.conv}%` : ''} · ${n.intentos} intentos · ${n.lecturas || 0} lecturas · ${n.frases || 0} frases${n.pegatinasPendientes ? ` · <span class="text-amber-300">🏅 ${n.pegatinasPendientes} por entregar</span>` : ''} · Dispositivos ${n.dispositivos.length}/${d.maxDispositivos}</div>
+          </div>
+        </div>
+        ${n.dispositivos.map(x => `<div class="flex justify-between items-center text-[11px] text-slate-300 mt-1 bg-stadium-800 rounded-lg px-2 py-1">
+            <span>📱 ${escS(x.nombre || 'Dispositivo')} · usado ${new Date(x.ultimo).toLocaleDateString('es-ES')}</span>
+            <button onclick="adminLiberar('${escS(n.id)}','${escS(x.id)}')" class="text-sky-300 underline">Liberar</button></div>`).join('')}
+        <div class="flex flex-wrap gap-2 mt-2">
+          <button onclick="adminRegenerar('${escS(n.id)}')" class="text-[11px] bg-amber-500 text-stadium-950 font-bold px-2 py-1 rounded-lg">Nueva clave</button>
+          ${n.revocado ? '' : `<button onclick="adminRevocar('${escS(n.id)}')" class="text-[11px] bg-stadium-800 border border-slate-700 text-slate-200 font-bold px-2 py-1 rounded-lg">Anular clave</button>`}
+          <button onclick="adminLectura('${escS(n.id)}')" class="admin-lectura-btn text-[11px] bg-pitch-600 hover:bg-pitch-500 text-white font-bold px-2 py-1 rounded-lg" aria-expanded="false">📖 Lectura</button>
+          <button onclick="adminBorrar('${escS(n.id)}')" class="text-[11px] bg-red-700 text-white font-bold px-2 py-1 rounded-lg">Borrar niño y datos</button>
+          ${admin && profs.length ? `<label class="text-[11px] text-slate-400 flex items-center gap-1">Clase: <select onchange="adminReasignar('${escS(n.id)}', this.value)" class="bg-stadium-800 border border-slate-700 rounded-lg px-1 py-1 text-white text-[11px]" aria-label="Pasar a otra clase">${opciones(n.profesor || '')}</select></label>` : ''}
+        </div>
+        <div class="admin-lectura hidden mt-3 border-t border-slate-800 pt-3"></div>
+      </div>`).join('');
+}
+// Lectura de un alumno: palabras que le cuestan y comprensión por cuento (el servidor aplica el ámbito del profe)
+async function adminLectura(id) {
+    const fila = [...document.querySelectorAll('#admin-lista [data-nino]')].find(x => x.dataset.nino === id);
+    if (!fila) return;
+    const box = fila.querySelector('.admin-lectura'), btn = fila.querySelector('.admin-lectura-btn');
+    if (!box.classList.contains('hidden')) { box.classList.add('hidden'); if (btn) btn.setAttribute('aria-expanded', 'false'); return; }
+    box.classList.remove('hidden'); if (btn) btn.setAttribute('aria-expanded', 'true');
+    box.innerHTML = '<p class="text-xs text-slate-400">Cargando…</p>';
+    const r = await llamarAdmin('lecturas', { id });
+    if (r.status !== 200) { box.innerHTML = `<p class="text-xs text-red-300">${escS((r.datos && r.datos.mensaje) || 'No se pudo cargar.')}</p>`; return; }
+    box.innerHTML = `<div class="text-xs font-bold text-white mb-2">📖 Leo en voz alta · ${escS(aliasDe(id))}</div>`
+        + (typeof lecResumenProfeHTML === 'function' ? lecResumenProfeHTML(r.datos.lecturas || []) : '');
+}
+const aliasDe = id => ((document.getElementById('admin-lista')._ninos || []).find(n => n.id === id) || {}).alias || '';
+async function adminCrear() {
+    const input = document.getElementById('admin-alias');
+    const alias = input.value.trim();
+    if (!alias) { adminMensaje('Escribe un nombre o apodo (sin apellidos).', 'error'); return; }
+    const cs = document.getElementById('admin-crear-profesor');
+    const r = await llamarAdmin('crear', { alias, profesor: (cs && !cs.classList.contains('hidden') && cs.value) || undefined });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    input.value = '';
+    adminMostrarCodigo(r.datos.alias, r.datos.codigo);
+    adminMensaje('');
+    adminRefrescar();
+}
+async function adminRegenerar(id) {
+    if (!confirm(`¿Dar una clave nueva a ${aliasDe(id)}?\n\nLa clave anterior dejará de funcionar y se cerrará la sesión en sus dispositivos. Su progreso se conserva.`)) return;
+    const alias = aliasDe(id);
+    const r = await llamarAdmin('regenerar', { id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminMostrarCodigo(alias, r.datos.codigo); adminRefrescar();
+}
+async function adminRevocar(id) {
+    if (!confirm(`¿Anular la clave de ${aliasDe(id)}?\n\nNadie podrá entrar con ella. Su progreso se conserva hasta que le des una clave nueva o lo borres.`)) return;
+    const r = await llamarAdmin('revocar', { id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminMensaje('Clave anulada.', 'ok'); adminRefrescar();
+}
+async function adminLiberar(id, dispositivo) {
+    if (!confirm('¿Liberar este dispositivo? Se cerrará la sesión en él y quedará un hueco libre para otro.')) return;
+    const r = await llamarAdmin('liberar', { id, dispositivo });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminMensaje('Dispositivo liberado.', 'ok'); adminRefrescar();
+}
+async function adminBorrar(id) {
+    const alias = aliasDe(id);
+    if (!confirm(`¿Borrar a ${alias} y TODOS sus datos del servidor (perfil, intentos, lecturas, frases, pegatinas, dispositivos y clave)?\n\nNo se puede deshacer.`)) return;
+    const r = await llamarAdmin('borrar', { id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminMensaje(`${alias} y sus datos se han borrado del servidor.`, 'ok'); adminRefrescar();
+}
+
+async function adminReasignar(id, profesor) {
+    const r = await llamarAdmin('reasignar', { id, profesor: profesor || null });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return adminRefrescar(); }
+    adminMensaje(`${aliasDe(id)} ha cambiado de clase.`, 'ok'); adminRefrescar(); profCargar();
+}
+
+/* ---------- Solo admin: profesores y registro de cambios ---------- */
+const profDe = id => ((document.getElementById('prof-lista')._profs || []).find(p => p.id === id)) || null;
+async function profCargar() {
+    if (!esAdminProfe()) return;
+    const r = await llamarAdmin('profesores');
+    const cont = document.getElementById('prof-lista');
+    if (!cont || r.status !== 200 || !Array.isArray(r.datos.profesores)) return;
+    cont._profs = r.datos.profesores;
+    cont.innerHTML = (r.datos.profesores.length ? r.datos.profesores.map(p => `
+      <div class="flex flex-wrap justify-between items-center gap-2 bg-stadium-950 border border-slate-800 rounded-lg px-2 py-1.5" data-profesor="${escS(p.id)}">
+        <div class="text-xs"><strong class="text-white">${nombreClase(p)}</strong>
+          <span class="text-slate-400">· ${p.alumnos} alumno(s)</span> ${p.activo ? '' : '<span class="text-[10px] bg-red-700 text-white px-1.5 py-0.5 rounded">desactivado</span>'}</div>
+        <div class="flex gap-1">
+          <button onclick="profRegenerar('${escS(p.id)}')" class="text-[11px] bg-amber-500 text-stadium-950 font-bold px-2 py-0.5 rounded-lg">Nueva clave</button>
+          <button onclick="profActivo('${escS(p.id)}', ${!p.activo})" class="text-[11px] bg-stadium-800 border border-slate-700 text-slate-200 font-bold px-2 py-0.5 rounded-lg">${p.activo ? 'Desactivar' : 'Activar'}</button>
+          <button onclick="profBorrar('${escS(p.id)}')" class="text-[11px] bg-red-700 text-white font-bold px-2 py-0.5 rounded-lg">Borrar</button>
+        </div>
+      </div>`).join('') : '<p class="text-xs text-slate-400">Todavía no hay profesores.</p>')
+      + `<p class="text-[11px] text-slate-500">${r.datos.sinProfesor} alumno(s) del administrador (sin profesor).</p>`;
+    const reg = document.getElementById('admin-auditoria'); if (reg && reg.open) auditoriaCargar();
+}
+function profMostrarClave(p, clave) {
+    const box = document.getElementById('prof-clave-nueva');
+    box.innerHTML = `<div class="text-xs text-slate-300">Clave personal de <strong class="text-white">${nombreClase(p)}</strong>:</div>
+      <div class="font-game text-2xl tracking-wider text-sky-300 my-1 select-all" id="prof-clave-texto">${escS(clave)}</div>
+      <div class="text-xs text-sky-200">✍️ Apúntala y dásela en mano. Con ella entra en «Soy el profe» y solo ve su clase. Por seguridad no se volverá a mostrar.</div>
+      <button onclick="this.parentElement.classList.add('hidden')" class="mt-2 text-xs underline text-slate-300">Ya la he apuntado</button>`;
+    box.classList.remove('hidden');
+}
+async function profCrear() {
+    const n = document.getElementById('prof-nombre'), c = document.getElementById('prof-clase');
+    if (!n.value.trim()) { adminMensaje('Escribe el nombre del profesor.', 'error'); return; }
+    const r = await llamarAdmin('profesor_crear', { nombre: n.value.trim(), clase: c.value.trim() });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    n.value = ''; c.value = '';
+    profMostrarClave(r.datos, r.datos.clave); adminMensaje('');
+    profCargar(); adminRefrescar();
+}
+async function profRegenerar(id) {
+    const p = profDe(id); if (!p) return;
+    if (!confirm(`¿Dar una clave nueva a ${p.nombre}?\n\nLa clave anterior dejará de funcionar y se cerrará su sesión. Sus alumnos no cambian.`)) return;
+    const r = await llamarAdmin('profesor_regenerar', { profesor: id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    profMostrarClave(r.datos, r.datos.clave); profCargar();
+}
+async function profActivo(id, activo) {
+    const p = profDe(id); if (!p) return;
+    if (!activo && !confirm(`¿Desactivar a ${p.nombre}?\n\nNo podrá entrar y su sesión se cierra ya. Sus alumnos y sus datos se conservan (los sigues viendo tú).`)) return;
+    const r = await llamarAdmin('profesor_activo', { profesor: id, activo });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    adminMensaje(activo ? `${p.nombre} vuelve a estar activo.` : `${p.nombre} está desactivado.`, 'ok'); profCargar(); adminRefrescar();
+}
+async function profBorrar(id) {
+    const p = profDe(id); if (!p) return;
+    if (!confirm(`¿Borrar al profesor ${p.nombre}?\n\nSus ${p.alumnos} alumno(s) NO se borran: pasan al administrador y puedes reasignarlos.`)) return;
+    const r = await llamarAdmin('profesor_borrar', { profesor: id });
+    if (r.status !== 200) { adminMensaje(r.datos.mensaje, 'error'); return; }
+    document.getElementById('prof-clave-nueva').classList.add('hidden');
+    adminMensaje(`${p.nombre} se ha borrado.`, 'ok'); profCargar(); adminRefrescar();
+}
+const ACCIONES_REGISTRO = {
+    nino_crear: 'creó la clave de', nino_regenerar: 'dio clave nueva a', nino_revocar: 'anuló la clave de', nino_borrar: 'borró a', nino_reasignar: 'cambió de clase a',
+    profesor_crear: 'creó al profesor', profesor_regenerar: 'dio clave nueva al profesor', profesor_desactivar: 'desactivó al profesor', profesor_activar: 'activó al profesor', profesor_borrar: 'borró al profesor'
+};
+async function auditoriaCargar() {
+    const cont = document.getElementById('auditoria-lista');
+    const r = await llamarAdmin('auditoria');
+    if (!cont || r.status !== 200) return;
+    cont.innerHTML = r.datos.registro.length ? r.datos.registro.map(x => `<div class="text-[11px] text-slate-300 border-b border-slate-800 pb-1">
+        <span class="text-slate-500">${new Date(x.t).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</span>
+        <strong class="text-white">${escS(x.quien)}</strong> ${escS(ACCIONES_REGISTRO[x.accion] || x.accion)} <span class="text-amber-200">${escS(x.detalle)}</span></div>`).join('')
+        : '<p class="text-[11px] text-slate-400">Sin cambios todavía.</p>';
+}
+
+/* ---------- Arranque ---------- */
 async function iniciarSync() {
     crearModalesSync();
     await comprobarAcceso();
