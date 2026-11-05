@@ -311,11 +311,13 @@ async function _sincronizarUnaVez(opciones) {
 }
 
 function bloquearDispositivo(mensaje) {
-    syncMeta.bloqueado = true; syncMeta.motivo = mensaje || 'Tu clave ya no vale en este dispositivo.'; guardarSyncMeta();
+    syncMeta.conectado = false; syncMeta.bloqueado = true; syncMeta.motivo = mensaje || 'Esta clave ya no sirve en este dispositivo.';
+    guardarSyncMeta();
     mostrarAcceso('formulario', syncMeta.motivo);
 }
 
 /* ---------- UI de la cuenta ---------- */
+let syncEstado = '';
 function actualizarCuentaUI() {
     const btn = document.getElementById('cuenta-btn');
     if (!btn) return;
@@ -331,203 +333,78 @@ function actualizarCuentaUI() {
     }
 }
 
+function abrirCuenta() {
+    crearModalesSync();
+    document.getElementById('cuenta-modal').classList.remove('hidden');
+    renderCuenta();
+}
+function cerrarCuenta() { const m = document.getElementById('cuenta-modal'); if (m) m.classList.add('hidden'); }
+
+function renderCuenta() {
+    const c = document.getElementById('cuenta-contenido');
+    if (!c) return;
+    if (rolActual === 'profe') {
+        c.innerHTML = `<div class="text-center"><div class="text-4xl mb-2">👤</div><p class="text-slate-200">Has entrado como <strong>profe</strong>.</p><p class="text-xs text-slate-400 mt-2">La sesión dura 8 horas. Puedes probar la app y gestionar las claves desde el engranaje.</p><button onclick="cerrarSesion()" class="mt-4 bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-sm">Cerrar sesión del profe</button></div>`;
+        return;
+    }
+    if (rolActual === 'nino') {
+        c.innerHTML = `<div class="text-center"><div class="text-4xl mb-2">🔑</div><p class="text-slate-200">Clave: <strong>${escS(syncMeta.alias)}</strong></p><p class="text-xs text-slate-400 mt-1">Progreso sincronizado en hasta 2 dispositivos.</p><button onclick="cerrarSesion()" class="mt-4 bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-sm">Cerrar sesión / cambiar de alumno</button></div>`;
+        return;
+    }
+    c.innerHTML = `<div class="text-center"><p class="text-slate-300">No hay sesión activa.</p></div>`;
+}
+
+async function cerrarSesion() {
+    if (!confirm('¿Cerrar la sesión en este dispositivo?')) return;
+    await llamarApi('acceso', { accion: 'salir' });
+    syncMeta = syncMetaVacia(); guardarSyncMeta();
+    location.reload();
+}
+
 async function entrarConClave() {
     const input = document.getElementById('login-codigo');
     const msg = document.getElementById('login-mensaje');
     const btn = document.getElementById('login-boton');
-    const codigo = (input.value || '').trim();
-    if (!codigo) { msg.textContent = 'Escribe tu clave.'; return; }
-    btn.disabled = true; msg.className = 'text-xs mt-3 text-slate-300'; msg.textContent = 'Comprobando…';
-    const r = await llamarApi('acceso', { accion: 'entrar', codigo, dispositivo: dispositivoId(), nombre: nombreDispositivo() });
+    const codigo = (input.value || '').trim().toUpperCase();
+    if (!codigo) { msg.className = 'text-xs mt-3 text-red-300 text-center'; msg.textContent = 'Escribe la clave.'; return; }
+    btn.disabled = true; msg.className = 'text-xs mt-3 text-slate-300 text-center'; msg.textContent = 'Comprobando…';
+    const r = await llamarApi('acceso', { accion: 'entrar', codigo, dispositivo: dispositivoId(), nombreDispositivo: nombreDispositivo() });
     btn.disabled = false;
-    if (r.status !== 200 || !r.datos.ok) { msg.className = 'text-xs mt-3 text-red-300'; msg.textContent = r.datos.mensaje || 'No se pudo entrar.'; return; }
-    const { id, alias } = r.datos;
-    let perfilT = 0;
-    if (syncMeta.ninoId && syncMeta.ninoId !== id) {
-        await borrarDatosLocales(); // eran datos de otro niño
-    } else if (syncMeta.ninoId === id) {
-        perfilT = syncMeta.perfilT || 0;
-    } else {
-        await prepararDatosLocales(alias);
-        if (syncMeta._juntar) perfilT = 1;
-    }
-    syncMeta = Object.assign(syncMetaVacia(), { conectado: true, ninoId: id, alias, perfilT });
-    guardarSyncMeta();
-    if (typeof hablaData !== 'undefined') hablaData = cargarHabla();
-    if (typeof lecturaData !== 'undefined') lecturaData = cargarLecturas();
-    if (typeof frasesData !== 'undefined') frasesData = cargarFrases();
-    try { gameState = limpiarPerfilLocal(JSON.parse(localStorage.getItem('ligaHablaVisual')) || gameState); } catch (e) { }
-    msg.textContent = 'Sincronizando…';
-    rolActual = 'nino';
-    await sincronizar();
-    location.reload();
-}
-async function cerrarSesion() {
-    if (rolActual === 'profe') {
-        if (!confirm('¿Salir de la sesión del profe en este dispositivo?')) return;
-        await llamarApi('acceso', { accion: 'salir_profe' });
-        location.reload();
+    if (r.status !== 200 || !r.datos.ok) {
+        msg.className = 'text-xs mt-3 text-red-300 text-center';
+        msg.textContent = r.datos.mensaje || 'No se pudo entrar.';
         return;
     }
-    if (!confirm('¿Salir de esta cuenta en este dispositivo? Tus datos quedan en el servidor y puedes volver a entrar con la clave.')) return;
-    await llamarApi('acceso', { accion: 'salir' });
-    await borrarDatosLocales();
+    input.value = '';
     location.reload();
 }
+
 async function borrarDatosLocales() {
-    localStorage.removeItem('ligaHablaVisual');
-    localStorage.removeItem('ligaHablaVoz');
-    localStorage.removeItem('ligaHablaTestTextos');
-    localStorage.removeItem('ligaHablaLectura');
-    localStorage.removeItem('ligaHablaFrases');
-    localStorage.removeItem('ligaHablaPegatinas');
-    localStorage.removeItem('ligaHablaPenalty');
-    localStorage.removeItem(SYNC_KEY);
-    try { if (typeof audioClear === 'function') await audioClear(); } catch (e) { }
-}
-function borrarDispositivoBloqueado() {
-    if (!confirm('¿Borrar los datos guardados en este dispositivo? No se puede deshacer.')) return;
-    borrarDatosLocales().then(() => location.reload());
+    // Borra el progreso local (no toca la clave ni el dispositivoId)
+    ['ligaHablaVisual', 'ligaHablaVoz', 'ligaHablaLectura', 'ligaHablaFrases', 'ligaHablaTestTextos'].forEach(k => localStorage.removeItem(k));
+    if (typeof audioClear === 'function') try { await audioClear(); } catch (e) { }
 }
 
-/* ---------- Panel del profe (claves) ---------- */
-function panelProfeDesbloqueado() { return rolActual === 'profe'; }
-function aplicarCandadoPanel() {
-    const l = document.getElementById('admin-login'), p = document.getElementById('admin-panel');
-    if (rolActual === 'profe') {
-        if (l) l.classList.add('hidden');
-        if (p) p.classList.remove('hidden');
-    } else {
-        if (l) l.classList.remove('hidden');
-        if (p) p.classList.add('hidden');
-    }
-}
-function adminCerrarPanel() { /* la sesión del profe se cierra con el botón de salir */ }
-async function llamarAdmin(accion, extra = {}) {
-    return llamarApi('admin', Object.assign({ accion }, extra));
-}
-async function adminCrear() {
-    const alias = document.getElementById('admin-alias').value.trim();
-    if (!alias) { adminMensaje('Escribe el nombre o apodo.', 'error'); return; }
-    const r = await llamarAdmin('crear', { alias });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo crear.', 'error'); return; }
-    document.getElementById('admin-alias').value = '';
-    adminMensaje(`Clave creada para <strong>${escS(alias)}</strong>: <span class="font-game text-lg">${escS(r.datos.codigo)}</span>`, 'ok');
-    adminRefrescar();
-}
-async function adminRefrescar() {
-    const cont = document.getElementById('admin-lista');
-    if (!cont) return;
-    cont.innerHTML = '<p class="text-xs text-slate-400">Cargando…</p>';
-    const r = await llamarAdmin('listar');
-    if (r.status !== 200 || !r.datos.ok) { cont.innerHTML = '<p class="text-xs text-red-300">No se pudo cargar la lista.</p>'; return; }
-    const ninos = r.datos.ninos || [];
-    cont.innerHTML = ninos.length ? ninos.map(n => `
-        <div class="flex items-center justify-between bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
-            <div>
-                <strong class="text-white">${escS(n.alias)}</strong>
-                <span class="text-xs text-slate-400 ml-2">${n.revocado ? '🚫 anulada' : '✅ activa'}</span>
-            </div>
-            <div class="flex gap-1">
-                <button onclick="adminRegenerar('${n.id}')" class="text-xs bg-amber-600 hover:bg-amber-500 text-white px-2 py-1 rounded-lg">Nueva clave</button>
-                <button onclick="adminRevocar('${n.id}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded-lg">${n.revocado ? 'Reactivar' : 'Anular'}</button>
-                <button onclick="adminBorrar('${n.id}')" class="text-xs bg-red-700 hover:bg-red-600 text-white px-2 py-1 rounded-lg">Borrar</button>
-            </div>
-        </div>`).join('') : '<p class="text-xs text-slate-400">Todavía no hay claves.</p>';
-}
-function adminMensaje(html, tipo) {
-    const m = document.getElementById('admin-mensaje');
-    if (!m) return;
-    m.className = 'text-sm mt-2 ' + (tipo === 'ok' ? 'text-emerald-300' : 'text-red-300');
-    m.innerHTML = html;
-}
-async function adminRegenerar(id) {
-    if (!confirm('¿Dar una clave nueva? La anterior dejará de valer.')) return;
-    const r = await llamarAdmin('regenerar', { id });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    adminMensaje(`Nueva clave: <span class="font-game text-lg">${escS(r.datos.codigo)}</span>`, 'ok');
-    adminRefrescar();
-}
-async function adminRevocar(id) {
-    const r = await llamarAdmin('revocar', { id });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    adminRefrescar();
-}
-async function adminBorrar(id) {
-    if (!confirm('¿Borrar este alumno y todos sus datos del servidor? No se puede deshacer.')) return;
-    const r = await llamarAdmin('borrar', { id });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    adminRefrescar();
+async function borrarDispositivoBloqueado() {
+    if (!confirm('¿Borrar todos los datos guardados en este dispositivo? (el progreso en el servidor no se toca)')) return;
+    await borrarDatosLocales();
+    syncMeta = syncMetaVacia(); guardarSyncMeta();
+    location.reload();
 }
 
-/* ---------- Profesores (solo admin) ---------- */
-async function profCargar() {
-    const cont = document.getElementById('admin-profesores-lista');
-    if (!cont) return;
-    const r = await llamarAdmin('profesores');
-    if (r.status !== 200 || !r.datos.ok) { cont.innerHTML = '<p class="text-xs text-red-300">No se pudo cargar.</p>'; return; }
-    const profs = r.datos.profesores || [];
-    cont.innerHTML = profs.length ? profs.map(p => `
-        <div class="flex items-center justify-between bg-stadium-800 border border-slate-700 rounded-xl px-3 py-2 text-sm">
-            <div>
-                <strong class="text-white">${escS(p.nombre)}</strong>
-                <span class="text-xs text-slate-400 ml-2">${escS(p.clase || 'sin clase')}</span>
-                <span class="text-xs ${p.activo ? 'text-emerald-400' : 'text-red-400'} ml-2">${p.activo ? 'activo' : 'desactivado'}</span>
-            </div>
-            <div class="flex gap-1">
-                <button onclick="profRegenerar('${p.id}')" class="text-xs bg-amber-600 hover:bg-amber-500 text-white px-2 py-1 rounded-lg">Nueva clave</button>
-                <button onclick="profActivar('${p.id}', ${!p.activo})" class="text-xs bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded-lg">${p.activo ? 'Desactivar' : 'Activar'}</button>
-                <button onclick="profBorrar('${p.id}')" class="text-xs bg-red-700 hover:bg-red-600 text-white px-2 py-1 rounded-lg">Borrar</button>
-            </div>
-        </div>`).join('') : '<p class="text-xs text-slate-400">Todavía no hay profesores.</p>';
-}
-async function profCrear() {
-    const nombre = document.getElementById('admin-prof-nombre').value.trim();
-    const clase = document.getElementById('admin-prof-clase').value.trim();
-    if (!nombre) { adminMensaje('Escribe el nombre del profesor.', 'error'); return; }
-    const r = await llamarAdmin('profesor_crear', { nombre, clase });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    document.getElementById('admin-prof-nombre').value = '';
-    document.getElementById('admin-prof-clase').value = '';
-    adminMensaje(`Clave de profesor para <strong>${escS(nombre)}</strong>: <span class="font-game text-lg">${escS(r.datos.codigo)}</span>`, 'ok');
-    profCargar();
-}
-async function profRegenerar(id) {
-    if (!confirm('¿Dar una clave nueva a este profesor?')) return;
-    const r = await llamarAdmin('profesor_regenerar', { id });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    adminMensaje(`Nueva clave de profesor: <span class="font-game text-lg">${escS(r.datos.codigo)}</span>`, 'ok');
-    profCargar();
-}
-async function profActivar(id, activo) {
-    const r = await llamarAdmin('profesor_activar', { id, activo });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    profCargar();
-}
-async function profBorrar(id) {
-    if (!confirm('¿Borrar este profesor? Sus alumnos pasan al administrador.')) return;
-    const r = await llamarAdmin('profesor_borrar', { id });
-    if (r.status !== 200 || !r.datos.ok) { adminMensaje(r.datos.mensaje || 'No se pudo.', 'error'); return; }
-    profCargar();
-    adminRefrescar();
+/* ---------- Modales de sincronización ---------- */
+function crearModalesSync() {
+    if (document.getElementById('cuenta-modal')) return;
+    const html = `
+    <div id="cuenta-modal" class="modal hidden">
+        <div class="bg-stadium-900 border border-pitch-600 rounded-3xl p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4"><h2 class="font-game text-xl text-white">Mi cuenta</h2><button onclick="cerrarCuenta()" class="text-slate-400 hover:text-white text-2xl">&times;</button></div>
+            <div id="cuenta-contenido"></div>
+        </div>
+    </div>`;
+    document.body.insertAdjacentHTML('beforeend', html);
 }
 
-/* ---------- Auditoría ---------- */
-const ACCIONES_REGISTRO = {
-    nino_crear: 'creó la clave de', nino_regenerar: 'dio clave nueva a', nino_revocar: 'anuló la clave de', nino_borrar: 'borró a', nino_reasignar: 'cambió de clase a',
-    profesor_crear: 'creó al profesor', profesor_regenerar: 'dio clave nueva al profesor', profesor_desactivar: 'desactivó al profesor', profesor_activar: 'activó al profesor', profesor_borrar: 'borró al profesor'
-};
-async function auditoriaCargar() {
-    const cont = document.getElementById('auditoria-lista');
-    const r = await llamarAdmin('auditoria');
-    if (!cont || r.status !== 200) return;
-    cont.innerHTML = r.datos.registro.length ? r.datos.registro.map(x => `<div class="text-[11px] text-slate-300 border-b border-slate-800 pb-1">
-        <span class="text-slate-500">${new Date(x.t).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</span>
-        <strong class="text-white">${escS(x.quien)}</strong> ${escS(ACCIONES_REGISTRO[x.accion] || x.accion)} <span class="text-amber-200">${escS(x.detalle)}</span></div>`).join('')
-        : '<p class="text-[11px] text-slate-400">Sin cambios todavía.</p>';
-}
-
-/* ---------- Arranque ---------- */
 async function iniciarSync() {
     crearModalesSync();
     await comprobarAcceso();
